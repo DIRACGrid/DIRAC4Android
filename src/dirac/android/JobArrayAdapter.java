@@ -47,6 +47,9 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 		return this.JobIDs.get(index);
 	}
 
+
+	
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		if (row == null) {
@@ -55,7 +58,9 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 			row = inflater.inflate(R.layout.listitem, parent, false);
 		}
 
+		Status s = new Status();
 		Job job = getItem(position);
+		int myposition = s.get(job.state);
         jobIDID = (TextView) row.findViewById(R.id.job_id);
         jobIDName = (TextView) row.findViewById(R.id.job_name);
 		jobIDState = (TextView) row.findViewById(R.id.job_state);
@@ -67,19 +72,8 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 	  //  jobIDColor.setBackgroundResource(R.color.completed);
 		System.out.println(job.state);
 	    //jobIDColor.setBackgroundResource(R.color.completed);
-
-		int state_color = Color.rgb(170,102,204);
-
-		if("running".equals(job.state)){
-			 state_color = Color.rgb(153,204,0);
-		}else if ("completed".equals(job.state)){
-			state_color = Color.rgb(51,181,229);
-		}else if ("failed".equals(job.state)){
-			state_color = Color.rgb(255,68,68);
-		}
-		
-		
-	    jobIDColor.setBackgroundColor(state_color);
+	
+	    jobIDColor.setBackgroundColor(context.getResources().getColor(s.ColorStatus[myposition]));
 	
 		return row;
 	}

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, DIRACAndroid2Activity!</string>
-    <string name="app_name">DIRACAndroid2</string>
-    <color name="running">#A6C73A</color>
-    <color name="completed">#3A5FC7</color>
-    <color name="failed">#ff4444</color>
-    <color name="unknown">#A13AC7</color>    
+    <string name="app_name">DIRACAndroid</string>
+    <color name="Running">#3A89C9</color>
+    <color name="Completed">#1B325F</color>
+    <color name="Failed">#F60B00</color>
+    <color name="Unknown">#A13AC7</color>  
+    <color name="Checking">#9CC4E4</color>  
+    <color name="Waiting">#FF7308</color>  
+    <color name="Done">#A6C73A</color>  
+    <color name="Killed">#9CA3A9</color>  
+    <color name="Matched">#E9F2F9</color>    
+    <color name="Staging">#A13AFF</color>    
+    <color name="Stalled">#F39F1B</color>    
+    <color name="Received">#FFFFC7</color>    
 	<string name="add_values">Add values to the chart</string>    
 	<string name="x">X</string>    
 	<string name="y">Y</string>

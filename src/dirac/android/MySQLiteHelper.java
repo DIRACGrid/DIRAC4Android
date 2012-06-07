@@ -27,7 +27,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	
 
 	private static final String DATABASE_NAME = "dirac.db";
-	private static final int DATABASE_VERSION = 27;
+	private static final int DATABASE_VERSION = 29;
 
 	// Database creation sql statement
 	private static String DATABASE_CREATE2;

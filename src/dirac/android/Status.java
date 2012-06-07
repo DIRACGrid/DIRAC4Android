@@ -4,8 +4,33 @@ public class Status {
 	
 	    private String name;
 	    private String number;
-	    public  String[] PossibleStatus = {"Checking","Completed","Done","Failed","Killed","Matched","Received","Running","Staging","Stalled","Waiting"};
 	    
+	    
+	    public  String[] PossibleStatus = {"Checking",
+	    								   "Completed",
+	    								   "Done",
+	    								   "Failed",
+	    								   "Killed",
+	    								   "Matched",
+	    								   "Received",
+	    								   "Running",
+	    								   "Staging",
+	    								   "Stalled",
+	    								   "Waiting"};
+	    
+	    
+	    public  int[] ColorStatus = {R.color.Checking,
+	    							 R.color.Completed,
+	    							 R.color.Done,
+	    							 R.color.Failed,
+	    							 R.color.Killed,
+	    							 R.color.Matched,
+	    							 R.color.Received,
+	    							 R.color.Running,
+	    							 R.color.Staging,
+	    							 R.color.Stalled,
+	    							 R.color.Waiting};
+
 	    public Status(){
 	        super();
 	    }
@@ -26,7 +51,19 @@ public class Status {
 	    }
 	    public String number() {
 	        return this.number;
+	       
 	    }
+	    
+		public int get(String num) {
+	        for (int i = 0; i < PossibleStatus.length; i++) {
+
+	                if (PossibleStatus[i].equals(num)) {
+	                        return (i);
+	                }
+	        }
+	        return (1);
+	}
+	    
 	
 
 }

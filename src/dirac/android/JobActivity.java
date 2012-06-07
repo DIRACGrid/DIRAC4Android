@@ -17,31 +17,21 @@ public class JobActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.jobinfo);
 		Intent i = getIntent();
-		Job myjobid = (Job) i.getParcelableExtra("myJob");
-		setTitle("Job id: "+myjobid.toString());
-		
+		Job myjob = (Job) i.getParcelableExtra("myJob");
+		setTitle("Job id: "+myjob.toString());
+		Status s = new Status();
+		int myposition = s.get(myjob.state);
 		TextView job_info_color = (TextView)findViewById(R.id.job_info_color);
 		TextView job_info_state = (TextView)findViewById(R.id.job_info_state);
 		TextView job_info_site = (TextView)findViewById(R.id.job_info_site);
 		TextView job_info_time = (TextView)findViewById(R.id.job_info_time);
 		TextView job_info_name = (TextView)findViewById(R.id.job_info_name);
-		job_info_site.setText(myjobid.site);
-		job_info_state.setText(myjobid.state);
-		job_info_time.setText(myjobid.time);
-		job_info_name.setText(myjobid.name);
+		job_info_site.setText(myjob.site);
+		job_info_state.setText(myjob.state);
+		job_info_time.setText(myjob.time);
+		job_info_name.setText(myjob.name);
 		
-		int state_color = Color.rgb(170,102,204);
-
-		if("running".equals(myjobid.state)){
-			 state_color = Color.rgb(153,204,0);
-		}else if ("completed".equals(myjobid.state)){
-			state_color = Color.rgb(51,181,229);
-		}else if ("failed".equals(myjobid.state)){
-			state_color = Color.rgb(255,68,68);
-		}
-		
-		
-		job_info_color.setBackgroundColor(state_color);
+		job_info_color.setBackgroundColor(getResources().getColor(s.ColorStatus[myposition]));
 		
 		
 		

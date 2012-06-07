@@ -192,15 +192,22 @@ public class JobsDataSource {
 		
 		ArrayList<String[]> mysuperList = new ArrayList<String[]>() ;
 
-
 		Cursor cursor = database.query(MySQLiteHelper.DIRAC_STATS,
 				null, null, null, null, null, null);
 
-
 		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			String[]	myInt = {cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),cursor.getString(4)};
+		while (!cursor.isAfterLast()) {			
+			Status s = new Status();
+			String[] status = s.PossibleStatus;
+			String[] myInt = new String[status.length+1];
+			for(int i = 0; i<status.length; i++)
+				myInt[i] = cursor.getString(cursor.getColumnIndex(status[i]));
+			
 
+			System.out.println("UUZ");
+			myInt[status.length] = cursor.getString(cursor.getColumnIndex("DATE_TIME"));
+
+			System.out.println("UUZ");
 			mysuperList.add(myInt);
 			cursor.moveToNext();
 		}

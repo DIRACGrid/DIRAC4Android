@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,21 +48,17 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 	}
 
 	public int getCount() {
-		System.out.println("eel");
 
-		System.out.println(this.map.length);
 		return this.map.length;
 		
 
 	}
 
 	public Status getItem(int index) {
-		System.out.println("eeu");
 		return this.map[index];
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		System.out.println("eeV");
 
 		View row = convertView;
 
@@ -81,20 +78,10 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 		jobIDID.setText(state.name());
 		jobIDName.setText(state.number());
 		jobIDState.setText("");
-	    jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
+	    
+	    jobIDColor.setBackgroundColor(context.getResources().getColor(state.ColorStatus[state.get(state.name())]));
 
-		int state_color = Color.rgb(170,102,204);
-
-		if("running".equals(state.name())){
-			 state_color = Color.rgb(153,204,0);
-		}else if ("completed".equals(state.name())){
-			state_color = Color.rgb(51,181,229);
-		}else if ("failed".equals(state.name())){
-			state_color = Color.rgb(255,68,68);
-		}
 		
-		
-	    jobIDColor.setBackgroundColor(state_color);
 		return row;
 	}
 

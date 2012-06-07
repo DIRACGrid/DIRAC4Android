@@ -136,7 +136,7 @@ datasource.close();
 
 		////// Create a customized ArrayAdapter
 		
-		Status[] map = datasource.getLastUpdate(); 
+		final Status[] map = datasource.getLastUpdate(); 
 		if(map[0]!=null){
 			
 		StateInfoArrayAdapter adapter = new StateInfoArrayAdapter(
@@ -152,22 +152,13 @@ datasource.close();
 		
 		Status s = new Status();
 		status = s.PossibleStatus;
-
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// When clicked, show a toast with the TextView text
-
-
 				Intent myIntent = new Intent(view.getContext(), StateActivity.class);				 
-				myIntent.putExtra("myState", status[position]);
+				myIntent.putExtra("myState", map[position].name());
 				startActivity(myIntent);
-
-
-
-
-
-
 			}
 		});
 
@@ -218,31 +209,29 @@ datasource.close();
 			}
 		});		
 
-		TextView T1 = (TextView)findViewById(R.id.t1);
-		TextView T2 = (TextView)findViewById(R.id.t2);
-		TextView T3 = (TextView)findViewById(R.id.t3);
-		TextView T4 = (TextView)findViewById(R.id.t4);
+		
+		
+		
+		
+	    int[] TextPos = {R.id.tChecking,R.id.tCompleted,R.id.tDone,R.id.tFailed,R.id.tKilled,R.id.tMatched,R.id.tReceived,R.id.tRunning,R.id.tStaging,R.id.tStalled,R.id.tWaiting};
+	    int All = 0;
+		
+		for(int i = 0; i<TextPos.length; i++){
+			float F = 0;
+			TextView T1 = (TextView)findViewById(TextPos[i]);
+			T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
+			}
+		
+		for(int i = 0; i<map.length; i++){
+			float F = Float.parseFloat(map[i].number());	
+			TextView T1 = (TextView)findViewById(TextPos[map[i].get(map[i].name())]);
+			T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
+			All = All + (int) F;
+		}
+		
+		
 		TextView Total = (TextView)findViewById(R.id.nbtotaljob);
-
-
-	//	Total.setText("Jobs in Dirac: "+datasource.getAllJobIDs().size());
-
-		float R = Float.parseFloat(map[0].number());
-		float C = Float.parseFloat(map[1].number());
-		float F = 0;
-		if(map.length > 2)
-			F = Float.parseFloat(map[2].number());
-		float U = 0;
-		if(map.length > 3)
-			U = Float.parseFloat(map[3].number());
-
-        int All = (int) (R+C+F+U);	
         Total.setText("Jobs in Dirac: "+All);
-
-		T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, C));
-		T2.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, R));
-		T3.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
-		T4.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, U));
 
 
 		}
@@ -284,22 +273,6 @@ datasource.close();
 		renderer.setLabelsTextSize(10);
 		renderer.setLegendTextSize(30);
 		renderer.setMargins(new int[] {20, 30, 15, 0});
-		XYSeriesRenderer r = new XYSeriesRenderer();
-		r.setColor(Color.BLUE);
-		r.setLineWidth(4);
-		renderer.addSeriesRenderer(r);
-		r = new XYSeriesRenderer();
-		r.setColor(Color.GREEN);
-		r.setLineWidth(4);
-		renderer.addSeriesRenderer(r);
-		r = new XYSeriesRenderer();
-		r.setColor(Color.RED);
-		r.setLineWidth(4);
-		renderer.addSeriesRenderer(r);
-		r = new XYSeriesRenderer();
-		r.setColor(Color.MAGENTA);
-		r.setLineWidth(4);
-		renderer.addSeriesRenderer(r);
 		renderer.setAxesColor(Color.DKGRAY);
 		renderer.setLabelsColor(Color.LTGRAY);
 		renderer.setAntialiasing(true);
@@ -309,22 +282,28 @@ datasource.close();
 		final int nr = 10;
 	//	double[] Range = {(double) (list.size()-10),(double) list.size()};
 		//renderer.setRange(Range);
-		
+
+		Status s = new Status();
+		String[] status = s.PossibleStatus;
+		int[] Colors = s.ColorStatus;
+		XYSeriesRenderer r;
+
 		
 		for (int i = 0; i < list.get(0).length - 1 ; i++) {
-				
+				System.out.println(i);
+				System.out.println(status[i]);
+				System.out.println(Colors[i]);
 				XYSeries series = new XYSeries("");
-				if(i==0) series.setTitle("completed");
-				if(i==1) series.setTitle("running");
-				if(i==2) series.setTitle("failed");
-				if(i==3) series.setTitle("unknown");
-				
-				
+				series.setTitle(status[i]);
+				r = new XYSeriesRenderer();
+				r.setColor(context.getResources().getColor(Colors[i]));
+				r.setLineWidth(4);
+				renderer.addSeriesRenderer(r);
 				
 				for (int k = 0; k < list.size(); k++) {
 					
-					
-					String sdate = list.get(k)[list.get(0).length - 1];
+					String sdate = list.get(k)[list.get(0).length-1];
+					System.out.println(sdate);
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 			        Date d1 =null;
 					try {
