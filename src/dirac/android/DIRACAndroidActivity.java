@@ -63,6 +63,7 @@ public class DIRACAndroidActivity extends Activity{
 
 
 	private List<Job> countryList= new  ArrayList<Job>();
+	private List<Job> countryList= new  ArrayList<Job>();
    
 	private OnItemLongClickListener listener;
 	private JobsDataSource datasource;
