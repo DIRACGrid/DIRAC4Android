@@ -53,9 +53,10 @@ public class DIRACAndroidActivity extends Activity{
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
-	private String status[] = {"completed","running","failed","unknown"};
+	
+	private String[] status;
 
-
+ 
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
@@ -75,17 +76,12 @@ public class DIRACAndroidActivity extends Activity{
 		datasource = new JobsDataSource(this);
 		datasource.open();
 		dbHelper = new MySQLiteHelper(context);
-		database = dbHelper.getWritableDatabase();
+		database = dbHelper.getWritableDatabase(); 
 		setContentView(R.layout.main);
 
-		//	dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-
-		//	InputStream inputStream = getResources().openRawResource(R.raw.jobs2);
-		//	datasource.parse(inputStream,2000);		
-		//	datasource.creatTableOfSatus();
 		
-		String[] Status = new Status().PossibleStatus;
-		System.out.println(Status);
+		
+		
 		loadDataOnScreen();
 
 
@@ -144,14 +140,18 @@ datasource.close();
 		if(map[0]!=null){
 			
 		StateInfoArrayAdapter adapter = new StateInfoArrayAdapter(
-				this.getApplicationContext(), R.layout.country_listitem, map);
+				this.getApplicationContext(), R.layout.listitem, map);
 
 		// Get reference to ListView holder
 		ListView lv = (ListView) this.findViewById(R.id.states);
 
 		// Set the ListView adapter
 		lv.setAdapter(adapter);
-
+		
+		
+		
+		Status s = new Status();
+		status = s.PossibleStatus;
 
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,

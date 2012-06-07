@@ -27,17 +27,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	
 
 	private static final String DATABASE_NAME = "dirac.db";
-	private static final int DATABASE_VERSION = 22;
+	private static final int DATABASE_VERSION = 27;
 
 	// Database creation sql statement
-	private static final String DATABASE_CREATE2 = "CREATE TABLE "
-			+ DIRAC_STATS + "( "
-			+ "_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-			+ COMPLETED + " INTEGER,"
-			+ FAILED + " INTEGER,"
-			+ RUNNING + " INTEGER,"
-			+ UNKNOWN + " INTEGER,"
-			+ DATE_TIME + " DATETIME " + ");";
+	private static String DATABASE_CREATE2;
 	
 	
 
@@ -59,8 +52,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase database) {
 		
-	
 		
+	Status s = new Status();
+	String[] status = s.PossibleStatus;
+	String column = "";
+	for(int i = 0; i<status.length; i++)
+		column = column+status[i] + " TEXT, ";
+			
+	DATABASE_CREATE2 =  "CREATE TABLE "
+			+ DIRAC_STATS + "( "
+			+ "_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+			+ column 
+			+ DATE_TIME + " DATETIME " + ");";
+	
 		database.execSQL(DATABASE_CREATE);
 		database.execSQL(DATABASE_CREATE2);
 	}

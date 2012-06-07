@@ -52,7 +52,7 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 		if (row == null) {
 			// ROW INFLATION
 			LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.country_listitem, parent, false);
+			row = inflater.inflate(R.layout.listitem, parent, false);
 		}
 
 		Job job = getItem(position);

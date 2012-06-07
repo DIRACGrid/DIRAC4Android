@@ -30,8 +30,7 @@ public class JobsDataSource {
 									MySQLiteHelper.COLUMN_JOB_SUB_TIME, 
 									MySQLiteHelper.COLUMN_JOB_HB_TIME};
 
-	private String[] allStats = { MySQLiteHelper.COMPLETED,MySQLiteHelper.RUNNING,MySQLiteHelper.FAILED,MySQLiteHelper.UNKNOWN,MySQLiteHelper.DATE_TIME};
-	
+
 		
 	private String[] MID = {MySQLiteHelper.COLUMN_JOB_ID};
 
@@ -111,12 +110,7 @@ public class JobsDataSource {
 		    }
 			
 	
-		String[][] statess = new String[][] {{ "running",  "failed", "completed" ,"running",  "unknown", "completed" },
-				                            { "running",  "running", "completed","running",  "unknown", "completed"  },
-				                            { "running",  "failed", "completed","completed",  "completed", "completed"  },
-				                            { "running",  "failed", "completed","completed",  "completed", "completed"  },
-				                            { "failed",  "failed", "failed","failed",  "unknown", "failed"  }	,
-				                            { "running",  "failed", "running","running",  "running", "running"  }			};	
+		
 		String[] sites = new String[] { "CERN.CH", "RAL.UK", "PIC.ES"};	
 		String[] times = new String[] { "10:12:34", "10:15:34", "10:16:34", "10:11:34" };	
 		String[] names = new String[] { "bjets", "B2DX_beta", "Zmumu"};
@@ -128,12 +122,12 @@ public class JobsDataSource {
 			DatabaseUtils.InsertHelper test = new DatabaseUtils.InsertHelper(database, MySQLiteHelper.DIRAC_JOBS);	
 			
 
-			int nextInt0 = new Random().nextInt(6);
-			String[] states = statess[nextInt0];
+			Status s = new Status();
+			String[] states = s.PossibleStatus;
 			
 			for(int i = 1; i<tot;i++){				
 				ContentValues values = new ContentValues();
-				int nextInt1 = new Random().nextInt(6);
+				int nextInt1 = new Random().nextInt(states.length);
 				int nextInt2 = new Random().nextInt(3);
 				int nextInt3 = new Random().nextInt(3);
 				int nextInt4 = new Random().nextInt(4);
@@ -200,7 +194,7 @@ public class JobsDataSource {
 
 
 		Cursor cursor = database.query(MySQLiteHelper.DIRAC_STATS,
-				allStats, null, null, null, null, null);
+				null, null, null, null, null, null);
 
 
 		cursor.moveToFirst();
@@ -218,22 +212,15 @@ public class JobsDataSource {
 	public void creatTableOfSatus() {		
 		
 		
-		String status[] = {"running","completed","failed","unknown"};
 		ContentValues values = new ContentValues();
-
+		Status s = new Status();
+		String[] status = s.PossibleStatus;
 	
 		for(String state: status){
 			Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATE + "= '" + state+ "'",new String [] {});
 			Integer value = cursor.getCount();
-
-			if(state.equals("running"))	
-				values.put(MySQLiteHelper.RUNNING, value);
-			if(state.equals("failed"))	
-				values.put(MySQLiteHelper.FAILED, value);
-			if(state.equals("completed"))	
-				values.put(MySQLiteHelper.COMPLETED, value);
-			if(state.equals("unknown"))	
-				values.put(MySQLiteHelper.UNKNOWN, value);
+			
+				values.put(state, value);	 
 		
 			cursor.close();
 		}
@@ -249,14 +236,20 @@ public class JobsDataSource {
 @SuppressWarnings("null")
 public Status[] getLastUpdate() {	
 	Cursor cursor = database.query(MySQLiteHelper.DIRAC_STATS,
-			allStats, null, null, null, null, null);
+			null, null, null, null, null, null);
 	cursor.moveToLast();
-	Status[] tmpmap = new Status[allStats.length-1] ;	
+	
+	
+	Status s = new Status();
+	String[] status = s.PossibleStatus;
+	
+	
+	Status[] tmpmap = new Status[status.length] ;	
 	int j = 0;
 
 	if(!cursor.isAfterLast()){
-		for(int i = 0; i < allStats.length-1;i++){
-			Status state = new Status(allStats[i],cursor.getString(cursor.getColumnIndex(allStats[i])));
+		for(int i = 0; i < status.length;i++){
+			Status state = new Status(status[i],cursor.getString(cursor.getColumnIndex(status[i])));
 			if(Integer.parseInt(state.number()) == 0){
 				j++;
 				continue;
@@ -265,8 +258,8 @@ public Status[] getLastUpdate() {
 		}
 	}
 	
-	Status[] map = new Status[allStats.length-1-j] ;
-	for(int i = 0; i < allStats.length-1-j;i++)
+	Status[] map = new Status[status.length-j] ;
+	for(int i = 0; i < status.length-j;i++)
 		map[i]=tmpmap[i];
 	
 	return map;
@@ -275,7 +268,7 @@ public Status[] getLastUpdate() {
 
 public String getLastUpdateTime() {	
 	Cursor cursor = database.query(MySQLiteHelper.DIRAC_STATS,
-			allStats, null, null, null, null, null);
+			null, null, null, null, null, null);
 	cursor.moveToLast();
 	String time =null;
 	if(!cursor.moveToLast()){

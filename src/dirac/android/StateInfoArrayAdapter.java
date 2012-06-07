@@ -67,7 +67,7 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 
 		if (row == null) {
 			LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.country_listitem, parent, false);
+			row = inflater.inflate(R.layout.listitem, parent, false);
 		}
 
 
