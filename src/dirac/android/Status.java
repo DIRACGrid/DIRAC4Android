@@ -6,7 +6,7 @@ public class Status {
 	    private String number;
 	    
 	    
-	    public  String[] PossibleStatus = {"Checking",
+	    public  static String[] PossibleStatus = {"Checking",
 	    								   "Completed",
 	    								   "Done",
 	    								   "Failed",
@@ -19,7 +19,7 @@ public class Status {
 	    								   "Waiting"};
 	    
 	    
-	    public  int[] ColorStatus = {R.color.Checking,
+	    public static  int[] ColorStatus = {R.color.Checking,
 	    							 R.color.Completed,
 	    							 R.color.Done,
 	    							 R.color.Failed,

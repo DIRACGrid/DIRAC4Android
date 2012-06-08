@@ -53,8 +53,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		
 		
-	Status s = new Status();
-	String[] status = s.PossibleStatus;
+	String[] status = Status.PossibleStatus;
 	String column = "";
 	for(int i = 0; i<status.length; i++)
 		column = column+status[i] + " TEXT, ";

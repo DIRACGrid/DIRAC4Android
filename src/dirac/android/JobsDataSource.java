@@ -58,8 +58,7 @@ public class JobsDataSource {
 
 		Cursor c = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + myjob.id.toString()+ "'",new String [] {});
 		 if(!c.moveToFirst())
-		 {				long insertId = database.insert(MySQLiteHelper.DIRAC_JOBS, null,
-						values);
+		 {				database.insert(MySQLiteHelper.DIRAC_JOBS, null,values);
 	 }
 		
 		
@@ -122,8 +121,7 @@ public class JobsDataSource {
 			DatabaseUtils.InsertHelper test = new DatabaseUtils.InsertHelper(database, MySQLiteHelper.DIRAC_JOBS);	
 			
 
-			Status s = new Status();
-			String[] states = s.PossibleStatus;
+			String[] states = Status.PossibleStatus;
 			
 			for(int i = 1; i<tot;i++){				
 				ContentValues values = new ContentValues();
@@ -197,8 +195,7 @@ public class JobsDataSource {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {			
-			Status s = new Status();
-			String[] status = s.PossibleStatus;
+			String[] status = Status.PossibleStatus;
 			String[] myInt = new String[status.length+1];
 			for(int i = 0; i<status.length; i++)
 				myInt[i] = cursor.getString(cursor.getColumnIndex(status[i]));
@@ -220,8 +217,7 @@ public class JobsDataSource {
 		
 		
 		ContentValues values = new ContentValues();
-		Status s = new Status();
-		String[] status = s.PossibleStatus;
+		String[] status = Status.PossibleStatus;
 	
 		for(String state: status){
 			Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATE + "= '" + state+ "'",new String [] {});
@@ -236,8 +232,7 @@ public class JobsDataSource {
 		System.out.println(dateFormat.format(date));
 		values.put(MySQLiteHelper.DATE_TIME,dateFormat.format(date));
 		
-		long insertId = database.insert(MySQLiteHelper.DIRAC_STATS, null,
-				values);
+		database.insert(MySQLiteHelper.DIRAC_STATS, null,values);
 	}	
 	
 @SuppressWarnings("null")
@@ -247,8 +242,7 @@ public Status[] getLastUpdate() {
 	cursor.moveToLast();
 	
 	
-	Status s = new Status();
-	String[] status = s.PossibleStatus;
+	String[] status = Status.PossibleStatus;
 	
 	
 	Status[] tmpmap = new Status[status.length] ;	

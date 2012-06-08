@@ -70,10 +70,9 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 		jobIDState.setText(job.state);
 	    jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
 	  //  jobIDColor.setBackgroundResource(R.color.completed);
-		System.out.println(job.state);
 	    //jobIDColor.setBackgroundResource(R.color.completed);
 	
-	    jobIDColor.setBackgroundColor(context.getResources().getColor(s.ColorStatus[myposition]));
+	    jobIDColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[myposition]));
 	
 		return row;
 	}

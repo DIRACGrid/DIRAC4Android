@@ -31,7 +31,7 @@ public class JobActivity extends Activity {
 		job_info_time.setText(myjob.time);
 		job_info_name.setText(myjob.name);
 		
-		job_info_color.setBackgroundColor(getResources().getColor(s.ColorStatus[myposition]));
+		job_info_color.setBackgroundColor(getResources().getColor(Status.ColorStatus[myposition]));
 		
 		
 		

@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -20,7 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +45,13 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
 
 
 import android.content.Context;
@@ -54,15 +69,60 @@ public class DIRACAndroidActivity extends Activity{
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
 	
-	private String[] status;
-
- 
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 
+	public InputStream getJSONData(String url){
 
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        URI uri;
+        InputStream data = null;
+        try {
+            uri = new URI(url);
+            HttpGet method = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(method);
+            data = response.getEntity().getContent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return data;
+    }
+	
+	public void runJSONParser(){
+        try{
+        Log.i("MY INFO", "Json Parser started..");
+        Gson gson = new Gson();
+        Reader r = new InputStreamReader(getJSONData("https://api.twitter.com/1/trends/1.json"));
+        Log.i("MY INFO", r.toString());
+        TwitterTrends[] objs = gson.fromJson(r, TwitterTrends[].class);
+        Log.i("MY INFO", ""+objs[0].getTrends().size());
+        for(TwitterTrend tr : objs[0].getTrends()){
+            Log.i("TRENDS", tr.getName() + " - " + tr.getUrl());
+        } 
+        for(location tr : objs[0].getLocations()){
+            Log.i("TRENDS", tr.getName() + " - " + tr.getWoeid());
+        }
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
 
+	
+	
+
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
 	private List<Job> countryList= new  ArrayList<Job>();
    
 	private OnItemLongClickListener listener;
@@ -81,7 +141,6 @@ public class DIRACAndroidActivity extends Activity{
 
 		
 		
-		
 		loadDataOnScreen();
 
 
@@ -90,7 +149,7 @@ public class DIRACAndroidActivity extends Activity{
 		NewB.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 
-
+ 
 				database = dbHelper.getWritableDatabase();
                 datasource.open();	
 
@@ -133,7 +192,7 @@ datasource.close();
 	
 	public void loadDataOnScreen(){
 
-
+		runJSONParser();
 		////// Create a customized ArrayAdapter
 		
 		final Status[] map = datasource.getLastUpdate(); 
@@ -150,8 +209,7 @@ datasource.close();
 		
 		
 		
-		Status s = new Status();
-		status = s.PossibleStatus;
+		String[] status = Status.PossibleStatus;
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -283,9 +341,8 @@ datasource.close();
 	//	double[] Range = {(double) (list.size()-10),(double) list.size()};
 		//renderer.setRange(Range);
 
-		Status s = new Status();
-		String[] status = s.PossibleStatus;
-		int[] Colors = s.ColorStatus;
+		String[] status = Status.PossibleStatus;
+		int[] Colors = Status.ColorStatus;
 		XYSeriesRenderer r;
 
 		
