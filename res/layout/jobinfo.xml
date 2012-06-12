@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-            <TableRow
+        <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
@@ -16,9 +16,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name: "	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Name: " />
 
             <TextView />
 
@@ -26,13 +26,11 @@
                 android:id="@+id/job_info_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
-
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="" />
         </TableRow>
-        
-        
+
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
@@ -42,24 +40,23 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Status: "	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Status: " />
 
             <TextView
                 android:id="@+id/job_info_color"
                 android:layout_width="10px"
-                android:layout_height="wrap_content"		
+                android:layout_height="wrap_content"
                 android:text="" />
 
             <TextView
                 android:id="@+id/job_info_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Large Text"	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip"/>
-
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Large Text" />
         </TableRow>
 
         <TableRow
@@ -71,27 +68,24 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Site: "	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Site: " />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"		
+                android:layout_height="wrap_content"
                 android:text="" />
 
             <TextView
                 android:id="@+id/job_info_site"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Large Text"	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
-
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Large Text" />
         </TableRow>
-
-    
 
         <TableRow
             android:id="@+id/tableRow4"
@@ -101,22 +95,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sub. time: "	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="sub. time: " />
 
-            <TextView
-                 />
+            <TextView />
 
             <TextView
                 android:id="@+id/job_info_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Large Text"	
-		android:paddingLeft="10dip"
-		android:paddingRight="10dip" />
-
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
+                android:text="Large Text" />
         </TableRow>
     </TableLayout>
-       
+
 </LinearLayout>

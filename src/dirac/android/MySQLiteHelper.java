@@ -24,17 +24,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String UNKNOWN = "unknown";
 	public static final String DATE_TIME = "DATE_TIME";
 
-	
+
 
 	private static final String DATABASE_NAME = "dirac.db";
 	private static final int DATABASE_VERSION = 29;
 
 	// Database creation sql statement
 	private static String DATABASE_CREATE2;
-	
-	
 
-	
+
+
+
 	private static final String DATABASE_CREATE = "CREATE TABLE "
 			+ DIRAC_JOBS + "( "
 			+ COLUMN_JOB_ID + " INTEGER PRIMARY KEY,"
@@ -43,7 +43,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_JOB_SUB_TIME + " TEXT,"
 			+ COLUMN_JOB_HB_TIME + " TEXT,"
 			+ COLUMN_JOB_SITE + " TEXT " + ");";
-	
+
 
 	public MySQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -51,28 +51,28 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		
-		
-	String[] status = Status.PossibleStatus;
-	String column = "";
-	for(int i = 0; i<status.length; i++)
-		column = column+status[i] + " TEXT, ";
-			
-	DATABASE_CREATE2 =  "CREATE TABLE "
-			+ DIRAC_STATS + "( "
-			+ "_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-			+ column 
-			+ DATE_TIME + " DATETIME " + ");";
-	
+
+
+		String[] status = Status.PossibleStatus;
+		String column = "";
+		for(int i = 0; i<status.length; i++)
+			column = column+status[i] + " TEXT, ";
+
+		DATABASE_CREATE2 =  "CREATE TABLE "
+				+ DIRAC_STATS + "( "
+				+ "_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ column 
+				+ DATE_TIME + " DATETIME " + ");";
+
 		database.execSQL(DATABASE_CREATE);
 		database.execSQL(DATABASE_CREATE2);
 	}
 
 	public void deleteTable(SQLiteDatabase db, String TABLE) {
 		db.delete(TABLE, null,null);
-		
+
 	}
-	
+
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(MySQLiteHelper.class.getName(),

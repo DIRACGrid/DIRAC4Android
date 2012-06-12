@@ -17,13 +17,12 @@
             android:gravity="left"
             android:text="UID: Cédric Potterat" />
 
-           <TextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="right"
             android:text="last update:" />
-        
     </LinearLayout>
 
     <LinearLayout
@@ -46,7 +45,6 @@
             android:layout_weight="2"
             android:gravity="right"
             android:text="10/10/10 12:12:12" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -94,6 +92,7 @@
                 android:layout_weight="1"
                 android:background="@color/Done"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
+
             <TextView
                 android:id="@+id/tCompleted"
                 android:layout_width="wrap_content"
@@ -109,8 +108,7 @@
                 android:layout_weight="1"
                 android:background="@color/Running"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-          
-            
+
             <TextView
                 android:id="@+id/tWaiting"
                 android:layout_width="wrap_content"
@@ -118,9 +116,7 @@
                 android:layout_weight="1"
                 android:background="@color/Waiting"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-            
 
-            
             <TextView
                 android:id="@+id/tStaging"
                 android:layout_width="wrap_content"
@@ -128,17 +124,15 @@
                 android:layout_weight="1"
                 android:background="@color/Staging"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-            
-            
+
             <TextView
                 android:id="@+id/tMatched"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/Matched"
-                android:textAppearance="?android:attr/textAppearanceSmall" /> 
-                
-            
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
             <TextView
                 android:id="@+id/tChecking"
                 android:layout_width="wrap_content"
@@ -146,7 +140,7 @@
                 android:layout_weight="1"
                 android:background="@color/Checking"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-            
+
             <TextView
                 android:id="@+id/tReceived"
                 android:layout_width="wrap_content"
@@ -154,7 +148,7 @@
                 android:layout_weight="1"
                 android:background="@color/Received"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-            
+
             <TextView
                 android:id="@+id/tStalled"
                 android:layout_width="wrap_content"
@@ -162,7 +156,7 @@
                 android:layout_weight="1"
                 android:background="@color/Stalled"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-              
+
             <TextView
                 android:id="@+id/tFailed"
                 android:layout_width="wrap_content"
@@ -170,18 +164,14 @@
                 android:layout_weight="1"
                 android:background="@color/Failed"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-            
-             <TextView
+
+            <TextView
                 android:id="@+id/tKilled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/Killed"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            
-                        
-            
 
             <TextView
                 android:layout_width="10px"
@@ -207,18 +197,16 @@
             android:layout_height="301dp" >
         </ListView>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Stats" />
-
     </LinearLayout>
 
     <LinearLayout
