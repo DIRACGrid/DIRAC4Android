@@ -37,6 +37,10 @@
             android:name="FilterSettingsActivity"
             android:label="FilterSettingsActivity" >
         </activity>
+           <activity
+            android:name="PrepareRequestTokenActivity"
+            android:label="PrepareRequestTokenActivity" >
+        </activity>
         
         <activity android:name="org.achartengine.GraphicalActivity" />
                

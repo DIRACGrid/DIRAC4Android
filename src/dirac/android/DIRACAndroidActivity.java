@@ -4,47 +4,43 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.format.DateFormat;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
+import oauth.signpost.OAuth;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.PointStyle;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
@@ -52,33 +48,36 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.gson.Gson;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
 public class DIRACAndroidActivity extends Activity{
 	private static final int MENU_NEW_GAME = 0;
-
+	private static final int PICK_CONTACT = 0;
+	final String TAG = getClass().getName();
+	private SharedPreferences prefs;
 
 	private static final int MENU_QUIT = 0;
-
-private static final int Stat_Menu1 = Menu.FIRST;
-private static final int Stat_Menu2 = Menu.FIRST+1;
-private static final int Stat_Menu3 = Menu.FIRST+2;
-private static final int Filt_Menu1 = Menu.FIRST+3;
-private static final int Filt_Menu2 = Menu.FIRST+4;
-private static final int Filt_Menu3 = Menu.FIRST+5;
-private static final int STATS_MENU = 0;
-private static final int FILTER_MENU = 1;
-public static final String PREFS_NAME = "MyPrefsFile";
-
+	
+	private static final int UpMenu1 = Menu.FIRST;
+	private static final int Stat_Menu1 = Menu.FIRST+1;
+	private static final int Stat_Menu3 = Menu.FIRST+2;
+	private static final int Filt_Menu1 = Menu.FIRST+3;
+	private static final int Filt_Menu2 = Menu.FIRST+4;
+	private static final int Filt_Menu3 = Menu.FIRST+5;
+	private static final int UPDATE_MENU = 0;
+	private static final int STATS_MENU = 1;
+	private static final int FILTER_MENU = 2;
+	public static final String PREFS_NAME = "MyPrefsFile";
 	Random r;
+	public static final String DIRAC_REQUEST_TOKEN_URL = "http://lhcb01.ecm.ub.es:9345/oauth/request_token";
+	public static final String DIRAC_ACCESS_TOKEN_URL  = "http://lhcb01.ecm.ub.es:9345/oauth/access_token";
+	public static final String DIRAC_AUTHORIZE_URL     = "http://lhcb01.ecm.ub.es:9345/oauth/authorize";
 
 
 	private String itemSelected;
@@ -87,6 +86,8 @@ public static final String PREFS_NAME = "MyPrefsFile";
 	ArrayAdapter<String> adapter2;
 
 
+	
+	
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 
@@ -107,24 +108,7 @@ public static final String PREFS_NAME = "MyPrefsFile";
 		return data;
 	}
 
-	public void runJSONParser(){
-		try{
-			Log.i("MY INFO", "Json Parser started..");
-			Gson gson = new Gson();
-			Reader r = new InputStreamReader(getJSONData("https://api.twitter.com/1/trends/1.json"));
-			Log.i("MY INFO", r.toString());
-			TwitterTrends[] objs = gson.fromJson(r, TwitterTrends[].class);
-			Log.i("MY INFO", ""+objs[0].getTrends().size());
-			for(TwitterTrend tr : objs[0].getTrends()){
-				Log.i("TRENDS", tr.getName() + " - " + tr.getUrl());
-			} 
-			for(location tr : objs[0].getLocations()){
-				Log.i("TRENDS", tr.getName() + " - " + tr.getWoeid());
-			}
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
+
 
 
 
@@ -165,8 +149,15 @@ public static final String PREFS_NAME = "MyPrefsFile";
 		database.close();	
 		datasource.close();
 		
+	
 		
+		 this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+   
+         performApiCall();
+		
+	
+		
 		
 		
 		String defValue = null;
@@ -202,7 +193,6 @@ public static final String PREFS_NAME = "MyPrefsFile";
 
 	public void loadDataOnScreen(){
 
-		runJSONParser();
 		////// Create a customized ArrayAdapter
 
 		final Status[] map = datasource.getLastUpdate(); 
@@ -397,12 +387,12 @@ public static final String PREFS_NAME = "MyPrefsFile";
 	public boolean onCreateOptionsMenu(Menu menu){
 
 
+		
+		menu.add(UPDATE_MENU,UpMenu1,0,"Update");
 		SubMenu fileMenu = menu.addSubMenu("Stats");
 		SubMenu editMenu = menu.addSubMenu("Filters");
-		
 		fileMenu.add(STATS_MENU,Stat_Menu1,0,"Stats");
-		fileMenu.add(STATS_MENU,Stat_Menu2,1,"Add Dummy data");
-		fileMenu.add(STATS_MENU,Stat_Menu3,2,"Delete Stats");
+		fileMenu.add(STATS_MENU,Stat_Menu3,1,"Delete Stats");
 		editMenu.add(FILTER_MENU,Filt_Menu1,0,"Add Filter");
 		editMenu.add(FILTER_MENU,Filt_Menu2,1,"Apply Filter");
 		editMenu.add(FILTER_MENU,Filt_Menu3,3,"Remove Filter");
@@ -414,23 +404,20 @@ public static final String PREFS_NAME = "MyPrefsFile";
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
-	    case Stat_Menu1:
-	    	datasource.open();	
-			startActivity(execute(context, datasource));
-			datasource.close();
-	        return true;
-	    case Stat_Menu2:
+	    case UpMenu1:
 			database = dbHelper.getWritableDatabase();
 			datasource.open();	
-
-     		int nextInt2 = new Random().nextInt(3000);
-
+			Jobs jobs = 	performApiCall();
 			dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-			InputStream inputStream = getResources().openRawResource(R.raw.jobs2);
-			datasource.parse(inputStream,nextInt2);		
+			datasource.parse(jobs);		
 			datasource.creatTableOfSatus();
 			loadDataOnScreen();
 			database.close();		
+			datasource.close();
+	        return true;
+	    case Stat_Menu1:
+	    	datasource.open();	
+			startActivity(execute(context, datasource));
 			datasource.close();
 	        return true;
 	    case Stat_Menu3:
@@ -456,8 +443,97 @@ public static final String PREFS_NAME = "MyPrefsFile";
 	    return false;
 	}
 
+	
+	
+
+	private Jobs performApiCall() {
+//		TextView textView = (TextView) findViewById(R.id.response_code);
+
+		Jobs objs = null;
+		String jsonOutput = "";
+        try {
+        	jsonOutput = doGet(Constants.API_REQUEST,getConsumer(this.prefs));
+        //	JSONObject jsonResponse = new JSONObject(jsonOutput);
+ 
+			Gson gson = new Gson();
+			objs = gson.fromJson(jsonOutput, Jobs.class);
+		
+       // 	JSONObject m = (JSONObject)jsonResponse.get("feed");
+        //	JSONArray entries =(JSONArray)m.getJSONArray("entry");
+       // 	String contacts="";
+       // 	for (int i=0 ; i<entries.length() ; i++) {
+      //  		JSONObject entry = entries.getJSONObject(i);
+      //  		JSONObject title = entry.getJSONObject("title");
+     //   		if (title.getString("$t")!=null && title.getString("$t").length()>0) {
+      //  			contacts+=title.getString("$t") + "\n";
+    //    		}
+      //  	}
+      //  	Log.i(TAG,jsonOutput);
+     //   	textView.setText(contacts);
+		} catch (Exception e) {
+			Log.e(TAG, "Error executing request",e);
+		//	textView.setText("Error retrieving contacts : " + jsonOutput);
+		}
+		return objs;
+	}
+
+	public void onActivityResult(int reqCode, int resultCode, Intent data) {
+		  super.onActivityResult(reqCode, resultCode, data);
+
+		  switch (reqCode) {
+		    case (PICK_CONTACT) :
+		      if (resultCode == Activity.RESULT_OK) {
+		        Uri contactData = data.getData();
+		        Cursor c =  managedQuery(contactData, null, null, null, null);
+		        if (c.moveToFirst()) {
+	//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
+		 //         Log.i(TAG,"Response : " + "Selected contact : " + name);
+		        }
+		      }
+		      break;
+		  }
+		}	
+
+    private void clearCredentials() {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		final Editor edit = prefs.edit();
+		edit.remove(OAuth.OAUTH_TOKEN);
+		edit.remove(OAuth.OAUTH_TOKEN_SECRET);
+		edit.commit();
+	}
 
 
+	private OAuthConsumer getConsumer(SharedPreferences prefs) {
+		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+		
+		token = Constants.ACCESS_TOKEN;
+		secret = Constants.ACCESS_TOKEN_SECRET;
+		Log.d("getConsumer",token);
+		Log.d("getConsumer",secret);
+		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+		consumer.setTokenWithSecret(token, secret);
+		Log.d("getConsumer",consumer.toString());
+		return consumer;
+	}
+
+	private String doGet(String url,OAuthConsumer consumer) throws Exception {
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+    	HttpGet request = new HttpGet(url);
+    	Log.i(TAG,"Requesting URL : " + url);
+    	consumer.sign(request);
+    	HttpResponse response = httpclient.execute(request);
+    	Log.i(TAG,"Statusline : " + response.getStatusLine());
+    	InputStream data = response.getEntity().getContent();
+    	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
+        String responeLine;
+        StringBuilder responseBuilder = new StringBuilder();
+        while ((responeLine = bufferedReader.readLine()) != null) {
+        	responseBuilder.append(responeLine);
+        }
+        Log.i(TAG,"Response : " + responseBuilder.toString());
+        return responseBuilder.toString();
+	}	
 
 
 

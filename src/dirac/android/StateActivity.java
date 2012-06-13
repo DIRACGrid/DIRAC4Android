@@ -87,7 +87,7 @@ lled when the activity is first created. */
 				Intent myIntent = new Intent(view.getContext(), JobActivity.class);			
 
 
-				myIntent.putExtra("myJob", myjobid);
+				myIntent.putExtra("jid", myjobid.getJid());
 				startActivity(myIntent);				
 
 			}
@@ -141,7 +141,11 @@ lled when the activity is first created. */
 			}
 		});		
 
+
+	datasource.close();
+	
 	}
+
 
 
 

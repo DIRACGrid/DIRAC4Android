@@ -18,6 +18,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class JobsDataSource {
 	// Database fields
@@ -48,15 +49,15 @@ public class JobsDataSource {
 
 	public void createJob (Job myjob) {
 		ContentValues values = new ContentValues();
-		values.put(MySQLiteHelper.COLUMN_JOB_ID, myjob.id);
+		values.put(MySQLiteHelper.COLUMN_JOB_ID, Integer.getInteger(myjob.getJid()));
 
-		values.put(MySQLiteHelper.COLUMN_JOB_NAME, myjob.name);
-		values.put(MySQLiteHelper.COLUMN_JOB_STATE, myjob.state);
-		values.put(MySQLiteHelper.COLUMN_JOB_SITE, myjob.site);
-		values.put(MySQLiteHelper.COLUMN_JOB_SUB_TIME, myjob.time);
-		values.put(MySQLiteHelper.COLUMN_JOB_HB_TIME, myjob.time);
+		values.put(MySQLiteHelper.COLUMN_JOB_NAME, myjob.getName());
+		values.put(MySQLiteHelper.COLUMN_JOB_STATE, myjob.getStatus());
+		values.put(MySQLiteHelper.COLUMN_JOB_SITE, myjob.getSite());
+		values.put(MySQLiteHelper.COLUMN_JOB_SUB_TIME, myjob.getCpuTime());
+		values.put(MySQLiteHelper.COLUMN_JOB_HB_TIME, myjob.getCpuTime());
 
-		Cursor c = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + myjob.id.toString()+ "'",new String [] {});
+		Cursor c = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + myjob.getJid()+ "'",new String [] {});
 		if(!c.moveToFirst())
 		{				database.insert(MySQLiteHelper.DIRAC_JOBS, null,values);
 		}
@@ -69,51 +70,7 @@ public class JobsDataSource {
 
 
 
-	public void parse(InputStream inStream, int tot) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
-
-		try {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] RowData = line.split(",");
-
-				ContentValues values = new ContentValues();
-
-
-				values.put(MySQLiteHelper.COLUMN_JOB_ID, Integer.parseInt(RowData[0]));
-				values.put(MySQLiteHelper.COLUMN_JOB_STATE, RowData[1]);
-				values.put(MySQLiteHelper.COLUMN_JOB_NAME, RowData[2]);
-				values.put(MySQLiteHelper.COLUMN_JOB_SITE,RowData[3]);
-				values.put(MySQLiteHelper.COLUMN_JOB_SUB_TIME, RowData[4]);
-				values.put(MySQLiteHelper.COLUMN_JOB_HB_TIME, RowData[4]);
-
-				//	Cursor c = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + RowData[0]+ "'",new String [] {});
-				//	 if(!c.moveToFirst())
-				database.insert(MySQLiteHelper.DIRAC_JOBS, null,values);
-
-
-
-				// do something with "data" and "value"
-			}
-		}
-		catch (IOException ex) {
-			// handle exception
-		}
-		finally {
-			try {
-				inStream.close();
-			}
-			catch (IOException e) {
-				// handle exception
-			}
-		}
-
-
-
-		String[] sites = new String[] { "CERN.CH", "RAL.UK", "PIC.ES"};	
-		String[] times = new String[] { "10:12:34", "10:15:34", "10:16:34", "10:11:34" };	
-		String[] names = new String[] { "bjets", "B2DX_beta", "Zmumu"};
-
+	public void parse(Jobs jobs) {
 
 		try{
 
@@ -121,20 +78,15 @@ public class JobsDataSource {
 			DatabaseUtils.InsertHelper test = new DatabaseUtils.InsertHelper(database, MySQLiteHelper.DIRAC_JOBS);	
 
 
-			String[] states = Status.PossibleStatus;
 
-			for(int i = 1; i<tot;i++){				
+			for(Job i: jobs.getJobs()){				
 				ContentValues values = new ContentValues();
-				int nextInt1 = new Random().nextInt(states.length);
-				int nextInt2 = new Random().nextInt(3);
-				int nextInt3 = new Random().nextInt(3);
-				int nextInt4 = new Random().nextInt(4);
-				values.put(MySQLiteHelper.COLUMN_JOB_ID, i);
-				values.put(MySQLiteHelper.COLUMN_JOB_STATE, states[nextInt1]);
-				values.put(MySQLiteHelper.COLUMN_JOB_NAME, names[nextInt2]);
-				values.put(MySQLiteHelper.COLUMN_JOB_SITE,sites[nextInt3]);
-				values.put(MySQLiteHelper.COLUMN_JOB_SUB_TIME, times[nextInt4]);
-				values.put(MySQLiteHelper.COLUMN_JOB_HB_TIME, times[nextInt4]);
+				values.put(MySQLiteHelper.COLUMN_JOB_ID, i.getJid());
+				values.put(MySQLiteHelper.COLUMN_JOB_STATE, i.getStatus());
+				values.put(MySQLiteHelper.COLUMN_JOB_NAME, i.getName());
+				values.put(MySQLiteHelper.COLUMN_JOB_SITE,i.getSite());
+				values.put(MySQLiteHelper.COLUMN_JOB_SUB_TIME, i.getCpuTime());
+				values.put(MySQLiteHelper.COLUMN_JOB_HB_TIME, i.getCpuTime());
 				test.insert(values);
 			}			  
 			database.setTransactionSuccessful();
@@ -166,7 +118,23 @@ public class JobsDataSource {
 		cursor.close();
 		return jobids;
 	}
+	
+	
+	public Job getJobInfo(String jid) {
 
+
+		Log.d("JA",jid) ;
+
+		Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + jid+ "'",new String [] {});
+		Job job = null;
+		cursor.moveToFirst();
+		job = cursorToComment(cursor);
+		cursor.close();
+		return job;
+	}	
+	
+	
+	
 	public List<Job> getAllJobIDsOfSatus(String status) {
 		List<Job> jobids = new ArrayList<Job>();
 
@@ -286,11 +254,18 @@ public class JobsDataSource {
 
 	private Job cursorToComment(Cursor cursor) {
 		Job job = new Job();
-		job.id = cursor.getInt(0);
-		job.name = cursor.getString(1);
-		job.state = cursor.getString(2);
-		job.time = cursor.getString(3);
-		job.site = cursor.getString(5);
+		//+ COLUMN_JOB_ID + " INTEGER PRIMARY KEY,"
+	//	+ COLUMN_JOB_NAME + " TEXT,"
+	//	+ COLUMN_JOB_STATE + " TEXT,"
+	//	+ COLUMN_JOB_SUB_TIME + " TEXT,"
+	//	+ COLUMN_JOB_HB_TIME + " TEXT,"
+	//	+ COLUMN_JOB_SITE + " TEXT " + ");";
+		job.setJid(cursor.getString(0));
+		job.setName(cursor.getString(1));
+		job.setStatus(cursor.getString(2));
+		job.setCpuTime(cursor.getString(3));
+		job.setCpuTime(cursor.getString(4));
+		job.setSite(cursor.getString(5));
 		return job;
 	}
 }

@@ -1,83 +1,135 @@
 package dirac.android;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.List;
 
-public class Job  implements Parcelable  {
-	public Integer id;
-	public String state;
-	public String name;
-	public String site;
-	public String time;
-	private int mData;
 
-	public Job()
-	{
-		// TODO Auto-generated constructor stub
+public class Job  {
+
+
+	private String status;
+	private String ownerGroup;
+	private String jid;
+	private String appStatus;
+	private String 	minorStatus	;
+	private String 	site;
+	private String 	cpuTime	;
+	//private List<time> times;
+	private String priority;
+//	private List<flag> flags;
+	private String jobGroup;
+	private String reschedules;
+	private String owner;
+	private String ownerDN;
+	private String setup;
+	private String name;
+
+
+	public String getStatus() {
+		return status;
 	}
-
-	public Job(Integer id, String state, String name, String site, String time)
-	{
-		this.id = id;
-		this.state = state;
-		this.name = name;
-		this.time = time;
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	public String getOwnerGroup() {
+		return ownerGroup;
+	}
+	public void setOwnerGroup(String ownerGroup) {
+		this.ownerGroup = ownerGroup;
+	}
+	
+	public String getJid() {
+		return jid;
+	}
+	public void setJid(String jid) {
+		this.jid = jid;
+	}
+	
+	public String getAppStatus() {
+		return appStatus;
+	}
+	public void setAppStatus(String appStatus) {
+		this.appStatus = appStatus;
+	}
+	
+	public String getMinorStatus() {
+		return minorStatus;
+	}
+	public void setMinorStatus(String minorStatus) {
+		this.minorStatus = minorStatus;
+	}
+	
+	public String getSite() {
+		return site;
+	}
+	public void setSite(String site) {
 		this.site = site;
 	}
-
-
-	public String JobState(Integer id)
-	{
-		return this.state;
+	
+	public String getCpuTime() {
+		return cpuTime;
 	}
-
-
-	@Override
-	public String toString()
-	{
-		return this.id.toString();
+	public void setCpuTime(String cpuTime) {
+		this.cpuTime = cpuTime;
 	}
-
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
+	
+//	public List<time> getTimes() {
+//		return times;
+//	}
+//	public void setTimes(List<time> times) {
+//		this.times = times;
+//	}
+	
+	public String getPriority() {
+		return priority;
 	}
-
-	public void writeToParcel(Parcel arg0, int arg1) {
-		arg0.writeInt(id);
-		arg0.writeString(state);
-		arg0.writeString(name);
-		arg0.writeString(site);
-		arg0.writeString(time);
-
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
+	
+//	public List<flag> getFlags() {
+//		return flags;
+//	}
+//	public void setFlags(List<flag> flags) {
+//		this.flags = flags;
+//	}
 
-	// this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
-	public static final Parcelable.Creator<Job> CREATOR = new Parcelable.Creator<Job>() {
-		public Job createFromParcel(Parcel in) {
-			return new Job(in);
-		}
-
-		public Job[] newArray(int size) {
-			return new Job[size];
-		}
-	};
-
-	// example constructor that takes a Parcel and gives you an object populated with it's values
-	private Job(Parcel in) {
-
-
-		id=in.readInt();
-		state=in.readString();
-		name=in.readString();
-		site=in.readString();
-		time=in.readString();
-
+	public String getJobGroup() {
+		return jobGroup; 
 	}
-
-
-
-
-
-
+	public void setJobGroup(String jobGroup) {
+		this.jobGroup = jobGroup;
+	}	
+	public String getReschedules() {
+		return reschedules;
+	}
+	public void setReschedules(String reschedules) {
+		this.reschedules = reschedules;
+	}	
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}	
+	public String getOwnerDN() {
+		return ownerDN;
+	}
+	public void setOwnerDN(String ownerDN) {
+		this.ownerDN = ownerDN;
+	}	
+	public String getSetup() {
+		return setup;
+	}
+	public void setSetup(String setup) {
+		this.setup = setup;
+	}	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}		
+	
+	
 }

@@ -60,14 +60,14 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 
 		Status s = new Status();
 		Job job = getItem(position);
-		int myposition = s.get(job.state);
+		int myposition = s.get(job.getStatus());
 		jobIDID = (TextView) row.findViewById(R.id.job_id);
 		jobIDName = (TextView) row.findViewById(R.id.job_name);
 		jobIDState = (TextView) row.findViewById(R.id.job_state);
 		jobIDColor = (TextView) row.findViewById(R.id.job_color);
-		jobIDID.setText(job.id.toString());
-		jobIDName.setText(job.name);
-		jobIDState.setText(job.state);
+		jobIDID.setText(job.getJid());
+		jobIDName.setText(job.getName());
+		jobIDState.setText(job.getStatus());
 		jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
 		//  jobIDColor.setBackgroundResource(R.color.completed);
 		//jobIDColor.setBackgroundResource(R.color.completed);

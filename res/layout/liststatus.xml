@@ -40,7 +40,7 @@
 		android:paddingLeft="10dip"
 		android:layout_gravity="left"
 		android:layout_height="wrap_content"
-		android:layout_width="200px"		
+		android:layout_width="fill_parent"		
 	    android:textAppearance="?android:attr/textAppearanceLarge"  />
 	
 
