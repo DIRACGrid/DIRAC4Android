@@ -33,6 +33,10 @@
             android:label="StateActivity" >
         </activity>
         
+              <activity
+            android:name="FilterSettingsActivity"
+            android:label="FilterSettingsActivity" >
+        </activity>
         
         <activity android:name="org.achartengine.GraphicalActivity" />
                

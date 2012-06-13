@@ -4,9 +4,9 @@
 	android:orientation="horizontal"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-    android:id="@+id/llRow"
-    android:paddingTop="4px"
-    android:paddingBottom="4px" >
+    android:id="@+id/jobRow"
+    android:paddingTop="2px"
+    android:paddingBottom="2px" >
 	
     
     	<TextView

@@ -53,12 +53,12 @@ lled when the activity is first created. */
 			state = b.getString("myState");
 			myjobids = datasource.getAllJobIDsOfSatus(state);
 			adapter = new JobArrayAdapter(
-					getApplicationContext(), R.layout.listitem, myjobids);	
+					getApplicationContext(), R.layout.listjob, myjobids);	
 		}else{		
 			myjobids = datasource.getAllJobIDs();
 
 			adapter = new JobArrayAdapter(
-					getApplicationContext(), R.layout.listitem, myjobids);
+					getApplicationContext(), R.layout.listjob, myjobids);
 
 		}
 		//T1.setBackgroundResource(R.color.completed);
