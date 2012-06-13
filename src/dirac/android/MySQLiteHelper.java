@@ -72,7 +72,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 		db.delete(TABLE, null,null);
 
 	}
-
+	public void deleteStat(SQLiteDatabase db, String TABLE) {
+		//test if exist !
+		db.execSQL("DELETE FROM "+ TABLE +" WHERE _ID NOT IN (SELECT _ID FROM ( SELECT _ID FROM "+ TABLE +" ORDER BY _ID DESC  LIMIT 1))");
+	}
+	
+	
+	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(MySQLiteHelper.class.getName(),

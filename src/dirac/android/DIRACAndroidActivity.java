@@ -3,11 +3,15 @@ package dirac.android;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -59,7 +63,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
 public class DIRACAndroidActivity extends Activity{
-	/** Called when the activity is first created. */
+	private static final int MENU_NEW_GAME = 0;
+
+
+	private static final int MENU_QUIT = 0;
+
+private static final int Stat_Menu1 = Menu.FIRST;
+private static final int Stat_Menu2 = Menu.FIRST+1;
+private static final int Stat_Menu3 = Menu.FIRST+2;
+private static final int Filt_Menu1 = Menu.FIRST+3;
+private static final int Filt_Menu2 = Menu.FIRST+4;
+private static final int Filt_Menu3 = Menu.FIRST+5;
+private static final int STATS_MENU = 0;
+private static final int FILTER_MENU = 1;
+public static final String PREFS_NAME = "MyPrefsFile";
 
 	Random r;
 
@@ -129,6 +146,7 @@ public class DIRACAndroidActivity extends Activity{
 	private JobsDataSource datasource;
 
 	/**when the activity is first created. */
+	@SuppressWarnings({ "null", "unused" })
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -144,45 +162,38 @@ public class DIRACAndroidActivity extends Activity{
 		loadDataOnScreen();
 
 
-		Button NewB = (Button)findViewById(R.id.button1);
-
-		NewB.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-
-
-				database = dbHelper.getWritableDatabase();
-				datasource.open();	
-
-				EditText NumB = (EditText)findViewById(R.id.numofjob);
-				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-				InputStream inputStream = getResources().openRawResource(R.raw.jobs2);
-				datasource.parse(inputStream,Integer.parseInt(NumB.getText().toString()));		
-				datasource.creatTableOfSatus();
-				loadDataOnScreen();
-				database.close();		
-				datasource.close();
-
-
-			}
-		});
-		Button Stats = (Button)findViewById(R.id.button2);
-
-		Stats.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-
-				datasource.open();	
-				startActivity(execute(context, datasource));
-				datasource.close();
-
-			}
-		});
-
-
-
 		database.close();	
 		datasource.close();
+		
+		
 
+		
+		
+		String defValue = null;
+		String test = CacheHelper.readString(context, CacheHelper.JOBNAME, defValue);
+		if(test == null) {
+			CacheHelper.writeString(this, CacheHelper.JOBNAME,"");		
+			CacheHelper.writeBoolean(this, CacheHelper.USEIT,true);		
+			CacheHelper.writeString(this, CacheHelper.TIME,"");		
+			CacheHelper.writeString(this, CacheHelper.FTIME,"");		
+			CacheHelper.writeString(this, CacheHelper.APPNAME,"");		
+			CacheHelper.writeString(this, CacheHelper.SITE,"");	
+			Log.d("main", "yeah");
+		}else{
+			
+			String defValue1 = "";
 
+			Log.d("main", CacheHelper.readString(this, CacheHelper.JOBNAME,defValue1));
+			Log.d("main", CacheHelper.readString(this, CacheHelper.SITE,defValue1));
+			Log.d("main", CacheHelper.readString(this, CacheHelper.TIME,defValue1));
+			Log.d("main", CacheHelper.readString(this, CacheHelper.APPNAME,defValue1));
+
+			CacheHelper.writeString(this, CacheHelper.JOBNAME,"test");	
+			CacheHelper.writeString(this, CacheHelper.SITE,"LCG.CERN.CH");	
+			CacheHelper.writeString(this, CacheHelper.TIME,"test");	
+			CacheHelper.writeString(this, CacheHelper.APPNAME,"DaVinci");	
+			
+		}
 	}
 
 
@@ -198,7 +209,7 @@ public class DIRACAndroidActivity extends Activity{
 		if(map[0]!=null){
 
 			StateInfoArrayAdapter adapter = new StateInfoArrayAdapter(
-					this.getApplicationContext(), R.layout.listitem, map);
+					this.getApplicationContext(), R.layout.liststatus, map);
 
 			// Get reference to ListView holder
 			ListView lv = (ListView) this.findViewById(R.id.states);
@@ -381,11 +392,69 @@ public class DIRACAndroidActivity extends Activity{
 		return intent;
 	}
 
+	
+	
+	public boolean onCreateOptionsMenu(Menu menu){
 
 
+		SubMenu fileMenu = menu.addSubMenu("Stats");
+		SubMenu editMenu = menu.addSubMenu("Filters");
+		
+		fileMenu.add(STATS_MENU,Stat_Menu1,0,"Stats");
+		fileMenu.add(STATS_MENU,Stat_Menu2,1,"Add Dummy data");
+		fileMenu.add(STATS_MENU,Stat_Menu3,2,"Delete Stats");
+		editMenu.add(FILTER_MENU,Filt_Menu1,0,"Add Filter");
+		editMenu.add(FILTER_MENU,Filt_Menu2,1,"Apply Filter");
+		editMenu.add(FILTER_MENU,Filt_Menu3,3,"Remove Filter");
 
 
+		return true;
 
+		}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	    case Stat_Menu1:
+	    	datasource.open();	
+			startActivity(execute(context, datasource));
+			datasource.close();
+	        return true;
+	    case Stat_Menu2:
+			database = dbHelper.getWritableDatabase();
+			datasource.open();	
+
+     		int nextInt2 = new Random().nextInt(3000);
+
+			dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
+			InputStream inputStream = getResources().openRawResource(R.raw.jobs2);
+			datasource.parse(inputStream,nextInt2);		
+			datasource.creatTableOfSatus();
+			loadDataOnScreen();
+			database.close();		
+			datasource.close();
+	        return true;
+	    case Stat_Menu3:
+			database = dbHelper.getWritableDatabase();
+			datasource.open();	
+			dbHelper.deleteStat(database, dbHelper.DIRAC_STATS);
+			database.close();		
+			datasource.close();
+	        return true;   
+	    case Filt_Menu1:
+	    	Toast.makeText(context, "add filter", Toast.LENGTH_SHORT).show();
+	    	Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
+			startActivity(myIntent);
+	        return true;    
+	    case Filt_Menu2:
+	    	Toast.makeText(context, "filter applied", Toast.LENGTH_SHORT).show();
+	        return true;     
+	    case Filt_Menu3:
+	    	Toast.makeText(context, "filter removed", Toast.LENGTH_SHORT).show();
+	        return true;                   
+	        
+	    }
+	    return false;
+	}
 
 
 
