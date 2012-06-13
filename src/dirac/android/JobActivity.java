@@ -9,10 +9,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class JobActivity extends Activity {
-	
+
 	ArrayAdapter<String> adapter;
 
-	
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.jobinfo);
@@ -30,10 +30,10 @@ public class JobActivity extends Activity {
 		job_info_state.setText(myjob.state);
 		job_info_time.setText(myjob.time);
 		job_info_name.setText(myjob.name);
-		
+
 		job_info_color.setBackgroundColor(getResources().getColor(Status.ColorStatus[myposition]));
-		
-		
-		
+
+
+
 	}
 }

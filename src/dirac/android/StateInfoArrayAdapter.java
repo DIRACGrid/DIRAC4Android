@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 	private static final String tag = "StateInfoArrayAdapter";
-//	private static final String ASSETS_DIR = "images/";
+	//	private static final String ASSETS_DIR = "images/";
 	private Context context;
 	private Status[] map;
 	private TextView jobIDName;
@@ -50,7 +50,7 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 	public int getCount() {
 
 		return this.map.length;
-		
+
 
 	}
 
@@ -70,18 +70,18 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 
 		Status state = getItem(position);
 
-		
-        jobIDID = (TextView) row.findViewById(R.id.job_id);
-        jobIDName = (TextView) row.findViewById(R.id.job_name);
+
+		jobIDID = (TextView) row.findViewById(R.id.job_id);
+		jobIDName = (TextView) row.findViewById(R.id.job_name);
 		jobIDState = (TextView) row.findViewById(R.id.job_state);
 		jobIDColor = (TextView) row.findViewById(R.id.job_color);
 		jobIDID.setText(state.name());
 		jobIDName.setText(state.number());
 		jobIDState.setText("");
-	    
-	    jobIDColor.setBackgroundColor(context.getResources().getColor(state.ColorStatus[state.get(state.name())]));
 
-		
+		jobIDColor.setBackgroundColor(context.getResources().getColor(state.ColorStatus[state.get(state.name())]));
+
+
 		return row;
 	}
 

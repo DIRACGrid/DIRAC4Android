@@ -23,14 +23,14 @@ import android.widget.Toast;
 
 public class JobArrayAdapter extends ArrayAdapter<Job> {
 	private static final String tag = "JobArrayAdapter";
-//	private static final String ASSETS_DIR = "images/";
+	//	private static final String ASSETS_DIR = "images/";
 	private Context context;
 	private TextView jobIDName;
 	private TextView jobIDID;
 	private TextView jobIDColor;
 	private TextView jobIDState;
 	private List<Job> JobIDs = new ArrayList<Job>();
-    private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
+	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 
 	public JobArrayAdapter(Context context, int textViewResourceId,
 			List<Job> objects) {
@@ -48,8 +48,8 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 	}
 
 
-	
-	
+
+
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		if (row == null) {
@@ -61,19 +61,19 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 		Status s = new Status();
 		Job job = getItem(position);
 		int myposition = s.get(job.state);
-        jobIDID = (TextView) row.findViewById(R.id.job_id);
-        jobIDName = (TextView) row.findViewById(R.id.job_name);
+		jobIDID = (TextView) row.findViewById(R.id.job_id);
+		jobIDName = (TextView) row.findViewById(R.id.job_name);
 		jobIDState = (TextView) row.findViewById(R.id.job_state);
 		jobIDColor = (TextView) row.findViewById(R.id.job_color);
 		jobIDID.setText(job.id.toString());
 		jobIDName.setText(job.name);
 		jobIDState.setText(job.state);
-	    jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
-	  //  jobIDColor.setBackgroundResource(R.color.completed);
-	    //jobIDColor.setBackgroundResource(R.color.completed);
-	
-	    jobIDColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[myposition]));
-	
+		jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
+		//  jobIDColor.setBackgroundResource(R.color.completed);
+		//jobIDColor.setBackgroundResource(R.color.completed);
+
+		jobIDColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[myposition]));
+
 		return row;
 	}
 

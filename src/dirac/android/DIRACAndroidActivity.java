@@ -68,63 +68,63 @@ public class DIRACAndroidActivity extends Activity{
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
-	
+
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 
 	public InputStream getJSONData(String url){
 
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        URI uri;
-        InputStream data = null;
-        try {
-            uri = new URI(url);
-            HttpGet method = new HttpGet(uri);
-            HttpResponse response = httpClient.execute(method);
-            data = response.getEntity().getContent();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return data;
-    }
-	
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		URI uri;
+		InputStream data = null;
+		try {
+			uri = new URI(url);
+			HttpGet method = new HttpGet(uri);
+			HttpResponse response = httpClient.execute(method);
+			data = response.getEntity().getContent();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return data;
+	}
+
 	public void runJSONParser(){
-        try{
-        Log.i("MY INFO", "Json Parser started..");
-        Gson gson = new Gson();
-        Reader r = new InputStreamReader(getJSONData("https://api.twitter.com/1/trends/1.json"));
-        Log.i("MY INFO", r.toString());
-        TwitterTrends[] objs = gson.fromJson(r, TwitterTrends[].class);
-        Log.i("MY INFO", ""+objs[0].getTrends().size());
-        for(TwitterTrend tr : objs[0].getTrends()){
-            Log.i("TRENDS", tr.getName() + " - " + tr.getUrl());
-        } 
-        for(location tr : objs[0].getLocations()){
-            Log.i("TRENDS", tr.getName() + " - " + tr.getWoeid());
-        }
-        }catch(Exception ex){
-            ex.printStackTrace();
-        }
-    }
+		try{
+			Log.i("MY INFO", "Json Parser started..");
+			Gson gson = new Gson();
+			Reader r = new InputStreamReader(getJSONData("https://api.twitter.com/1/trends/1.json"));
+			Log.i("MY INFO", r.toString());
+			TwitterTrends[] objs = gson.fromJson(r, TwitterTrends[].class);
+			Log.i("MY INFO", ""+objs[0].getTrends().size());
+			for(TwitterTrend tr : objs[0].getTrends()){
+				Log.i("TRENDS", tr.getName() + " - " + tr.getUrl());
+			} 
+			for(location tr : objs[0].getLocations()){
+				Log.i("TRENDS", tr.getName() + " - " + tr.getWoeid());
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
 
-	
-	
 
-	
-	
-	
-	
-	
-	
 
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
 	private List<Job> countryList= new  ArrayList<Job>();
-   
+
 	private OnItemLongClickListener listener;
 	private JobsDataSource datasource;
 
@@ -139,8 +139,8 @@ public class DIRACAndroidActivity extends Activity{
 		database = dbHelper.getWritableDatabase(); 
 		setContentView(R.layout.main);
 
-		
-		
+
+
 		loadDataOnScreen();
 
 
@@ -149,9 +149,9 @@ public class DIRACAndroidActivity extends Activity{
 		NewB.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 
- 
+
 				database = dbHelper.getWritableDatabase();
-                datasource.open();	
+				datasource.open();	
 
 				EditText NumB = (EditText)findViewById(R.id.numofjob);
 				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
@@ -159,7 +159,6 @@ public class DIRACAndroidActivity extends Activity{
 				datasource.parse(inputStream,Integer.parseInt(NumB.getText().toString()));		
 				datasource.creatTableOfSatus();
 				loadDataOnScreen();
-
 				database.close();		
 				datasource.close();
 
@@ -171,160 +170,161 @@ public class DIRACAndroidActivity extends Activity{
 		Stats.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 
-                datasource.open();	
+				datasource.open();	
 				startActivity(execute(context, datasource));
 				datasource.close();
 
 			}
 		});
 
-		
 
-database.close();	
-datasource.close();
-		
+
+		database.close();	
+		datasource.close();
+
 
 	}
 
 
-	
-	
-	
+
+
+
 	public void loadDataOnScreen(){
 
 		runJSONParser();
 		////// Create a customized ArrayAdapter
-		
+
 		final Status[] map = datasource.getLastUpdate(); 
 		if(map[0]!=null){
-			
-		StateInfoArrayAdapter adapter = new StateInfoArrayAdapter(
-				this.getApplicationContext(), R.layout.listitem, map);
 
-		// Get reference to ListView holder
-		ListView lv = (ListView) this.findViewById(R.id.states);
+			StateInfoArrayAdapter adapter = new StateInfoArrayAdapter(
+					this.getApplicationContext(), R.layout.listitem, map);
 
-		// Set the ListView adapter
-		lv.setAdapter(adapter);
-		
-		
-		
-		String[] status = Status.PossibleStatus;
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// When clicked, show a toast with the TextView text
-				Intent myIntent = new Intent(view.getContext(), StateActivity.class);				 
-				myIntent.putExtra("myState", map[position].name());
-				startActivity(myIntent);
-			}
-		});
+			// Get reference to ListView holder
+			ListView lv = (ListView) this.findViewById(R.id.states);
 
-		lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+			// Set the ListView adapter
+			lv.setAdapter(adapter);
 
-			public boolean onItemLongClick(AdapterView<?> parent, View arg1,
-					final int position2, long arg3) {
 
-				itemSelected=parent.getItemAtPosition(position2).toString();
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle("Select an Action for jobID "+itemSelected);
-				builder.setItems(jodActionFailed, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int item) {
-						AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
-						builder2.setMessage("Do you really want to "+jodActionFailed[item]+" jobID: "+itemSelected+" ?");
-						builder2.setCancelable(true);
-						//	JobID myjobid = jobList.get(position2);
 
-						if(item == 0){		
-							builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
-								public void onClick(DialogInterface dialog, int which) {	
-									//		adapter.remove(itemSelected);
-									//		adapter.notifyDataSetChanged();
+			String[] status = Status.PossibleStatus;
+			lv.setOnItemClickListener(new OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// When clicked, show a toast with the TextView text
+					Intent myIntent = new Intent(view.getContext(), StateActivity.class);				 
+					myIntent.putExtra("myState", ((Status) parent.getItemAtPosition(position)).name());
+					startActivity(myIntent);
+				}
+			});
 
-									Toast.makeText(getApplicationContext(), "hola", Toast.LENGTH_SHORT).show();
-								}
-							});
-							builder2.setNegativeButton("Nooo", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.cancel();
-								}
-							});
-							builder2.show();
+			lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				public boolean onItemLongClick(AdapterView<?> parent, View arg1,
+						final int position2, long arg3) {
+
+					itemSelected=((Status) parent.getItemAtPosition(position2)).name();
+					//parent.getItemAtPosition(position2).toString();
+					AlertDialog.Builder builder = new AlertDialog.Builder(context);
+					builder.setTitle("Select an Action for the batch of job with the state: "+itemSelected);
+					builder.setItems(jodActionFailed, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
+							builder2.setMessage("Do you really want to "+jodActionFailed[item]+" jobID: "+itemSelected+" ?");
+							builder2.setCancelable(true);
+							//	JobID myjobid = jobList.get(position2);
+
+							if(item == 0){		
+								builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
+									public void onClick(DialogInterface dialog, int which) {	
+										//		adapter.remove(itemSelected);
+										//		adapter.notifyDataSetChanged();
+
+										Toast.makeText(getApplicationContext(), "hola", Toast.LENGTH_SHORT).show();
+									}
+								});
+								builder2.setNegativeButton("Nooo", new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.cancel();
+									}
+								});
+								builder2.show();
+							}
+							else if(item == 1){ Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();		}		
+
+							else if(item ==2){Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();	}			
+
 						}
-						else if(item == 1){ Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();		}		
 
-						else if(item ==2){Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();	}			
+					});
 
-					}
-
-				});
-
-				builder.show();	
+					builder.show();	
 
 
 
-				return false;
+					return false;
+				}
+			});		
+
+
+
+
+
+			int[] TextPos = {R.id.tChecking,R.id.tCompleted,R.id.tDone,R.id.tFailed,R.id.tKilled,R.id.tMatched,R.id.tReceived,R.id.tRunning,R.id.tStaging,R.id.tStalled,R.id.tWaiting};
+			int All = 0;
+
+			for(int i = 0; i<TextPos.length; i++){
+				float F = 0;
+				TextView T1 = (TextView)findViewById(TextPos[i]);
+				T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
 			}
-		});		
 
-		
-		
-		
-		
-	    int[] TextPos = {R.id.tChecking,R.id.tCompleted,R.id.tDone,R.id.tFailed,R.id.tKilled,R.id.tMatched,R.id.tReceived,R.id.tRunning,R.id.tStaging,R.id.tStalled,R.id.tWaiting};
-	    int All = 0;
-		
-		for(int i = 0; i<TextPos.length; i++){
-			float F = 0;
-			TextView T1 = (TextView)findViewById(TextPos[i]);
-			T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
+			for(int i = 0; i<map.length; i++){
+				float F = Float.parseFloat(map[i].number());	
+				TextView T1 = (TextView)findViewById(TextPos[map[i].get(map[i].name())]);
+				T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
+				All = All + (int) F;
 			}
-		
-		for(int i = 0; i<map.length; i++){
-			float F = Float.parseFloat(map[i].number());	
-			TextView T1 = (TextView)findViewById(TextPos[map[i].get(map[i].name())]);
-			T1.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, F));
-			All = All + (int) F;
-		}
-		
-		
-		TextView Total = (TextView)findViewById(R.id.nbtotaljob);
-        Total.setText("Jobs in Dirac: "+All);
+
+
+			TextView Total = (TextView)findViewById(R.id.nbtotaljob);
+			Total.setText("Jobs in Dirac: "+All);
 
 
 		}
 		TextView LU = (TextView)findViewById(R.id.lastup);
-        LU.setText(datasource.getLastUpdateTime());	
+		LU.setText(datasource.getLastUpdateTime());	
 
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 	public Intent execute(Context context, JobsDataSource datasource){
-		
-		
 
-		
-		
+
+
+
+
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
 		renderer.setAxisTitleTextSize(16);
 		renderer.setChartTitleTextSize(20);
@@ -338,42 +338,42 @@ datasource.close();
 		ArrayList<String[]> list = datasource.getAllJobIDsOfSatusTime();
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		final int nr = 10;
-	//	double[] Range = {(double) (list.size()-10),(double) list.size()};
+		//	double[] Range = {(double) (list.size()-10),(double) list.size()};
 		//renderer.setRange(Range);
 
 		String[] status = Status.PossibleStatus;
 		int[] Colors = Status.ColorStatus;
 		XYSeriesRenderer r;
 
-		
+
 		for (int i = 0; i < list.get(0).length - 1 ; i++) {
-				System.out.println(i);
-				System.out.println(status[i]);
-				System.out.println(Colors[i]);
-				XYSeries series = new XYSeries("");
-				series.setTitle(status[i]);
-				r = new XYSeriesRenderer();
-				r.setColor(context.getResources().getColor(Colors[i]));
-				r.setLineWidth(4);
-				renderer.addSeriesRenderer(r);
-				
-				for (int k = 0; k < list.size(); k++) {
-					
-					String sdate = list.get(k)[list.get(0).length-1];
-					System.out.println(sdate);
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-			        Date d1 =null;
-					try {
-						d1 = dateFormat.parse(sdate);
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					
-					series.add(d1.getTime(), Double.valueOf(list.get(k)[i]));					
-				}	
-			
+			System.out.println(i);
+			System.out.println(status[i]);
+			System.out.println(Colors[i]);
+			XYSeries series = new XYSeries("");
+			series.setTitle(status[i]);
+			r = new XYSeriesRenderer();
+			r.setColor(context.getResources().getColor(Colors[i]));
+			r.setLineWidth(4);
+			renderer.addSeriesRenderer(r);
+
+			for (int k = 0; k < list.size(); k++) {
+
+				String sdate = list.get(k)[list.get(0).length-1];
+				System.out.println(sdate);
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+				Date d1 =null;
+				try {
+					d1 = dateFormat.parse(sdate);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+				series.add(d1.getTime(), Double.valueOf(list.get(k)[i]));					
+			}	
+
 			dataset.addSeries(series);
 		}
 		Intent intent = ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
