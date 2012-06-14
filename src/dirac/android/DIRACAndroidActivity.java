@@ -8,7 +8,9 @@ import android.content.SharedPreferences.Editor;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -21,13 +23,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,13 +65,14 @@ public class DIRACAndroidActivity extends Activity{
 	private SharedPreferences prefs;
 
 	private static final int MENU_QUIT = 0;
-	
+
 	private static final int UpMenu1 = Menu.FIRST;
-	private static final int Stat_Menu1 = Menu.FIRST+1;
-	private static final int Stat_Menu3 = Menu.FIRST+2;
-	private static final int Filt_Menu1 = Menu.FIRST+3;
-	private static final int Filt_Menu2 = Menu.FIRST+4;
-	private static final int Filt_Menu3 = Menu.FIRST+5;
+	private static final int UpMenu2 = Menu.FIRST+1;
+	private static final int Stat_Menu1 = Menu.FIRST+2;
+	private static final int Stat_Menu3 = Menu.FIRST+3;
+	private static final int Filt_Menu1 = Menu.FIRST+4;
+	private static final int Filt_Menu2 = Menu.FIRST+5;
+	private static final int Filt_Menu3 = Menu.FIRST+6;
 	private static final int UPDATE_MENU = 0;
 	private static final int STATS_MENU = 1;
 	private static final int FILTER_MENU = 2;
@@ -83,46 +86,10 @@ public class DIRACAndroidActivity extends Activity{
 	private String itemSelected;
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
-	ArrayAdapter<String> adapter2;
+	ArrayAdapter<String> adapter2;	
 
-
-	
-	
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
-
-	public InputStream getJSONData(String url){
-
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		URI uri;
-		InputStream data = null;
-		try {
-			uri = new URI(url);
-			HttpGet method = new HttpGet(uri);
-			HttpResponse response = httpClient.execute(method);
-			data = response.getEntity().getContent();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return data;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	private List<Job> countryList= new  ArrayList<Job>();
 
@@ -130,36 +97,48 @@ public class DIRACAndroidActivity extends Activity{
 	private JobsDataSource datasource;
 
 	/**when the activity is first created. */
-	@SuppressWarnings({ "null", "unused" })
-	@Override
+
+    protected ProgressBar PBar;
+	private int myProgress;
+	private int maxProgress  = 1100;
+
+
+	@Override	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		PBar = (ProgressBar)findViewById(R.id.progressBar1);
+		PBar.setVisibility(0);
 
 		datasource = new JobsDataSource(this);
 		datasource.open();
 		dbHelper = new MySQLiteHelper(context);
 		database = dbHelper.getWritableDatabase(); 
-		setContentView(R.layout.main);
 
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
 
+		Boolean defValueb = false;
+		CacheHelper.writeBoolean(context,CacheHelper.GETJOBS, defValueb);
+		CacheHelper.writeString(context,CacheHelper.GETJOBSTYPE, "");
 
 		loadDataOnScreen();
 
 
 		database.close();	
 		datasource.close();
-		
-	
-		
-		 this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-   
-         performApiCall();
-		
-	
-		
-		
-		
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+		//  performApiCall();
+
+
+
+
+
 		String defValue = null;
 		String test = CacheHelper.readString(context, CacheHelper.JOBNAME, defValue);
 		if(test == null) {
@@ -169,21 +148,15 @@ public class DIRACAndroidActivity extends Activity{
 			CacheHelper.writeString(this, CacheHelper.FTIME,"");		
 			CacheHelper.writeString(this, CacheHelper.APPNAME,"");		
 			CacheHelper.writeString(this, CacheHelper.SITE,"");	
-			Log.d("main", "yeah");
 		}else{
-			
-			String defValue1 = "";
 
-			Log.d("main", CacheHelper.readString(this, CacheHelper.JOBNAME,defValue1));
-			Log.d("main", CacheHelper.readString(this, CacheHelper.SITE,defValue1));
-			Log.d("main", CacheHelper.readString(this, CacheHelper.TIME,defValue1));
-			Log.d("main", CacheHelper.readString(this, CacheHelper.APPNAME,defValue1));
+			String defValue1 = "";
 
 			CacheHelper.writeString(this, CacheHelper.JOBNAME,"test");	
 			CacheHelper.writeString(this, CacheHelper.SITE,"LCG.CERN.CH");	
 			CacheHelper.writeString(this, CacheHelper.TIME,"test");	
 			CacheHelper.writeString(this, CacheHelper.APPNAME,"DaVinci");	
-			
+
 		}
 	}
 
@@ -208,6 +181,55 @@ public class DIRACAndroidActivity extends Activity{
 			lv.setAdapter(adapter);
 
 
+			//	database = dbHelper.getWritableDatabase();
+			//		datasource.open();	
+			Boolean defValue = false;
+			Boolean test = CacheHelper.readBoolean(context, CacheHelper.GETJOBS, defValue);
+			String SdefValue = "";
+			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+
+			if(test.booleanValue()){
+
+				String[] status = Status.PossibleStatus;
+
+				
+
+
+				datasource.open();
+				database = dbHelper.getWritableDatabase(); 
+				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
+				
+		
+				PBar.setMax(1100);
+
+				PBar.setVisibility(1);
+				PBar.setProgress(0);
+				
+				myProgress = 0;
+
+					for(String s: status){
+				performApiCall task = new performApiCall();
+				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+				task.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+JobType });	
+					}
+
+
+
+
+
+			}else{				
+				Log.d("cache test","false");		
+			}
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,false);	
+
+
+
+			//	Gson gson = new Gson();
+			//	Jobs jobs = gson.fromJson(Sjobs, Jobs.class);
+			//	dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
+			//	datasource.parse(jobs);		
+			//	database.close();		
+			//	datasource.close();
 
 			String[] status = Status.PossibleStatus;
 			lv.setOnItemClickListener(new OnItemClickListener() {
@@ -292,10 +314,16 @@ public class DIRACAndroidActivity extends Activity{
 			TextView Total = (TextView)findViewById(R.id.nbtotaljob);
 			Total.setText("Jobs in Dirac: "+All);
 
-
+			
+			TextView LU = (TextView)findViewById(R.id.lastup);
+			
+			
+			
+			LU.setText(datasource.getLastUpdateTime());	
 		}
-		TextView LU = (TextView)findViewById(R.id.lastup);
-		LU.setText(datasource.getLastUpdateTime());	
+		
+		
+	
 
 
 	}
@@ -338,7 +366,6 @@ public class DIRACAndroidActivity extends Activity{
 		renderer.setShowGridX(true);
 		ArrayList<String[]> list = datasource.getAllJobIDsOfSatusTime();
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		final int nr = 10;
 		//	double[] Range = {(double) (list.size()-10),(double) list.size()};
 		//renderer.setRange(Range);
 
@@ -348,9 +375,9 @@ public class DIRACAndroidActivity extends Activity{
 
 
 		for (int i = 0; i < list.get(0).length - 1 ; i++) {
-			System.out.println(i);
-			System.out.println(status[i]);
-			System.out.println(Colors[i]);
+		//	System.out.println(i);
+		//	System.out.println(status[i]);
+		//	System.out.println(Colors[i]);
 			XYSeries series = new XYSeries("");
 			series.setTitle(status[i]);
 			r = new XYSeriesRenderer();
@@ -361,7 +388,7 @@ public class DIRACAndroidActivity extends Activity{
 			for (int k = 0; k < list.size(); k++) {
 
 				String sdate = list.get(k)[list.get(0).length-1];
-				System.out.println(sdate);
+			//	System.out.println(sdate);
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 				Date d1 =null;
 				try {
@@ -382,15 +409,17 @@ public class DIRACAndroidActivity extends Activity{
 		return intent;
 	}
 
-	
-	
+
+
 	public boolean onCreateOptionsMenu(Menu menu){
 
 
-		
-		menu.add(UPDATE_MENU,UpMenu1,0,"Update");
+
+		SubMenu UpdateMenu = menu.addSubMenu("Update");
 		SubMenu fileMenu = menu.addSubMenu("Stats");
 		SubMenu editMenu = menu.addSubMenu("Filters");
+		UpdateMenu.add(UPDATE_MENU,UpMenu1,0,"Update All");
+		UpdateMenu.add(UPDATE_MENU,UpMenu2,1,"Update Mine");
 		fileMenu.add(STATS_MENU,Stat_Menu1,0,"Stats");
 		fileMenu.add(STATS_MENU,Stat_Menu3,1,"Delete Stats");
 		editMenu.add(FILTER_MENU,Filt_Menu1,0,"Add Filter");
@@ -400,101 +429,156 @@ public class DIRACAndroidActivity extends Activity{
 
 		return true;
 
-		}
+	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    case UpMenu1:
+		Gson gson = new Gson();
+		String SSummary ;
+		StatusSummary summary;
+		
+		switch (item.getItemId()) {
+
+		case UpMenu1:
 			database = dbHelper.getWritableDatabase();
-			datasource.open();	
-			Jobs jobs = 	performApiCall();
-			dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-			datasource.parse(jobs);		
-			datasource.creatTableOfSatus();
+			datasource.open();				
+			 SSummary = performApiCall(Constants.API_SUMMARY+"?allOwners=true");
+			 summary = gson.fromJson(SSummary, StatusSummary.class);
+			datasource.parseSummary(summary);	
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
+			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"&allOwners=true");
 			loadDataOnScreen();
 			database.close();		
 			datasource.close();
-	        return true;
-	    case Stat_Menu1:
-	    	datasource.open();	
+			return true;
+		case UpMenu2:
+			database = dbHelper.getWritableDatabase();
+			datasource.open();	
+			SSummary = performApiCall(Constants.API_SUMMARY);
+			summary = gson.fromJson(SSummary, StatusSummary.class);
+			datasource.parseSummary(summary);	
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);
+			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"");	
+			loadDataOnScreen();
+			database.close();		
+			datasource.close();
+			return true;
+		case Stat_Menu1:
+			datasource.open();	
 			startActivity(execute(context, datasource));
 			datasource.close();
-	        return true;
-	    case Stat_Menu3:
+			return true;
+		case Stat_Menu3:
 			database = dbHelper.getWritableDatabase();
 			datasource.open();	
 			dbHelper.deleteStat(database, dbHelper.DIRAC_STATS);
 			database.close();		
 			datasource.close();
-	        return true;   
-	    case Filt_Menu1:
-	    	Toast.makeText(context, "add filter", Toast.LENGTH_SHORT).show();
-	    	Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
+			return true;   
+		case Filt_Menu1:
+			Toast.makeText(context, "add filter", Toast.LENGTH_SHORT).show();
+			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
 			startActivity(myIntent);
-	        return true;    
-	    case Filt_Menu2:
-	    	Toast.makeText(context, "filter applied", Toast.LENGTH_SHORT).show();
-	        return true;     
-	    case Filt_Menu3:
-	    	Toast.makeText(context, "filter removed", Toast.LENGTH_SHORT).show();
-	        return true;                   
-	        
-	    }
-	    return false;
+			return true;    
+		case Filt_Menu2:
+			Toast.makeText(context, "filter applied", Toast.LENGTH_SHORT).show();
+			return true;     
+		case Filt_Menu3:
+			Toast.makeText(context, "filter removed", Toast.LENGTH_SHORT).show();
+			return true;                   
+
+		}
+		return false;
 	}
 
-	
-	
 
-	private Jobs performApiCall() {
-//		TextView textView = (TextView) findViewById(R.id.response_code);
 
-		Jobs objs = null;
-		String jsonOutput = "";
-        try {
-        	jsonOutput = doGet(Constants.API_REQUEST,getConsumer(this.prefs));
-        //	JSONObject jsonResponse = new JSONObject(jsonOutput);
- 
-			Gson gson = new Gson();
-			objs = gson.fromJson(jsonOutput, Jobs.class);
+	public class performApiCall extends AsyncTask<String, Integer, String> {
 		
-       // 	JSONObject m = (JSONObject)jsonResponse.get("feed");
-        //	JSONArray entries =(JSONArray)m.getJSONArray("entry");
-       // 	String contacts="";
-       // 	for (int i=0 ; i<entries.length() ; i++) {
-      //  		JSONObject entry = entries.getJSONObject(i);
-      //  		JSONObject title = entry.getJSONObject("title");
-     //   		if (title.getString("$t")!=null && title.getString("$t").length()>0) {
-      //  			contacts+=title.getString("$t") + "\n";
-    //    		}
-      //  	}
-      //  	Log.i(TAG,jsonOutput);
-     //   	textView.setText(contacts);
+	
+
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+
+				try {
+					response = doGet(url,getConsumer(prefs));
+
+					myProgress += 10;
+		            publishProgress(myProgress);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			return response;
+
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+			// setProgressPercent(progress[0]);
+			PBar.setProgress(progress[0]);
+
+		}
+
+		protected void onPostExecute(String result) {
+
+			datasource.open();
+			database = dbHelper.getWritableDatabase(); 
+			Gson gson = new Gson();
+
+			Jobs  jobs = gson.fromJson(result, Jobs.class);
+			datasource.parse(jobs);	
+			database.close();	
+
+			myProgress+=90;
+            publishProgress(myProgress);
+
+
+		}
+	}
+
+
+	private String performApiCall(String myUrl) {
+
+		String jsonOutput = "";
+		try {  	      	
+
+			try{
+				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
+
+			}catch (Exception e) {
+				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
+			}
+
 		} catch (Exception e) {
 			Log.e(TAG, "Error executing request",e);
-		//	textView.setText("Error retrieving contacts : " + jsonOutput);
 		}
-		return objs;
+		return jsonOutput;
 	}
 
+
+
+
+
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
-		  super.onActivityResult(reqCode, resultCode, data);
+		super.onActivityResult(reqCode, resultCode, data);
 
-		  switch (reqCode) {
-		    case (PICK_CONTACT) :
-		      if (resultCode == Activity.RESULT_OK) {
-		        Uri contactData = data.getData();
-		        Cursor c =  managedQuery(contactData, null, null, null, null);
-		        if (c.moveToFirst()) {
-	//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
-		 //         Log.i(TAG,"Response : " + "Selected contact : " + name);
-		        }
-		      }
-		      break;
-		  }
-		}	
+		switch (reqCode) {
+		case (PICK_CONTACT) :
+			if (resultCode == Activity.RESULT_OK) {
+				Uri contactData = data.getData();
+				Cursor c =  managedQuery(contactData, null, null, null, null);
+				if (c.moveToFirst()) {
+					//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
+					//         Log.i(TAG,"Response : " + "Selected contact : " + name);
+				}
+			}
+		break;
+		}
+	}	
 
-    private void clearCredentials() {
+	private void clearCredentials() {
+
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		final Editor edit = prefs.edit();
 		edit.remove(OAuth.OAUTH_TOKEN);
@@ -504,35 +588,45 @@ public class DIRACAndroidActivity extends Activity{
 
 
 	private OAuthConsumer getConsumer(SharedPreferences prefs) {
-		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-		
-		token = Constants.ACCESS_TOKEN;
-		secret = Constants.ACCESS_TOKEN_SECRET;
-		Log.d("getConsumer",token);
-		Log.d("getConsumer",secret);
+
+		//String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+		//	String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+
+		String token = Constants.ACCESS_TOKEN;
+		String secret = Constants.ACCESS_TOKEN_SECRET;
+		//("getConsumer",token);
+		//Log.d("getConsumer",secret);
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
-		Log.d("getConsumer",consumer.toString());
+	//	Log.d("getConsumer",consumer.toString());
 		return consumer;
 	}
 
 	private String doGet(String url,OAuthConsumer consumer) throws Exception {
-		DefaultHttpClient httpclient = new DefaultHttpClient();
-    	HttpGet request = new HttpGet(url);
-    	Log.i(TAG,"Requesting URL : " + url);
-    	consumer.sign(request);
-    	HttpResponse response = httpclient.execute(request);
-    	Log.i(TAG,"Statusline : " + response.getStatusLine());
-    	InputStream data = response.getEntity().getContent();
-    	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-        String responeLine;
-        StringBuilder responseBuilder = new StringBuilder();
-        while ((responeLine = bufferedReader.readLine()) != null) {
-        	responseBuilder.append(responeLine);
-        }
-        Log.i(TAG,"Response : " + responseBuilder.toString());
-        return responseBuilder.toString();
+		Log.i(TAG,"Requesting URL : " + url);
+
+		try{
+			DefaultHttpClient httpclient = new DefaultHttpClient();
+			HttpGet request = new HttpGet(url);
+			Log.i(TAG,"Requesting URL : " + url);
+			consumer.sign(request);
+			HttpResponse response = httpclient.execute(request);
+			Log.i(TAG,"Statusline : " + response.getStatusLine());
+			InputStream data = response.getEntity().getContent();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
+			String responeLine;
+			StringBuilder responseBuilder = new StringBuilder();
+			while ((responeLine = bufferedReader.readLine()) != null) {
+				responseBuilder.append(responeLine);
+			}
+			Log.i(TAG,"Response : " + responseBuilder.toString());
+			return responseBuilder.toString();
+		}catch (Exception e) {
+			Log.e(TAG, "Error executing request",e);
+			//	textView.setText("Error retrieving contacts : " + jsonOutput);
+			return "";
+
+		}
 	}	
 
 

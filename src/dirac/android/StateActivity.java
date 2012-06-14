@@ -142,8 +142,8 @@ lled when the activity is first created. */
 		});		
 
 
-	datasource.close();
-	
+		datasource.close();
+
 	}
 
 

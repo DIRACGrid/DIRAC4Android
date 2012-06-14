@@ -13,15 +13,16 @@ public class Job  {
 	private String 	minorStatus	;
 	private String 	site;
 	private String 	cpuTime	;
-	//private List<time> times;
+	private time times;
 	private String priority;
-//	private List<flag> flags;
+	private flag flags;
 	private String jobGroup;
 	private String reschedules;
 	private String owner;
 	private String ownerDN;
 	private String setup;
 	private String name;
+	private String changeStatusAction;
 
 
 	public String getStatus() {
@@ -73,12 +74,12 @@ public class Job  {
 		this.cpuTime = cpuTime;
 	}
 	
-//	public List<time> getTimes() {
-//		return times;
-//	}
-//	public void setTimes(List<time> times) {
-//		this.times = times;
-//	}
+	public time getTimes() {
+	return times;
+	}
+	public void setTimes(time times) {
+		this.times = times;
+	}
 	
 	public String getPriority() {
 		return priority;
@@ -87,12 +88,12 @@ public class Job  {
 		this.priority = priority;
 	}
 	
-//	public List<flag> getFlags() {
-//		return flags;
-//	}
-//	public void setFlags(List<flag> flags) {
-//		this.flags = flags;
-//	}
+	public flag getFlags() {
+		return flags;
+	}
+	public void setFlags(flag flags) {
+		this.flags = flags;
+	}
 
 	public String getJobGroup() {
 		return jobGroup; 
@@ -129,6 +130,13 @@ public class Job  {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}		
+	
+	public String getChangeStatusAction() {
+		return changeStatusAction;
+	}
+	public void setChangeStatusAction(String changeStatusAction) {
+		this.changeStatusAction = changeStatusAction;
 	}		
 	
 	

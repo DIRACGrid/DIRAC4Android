@@ -9,6 +9,9 @@ public class CacheHelper {
 	public static final String PREF_NAME = "FILTER_PREFERENCES";
 	public static final int MODE = Context.MODE_PRIVATE;
 	
+	public static final String GETJOBS = "GETJOBS";
+	public static final String GETJOBSTYPE = "GETJOBSTYPE";
+
 	public static final String JOBNAME = "JOBNAME";
 	public static final String TIME = "TIME";
 	public static final String FTIME = "FINAL_TIME";

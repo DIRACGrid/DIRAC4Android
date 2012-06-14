@@ -1,28 +1,16 @@
 package dirac.android;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dirac.android.R.color;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class JobArrayAdapter extends ArrayAdapter<Job> {
-	private static final String tag = "JobArrayAdapter";
 	//	private static final String ASSETS_DIR = "images/";
 	private Context context;
 	private TextView jobIDName;
@@ -30,7 +18,6 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 	private TextView jobIDColor;
 	private TextView jobIDState;
 	private List<Job> JobIDs = new ArrayList<Job>();
-	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 
 	public JobArrayAdapter(Context context, int textViewResourceId,
 			List<Job> objects) {
@@ -63,11 +50,9 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 		int myposition = s.get(job.getStatus());
 		jobIDID = (TextView) row.findViewById(R.id.job_id);
 		jobIDName = (TextView) row.findViewById(R.id.job_name);
-		jobIDState = (TextView) row.findViewById(R.id.job_state);
 		jobIDColor = (TextView) row.findViewById(R.id.job_color);
 		jobIDID.setText(job.getJid());
 		jobIDName.setText(job.getName());
-		jobIDState.setText(job.getStatus());
 		jobIDColor.setBackgroundColor(Color.rgb(255, 0, 0));
 		//  jobIDColor.setBackgroundResource(R.color.completed);
 		//jobIDColor.setBackgroundResource(R.color.completed);
