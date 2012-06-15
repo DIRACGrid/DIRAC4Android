@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/getGrant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get Grant Access"
+        android:layout_marginTop="25px"
+        android:layout_marginRight="25px"
+        android:layout_marginLeft="25px"
+        />
+        
+    <Button
+        android:id="@+id/clearGrant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset Access"
+        android:layout_marginRight="25px"
+        android:layout_marginLeft="25px" />
+    
+</LinearLayout>

@@ -42,6 +42,15 @@
             android:label="PrepareRequestTokenActivity" >
         </activity>
         
+        <activity android:name=".PrepareRequestTokenActivity" android:launchMode="singleTask">>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW" />
+		<category android:name="android.intent.category.DEFAULT" />
+		<category android:name="android.intent.category.BROWSABLE" />
+		<data android:scheme="x-oauthflow" android:host="callback" />
+	</intent-filter>
+</activity>
+        
         <activity android:name="org.achartengine.GraphicalActivity" />
                
     </application>

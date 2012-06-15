@@ -1,6 +1,7 @@
 package dirac.android;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -28,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -50,6 +56,10 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.gson.Gson;
 
 
@@ -64,23 +74,17 @@ public class DIRACAndroidActivity extends Activity{
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
 
-	private static final int MENU_QUIT = 0;
 
 	private static final int UpMenu1 = Menu.FIRST;
-	private static final int UpMenu2 = Menu.FIRST+1;
-	private static final int Stat_Menu1 = Menu.FIRST+2;
-	private static final int Stat_Menu3 = Menu.FIRST+3;
-	private static final int Filt_Menu1 = Menu.FIRST+4;
-	private static final int Filt_Menu2 = Menu.FIRST+5;
-	private static final int Filt_Menu3 = Menu.FIRST+6;
-	private static final int UPDATE_MENU = 0;
-	private static final int STATS_MENU = 1;
-	private static final int FILTER_MENU = 2;
+	private static final int Filt_Menu1 = Menu.FIRST+1;
+	private static final int User_Menu1 = Menu.FIRST+2;
+	private static final int Stat_Menu1 = Menu.FIRST+3;
 	public static final String PREFS_NAME = "MyPrefsFile";
 	Random r;
 	public static final String DIRAC_REQUEST_TOKEN_URL = "http://lhcb01.ecm.ub.es:9345/oauth/request_token";
 	public static final String DIRAC_ACCESS_TOKEN_URL  = "http://lhcb01.ecm.ub.es:9345/oauth/access_token";
 	public static final String DIRAC_AUTHORIZE_URL     = "http://lhcb01.ecm.ub.es:9345/oauth/authorize";
+	private Intent StatsIntent;
 
 
 	private String itemSelected;
@@ -98,7 +102,7 @@ public class DIRACAndroidActivity extends Activity{
 
 	/**when the activity is first created. */
 
-    protected ProgressBar PBar;
+	protected ProgressBar PBar;
 	private int myProgress;
 	private int maxProgress  = 1100;
 
@@ -158,8 +162,8 @@ public class DIRACAndroidActivity extends Activity{
 			CacheHelper.writeString(this, CacheHelper.APPNAME,"DaVinci");	
 
 		}
-	}
 
+	}
 
 
 
@@ -187,31 +191,45 @@ public class DIRACAndroidActivity extends Activity{
 			Boolean test = CacheHelper.readBoolean(context, CacheHelper.GETJOBS, defValue);
 			String SdefValue = "";
 			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+			TextView UserTV = (TextView)findViewById(R.id.userText1);
+
+			if(JobType==""){
+				UserTV.setText("My Jobs");			
+			}else{
+				UserTV.setText("All Owners Jobs");	
+
+			}
 
 			if(test.booleanValue()){
 
 				String[] status = Status.PossibleStatus;
 
-				
+
 
 
 				datasource.open();
 				database = dbHelper.getWritableDatabase(); 
 				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-				
-		
+
+
 				PBar.setMax(1100);
 
 				PBar.setVisibility(1);
 				PBar.setProgress(0);
-				
-				myProgress = 0;
 
-					for(String s: status){
-				performApiCall task = new performApiCall();
+				myProgress = 0;
+				
+				performApiCallStats  task = new performApiCallStats();
 				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-				task.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+JobType });	
-					}
+				task.execute(new String[] { Constants.API_HISTORY});
+
+
+				PBar.setProgress(10);
+				for(String s: status){
+					performApiCall task2 = new performApiCall();
+					//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
+				}
 
 
 
@@ -314,16 +332,16 @@ public class DIRACAndroidActivity extends Activity{
 			TextView Total = (TextView)findViewById(R.id.nbtotaljob);
 			Total.setText("Jobs in Dirac: "+All);
 
-			
+
 			TextView LU = (TextView)findViewById(R.id.lastup);
-			
-			
-			
+
+
+
 			LU.setText(datasource.getLastUpdateTime());	
 		}
-		
-		
-	
+
+
+
 
 
 	}
@@ -348,64 +366,82 @@ public class DIRACAndroidActivity extends Activity{
 
 
 
-	public Intent execute(Context context, JobsDataSource datasource){
-
-
-
-
+	public Intent execute(Context context, String result){
 
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-		renderer.setAxisTitleTextSize(16);
-		renderer.setChartTitleTextSize(20);
-		renderer.setLabelsTextSize(10);
-		renderer.setLegendTextSize(30);
-		renderer.setMargins(new int[] {20, 30, 15, 0});
-		renderer.setAxesColor(Color.DKGRAY);
-		renderer.setLabelsColor(Color.LTGRAY);
-		renderer.setAntialiasing(true);
-		renderer.setShowGridX(true);
-		ArrayList<String[]> list = datasource.getAllJobIDsOfSatusTime();
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		//	double[] Range = {(double) (list.size()-10),(double) list.size()};
-		//renderer.setRange(Range);
 
-		String[] status = Status.PossibleStatus;
-		int[] Colors = Status.ColorStatus;
-		XYSeriesRenderer r;
+		JSONObject jObject1;
+
+		try {
+			jObject1 = new JSONObject(result);
+			JSONObject menuObject = jObject1.getJSONObject("data");
+			renderer.setAxisTitleTextSize(16);
+			renderer.setChartTitleTextSize(20);
+			renderer.setLabelsTextSize(10);
+			renderer.setLegendTextSize(30);
+			renderer.setMargins(new int[] {20, 30, 15, 0});
+			renderer.setAxesColor(Color.DKGRAY);
+			renderer.setLabelsColor(Color.LTGRAY);
+			renderer.setAntialiasing(true);
+			renderer.setShowGridX(true);
+			//	ArrayList<String[]> list = datasource.getAllJobIDsOfSatusTime();
+			//	double[] Range = {(double) (list.size()-10),(double) list.size()};
+			//renderer.setRange(Range);
+
+			String[] status = Status.PossibleStatus;
+			int[] Colors = Status.ColorStatus;
+			XYSeriesRenderer r;
 
 
-		for (int i = 0; i < list.get(0).length - 1 ; i++) {
-		//	System.out.println(i);
-		//	System.out.println(status[i]);
-		//	System.out.println(Colors[i]);
-			XYSeries series = new XYSeries("");
-			series.setTitle(status[i]);
-			r = new XYSeriesRenderer();
-			r.setColor(context.getResources().getColor(Colors[i]));
-			r.setLineWidth(4);
-			renderer.addSeriesRenderer(r);
+			for (int i = 0; i < status.length - 1 ; i++) {
 
-			for (int k = 0; k < list.size(); k++) {
-
-				String sdate = list.get(k)[list.get(0).length-1];
-			//	System.out.println(sdate);
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-				Date d1 =null;
-				try {
-					d1 = dateFormat.parse(sdate);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				JSONObject Status = null;
+				try{
+					Status = menuObject.getJSONObject(status[i]);
+					Log.i("",status[i]);
+				}catch (Exception e1) {
+					continue;
 				}
 
 
-				series.add(d1.getTime(), Double.valueOf(list.get(k)[i]));					
-			}	
+				JSONArray StatusN = Status.names();
 
-			dataset.addSeries(series);
-		}
+
+
+				//	System.out.println(i);
+				//	System.out.println(status[i]);
+				//	System.out.println(Colors[i]);
+				XYSeries series = new XYSeries("");
+				series.setTitle(status[i]);
+				r = new XYSeriesRenderer();
+				r.setColor(context.getResources().getColor(Colors[i]));
+				r.setLineWidth(4);
+				renderer.addSeriesRenderer(r);
+
+				for (int k = 0; k < StatusN.length(); k++) {
+
+					String sdate = StatusN.getString(k);
+					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
+					String attributeValue = Status.getString(sdate);
+
+
+
+					series.add(time.getTime(), Double.valueOf(attributeValue));					
+				}	
+
+				dataset.addSeries(series);
+			}
+
+
+
+
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+
 		Intent intent = ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
-
 		return intent;
 	}
 
@@ -415,16 +451,10 @@ public class DIRACAndroidActivity extends Activity{
 
 
 
-		SubMenu UpdateMenu = menu.addSubMenu("Update");
-		SubMenu fileMenu = menu.addSubMenu("Stats");
-		SubMenu editMenu = menu.addSubMenu("Filters");
-		UpdateMenu.add(UPDATE_MENU,UpMenu1,0,"Update All");
-		UpdateMenu.add(UPDATE_MENU,UpMenu2,1,"Update Mine");
-		fileMenu.add(STATS_MENU,Stat_Menu1,0,"Stats");
-		fileMenu.add(STATS_MENU,Stat_Menu3,1,"Delete Stats");
-		editMenu.add(FILTER_MENU,Filt_Menu1,0,"Add Filter");
-		editMenu.add(FILTER_MENU,Filt_Menu2,1,"Apply Filter");
-		editMenu.add(FILTER_MENU,Filt_Menu3,3,"Remove Filter");
+		menu.add(0,UpMenu1 , 0, "Update");
+		menu.add(0,Filt_Menu1 , 0, "Filters");
+		menu.add(0,User_Menu1 , 0, "User Profile");
+		menu.add(0,Stat_Menu1 , 0, "Stats");
 
 
 		return true;
@@ -432,69 +462,61 @@ public class DIRACAndroidActivity extends Activity{
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
+		ProgressDialog dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
+
 		Gson gson = new Gson();
 		String SSummary ;
 		StatusSummary summary;
-		
+
 		switch (item.getItemId()) {
 
 		case UpMenu1:
 			database = dbHelper.getWritableDatabase();
-			datasource.open();				
-			 SSummary = performApiCall(Constants.API_SUMMARY+"?allOwners=true");
-			 summary = gson.fromJson(SSummary, StatusSummary.class);
-			datasource.parseSummary(summary);	
-			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
-			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"&allOwners=true");
-			loadDataOnScreen();
-			database.close();		
-			datasource.close();
-			return true;
-		case UpMenu2:
-			database = dbHelper.getWritableDatabase();
-			datasource.open();	
-			SSummary = performApiCall(Constants.API_SUMMARY);
+			datasource.open();		
+			String SdefValue = "";
+			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+			SSummary = performApiCall(Constants.API_SUMMARY+"?"+JobType);
 			summary = gson.fromJson(SSummary, StatusSummary.class);
 			datasource.parseSummary(summary);	
-			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);
-			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"");	
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
 			loadDataOnScreen();
 			database.close();		
 			datasource.close();
+			dialog.dismiss();
 			return true;
-		case Stat_Menu1:
-			datasource.open();	
-			startActivity(execute(context, datasource));
-			datasource.close();
-			return true;
-		case Stat_Menu3:
-			database = dbHelper.getWritableDatabase();
-			datasource.open();	
-			dbHelper.deleteStat(database, dbHelper.DIRAC_STATS);
-			database.close();		
-			datasource.close();
-			return true;   
 		case Filt_Menu1:
-			Toast.makeText(context, "add filter", Toast.LENGTH_SHORT).show();
 			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
 			startActivity(myIntent);
-			return true;    
-		case Filt_Menu2:
-			Toast.makeText(context, "filter applied", Toast.LENGTH_SHORT).show();
-			return true;     
-		case Filt_Menu3:
-			Toast.makeText(context, "filter removed", Toast.LENGTH_SHORT).show();
-			return true;                   
+			dialog.dismiss();
+			return true;  
+		case User_Menu1:
+			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
+			startActivity(myIntent2);
+			dialog.dismiss();
 
-		}
+			return true;  
+		case Stat_Menu1:
+
+			if (StatsIntent== null){
+
+				SSummary = performApiCall(Constants.API_HISTORY);
+				StatsIntent = DIRACAndroidActivity.this.execute(context, SSummary);
+			}
+			
+			startActivity(StatsIntent);
+
+			dialog.dismiss();
+			return true;
+		}	
+
 		return false;
 	}
 
 
 
 	public class performApiCall extends AsyncTask<String, Integer, String> {
-		
-	
+
+
 
 		protected String doInBackground(String... urls) {
 			String response = "";
@@ -504,7 +526,7 @@ public class DIRACAndroidActivity extends Activity{
 					response = doGet(url,getConsumer(prefs));
 
 					myProgress += 10;
-		            publishProgress(myProgress);
+					publishProgress(myProgress);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -522,113 +544,170 @@ public class DIRACAndroidActivity extends Activity{
 
 		protected void onPostExecute(String result) {
 
-			datasource.open();
-			database = dbHelper.getWritableDatabase(); 
-			Gson gson = new Gson();
+			if(result != ""){
 
-			Jobs  jobs = gson.fromJson(result, Jobs.class);
-			datasource.parse(jobs);	
-			database.close();	
+				datasource.open();
+				database = dbHelper.getWritableDatabase(); 
+				Gson gson = new Gson();
 
-			myProgress+=90;
-            publishProgress(myProgress);
-
-
-		}
-	}
-
-
-	private String performApiCall(String myUrl) {
-
-		String jsonOutput = "";
-		try {  	      	
-
-			try{
-				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
-
-			}catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
+				Jobs  jobs = gson.fromJson(result, Jobs.class);
+				datasource.parse(jobs);	
+				database.close();	
 			}
+			myProgress+=90;
+			publishProgress(myProgress);
 
-		} catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
+
 		}
-		return jsonOutput;
 	}
 
 
+	public class performApiCallStats extends AsyncTask<String, Integer, Intent > {
 
+		protected Intent doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
 
+				try {
+					
 
-	public void onActivityResult(int reqCode, int resultCode, Intent data) {
-		super.onActivityResult(reqCode, resultCode, data);
+					
+					response = doGet(url,getConsumer(prefs));
+					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
 
-		switch (reqCode) {
-		case (PICK_CONTACT) :
-			if (resultCode == Activity.RESULT_OK) {
-				Uri contactData = data.getData();
-				Cursor c =  managedQuery(contactData, null, null, null, null);
-				if (c.moveToFirst()) {
-					//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
-					//         Log.i(TAG,"Response : " + "Selected contact : " + name);
+					
+					
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-		break;
+
+			return StatsIntent;
+
 		}
-	}	
 
-	private void clearCredentials() {
+		protected void onProgressUpdate(Integer... progress) {
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		final Editor edit = prefs.edit();
-		edit.remove(OAuth.OAUTH_TOKEN);
-		edit.remove(OAuth.OAUTH_TOKEN_SECRET);
-		edit.commit();
-	}
+		}
 
+		protected void onPostExecute(String result) {
+			String FILENAME = "hello_file";
 
-	private OAuthConsumer getConsumer(SharedPreferences prefs) {
+			FileOutputStream fos;
+			try {
+				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+				fos.write(StatsIntent.toString().getBytes());
+				fos.close();
 
-		//String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		//	String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
-		String token = Constants.ACCESS_TOKEN;
-		String secret = Constants.ACCESS_TOKEN_SECRET;
-		//("getConsumer",token);
-		//Log.d("getConsumer",secret);
-		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-		consumer.setTokenWithSecret(token, secret);
-	//	Log.d("getConsumer",consumer.toString());
-		return consumer;
-	}
-
-	private String doGet(String url,OAuthConsumer consumer) throws Exception {
-		Log.i(TAG,"Requesting URL : " + url);
-
-		try{
-			DefaultHttpClient httpclient = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url);
-			Log.i(TAG,"Requesting URL : " + url);
-			consumer.sign(request);
-			HttpResponse response = httpclient.execute(request);
-			Log.i(TAG,"Statusline : " + response.getStatusLine());
-			InputStream data = response.getEntity().getContent();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-			String responeLine;
-			StringBuilder responseBuilder = new StringBuilder();
-			while ((responeLine = bufferedReader.readLine()) != null) {
-				responseBuilder.append(responeLine);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			Log.i(TAG,"Response : " + responseBuilder.toString());
-			return responseBuilder.toString();
-		}catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-			//	textView.setText("Error retrieving contacts : " + jsonOutput);
-			return "";
-
+			
 		}
-	}	
+
+	}
+	
+	
+	
+	
+	
+	
+		private String performApiCall(String myUrl) {
+
+			String jsonOutput = "";
+			try {  	      	
+
+				try{
+					jsonOutput = doGet(myUrl,getConsumer(this.prefs));
+
+				}catch (Exception e) {
+					Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
+				}
+
+			} catch (Exception e) {
+				Log.e(TAG, "Error executing request",e);
+			}
+			return jsonOutput;
+		}
 
 
 
+
+
+		public void onActivityResult(int reqCode, int resultCode, Intent data) {
+			super.onActivityResult(reqCode, resultCode, data);
+
+			switch (reqCode) {
+			case (PICK_CONTACT) :
+				if (resultCode == Activity.RESULT_OK) {
+					Uri contactData = data.getData();
+					Cursor c =  managedQuery(contactData, null, null, null, null);
+					if (c.moveToFirst()) {
+						//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
+						//         Log.i(TAG,"Response : " + "Selected contact : " + name);
+					}
+				}
+			break;
+			}
+		}	
+
+		private void clearCredentials() {
+
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			final Editor edit = prefs.edit();
+			edit.remove(OAuth.OAUTH_TOKEN);
+			edit.remove(OAuth.OAUTH_TOKEN_SECRET);
+			edit.commit();
+		}
+
+
+		private OAuthConsumer getConsumer(SharedPreferences prefs) {
+
+			//String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+			//	String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+
+			String token = Constants.ACCESS_TOKEN;
+			String secret = Constants.ACCESS_TOKEN_SECRET;
+			//("getConsumer",token);
+			//Log.d("getConsumer",secret);
+			OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+			consumer.setTokenWithSecret(token, secret);
+			//	Log.d("getConsumer",consumer.toString());
+			return consumer;
+		}
+
+		private String doGet(String url,OAuthConsumer consumer) throws Exception {
+			Log.i(TAG,"Requesting URL : " + url);
+
+			try{
+				DefaultHttpClient httpclient = new DefaultHttpClient();
+				HttpGet request = new HttpGet(url);
+				Log.i(TAG,"Requesting URL : " + url);
+				consumer.sign(request);
+				HttpResponse response = httpclient.execute(request);
+				Log.i(TAG,"Statusline : " + response.getStatusLine());
+				InputStream data = response.getEntity().getContent();
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
+				String responeLine;
+				StringBuilder responseBuilder = new StringBuilder();
+				while ((responeLine = bufferedReader.readLine()) != null) {
+					responseBuilder.append(responeLine);
+				}
+				Log.i(TAG,"Response : " + responseBuilder.toString());
+				return responseBuilder.toString();
+			}catch (Exception e) {
+				Log.e(TAG, "Error executing request",e);
+				//	textView.setText("Error retrieving contacts : " + jsonOutput);
+				return "";
+
+			}
+		}	
+
+
+
+	
 }

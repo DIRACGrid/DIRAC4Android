@@ -11,6 +11,7 @@ public class CacheHelper {
 	
 	public static final String GETJOBS = "GETJOBS";
 	public static final String GETJOBSTYPE = "GETJOBSTYPE";
+	public static final String GETJOBSTYPE2 = "GETJOBSTYPE2";
 
 	public static final String JOBNAME = "JOBNAME";
 	public static final String TIME = "TIME";

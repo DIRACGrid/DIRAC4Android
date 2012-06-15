@@ -20,14 +20,14 @@ public class Constants {
 	public static final String API_ALLUSERS 	= BASE_URL+"/jobs?maxJobs=2000&status=Done,Waiting";
 			//"allOwners=true&maxJobs=11122";
 	public static final String API_MYJOBS 		= BASE_URL+"/jobs?maxJobs=10000&status=Done";
-	public static final String API_SUMMARY 		= BASE_URL+"/jobs/summary";
 	public static final String API_JOBS		    = BASE_URL+"/jobs";
-
+	public static final String API_HISTORY		= API_JOBS+"/history";
+	public static final String API_SUMMARY 		= API_JOBS+"/summary";
 
 	public static final String ENCODING 		= "UTF-8";
 
-	public static final String	OAUTH_CALLBACK_SCHEME	= "x-oauthflow";
-	public static final String	OAUTH_CALLBACK_HOST		= "callback";
+	public static final String	OAUTH_CALLBACK_SCHEME	= "test";
+	public static final String	OAUTH_CALLBACK_HOST		= "yeah";
 	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
 
 }

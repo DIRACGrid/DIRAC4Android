@@ -4,83 +4,24 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-        <LinearLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Spinner
+            android:id="@+id/spinner1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:prompt="@string/spin_picker" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Job Names: "
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <ExpandableListView
-                    android:id="@+id/NameListView"
-                    android:layout_width="192dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" >
-                </ExpandableListView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sites: "
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <ExpandableListView
-                    android:id="@+id/SiteListView"
-                    android:layout_width="192dp"
-                    android:layout_height="wrap_content" >
-                </ExpandableListView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sub. Time:"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <ExpandableListView
-                    android:id="@+id/TimeListView"
-                    android:layout_width="192dp"
-                    android:layout_height="wrap_content" >
-                </ExpandableListView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
-
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="save" />
-
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="remove filter" />
-            </LinearLayout>
-        </LinearLayout>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:text="last update:" />
+    </LinearLayout>
+    
 </LinearLayout>
