@@ -73,7 +73,7 @@ public class DIRACAndroidActivity extends Activity{
 	private static final int PICK_CONTACT = 0;
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
-
+	ProgressDialog dialog;
 
 	private static final int UpMenu1 = Menu.FIRST;
 	private static final int Filt_Menu1 = Menu.FIRST+1;
@@ -225,11 +225,19 @@ public class DIRACAndroidActivity extends Activity{
 
 
 				PBar.setProgress(10);
-				for(String s: status){
+				
+				
+				String myStrings = "";
+				for(String s: status)
+					if(s != status[status.length-1])
+						myStrings = myStrings+s+",";
+					else
+						myStrings = myStrings+s
+						;
 					performApiCall task2 = new performApiCall();
-					//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
-				}
+					task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status="+myStrings+"flatten=true" });
+				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
+			//	}
 
 
 
@@ -462,7 +470,7 @@ public class DIRACAndroidActivity extends Activity{
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		ProgressDialog dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
+		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
 
 		Gson gson = new Gson();
 		String SSummary ;
@@ -498,14 +506,12 @@ public class DIRACAndroidActivity extends Activity{
 		case Stat_Menu1:
 
 			if (StatsIntent== null){
-
-				SSummary = performApiCall(Constants.API_HISTORY);
-				StatsIntent = DIRACAndroidActivity.this.execute(context, SSummary);
+				
+				performApiCallStats2  task = new performApiCallStats2();
+				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+				task.execute(new String[] { Constants.API_HISTORY});
 			}
 			
-			startActivity(StatsIntent);
-
-			dialog.dismiss();
 			return true;
 		}	
 
@@ -562,6 +568,50 @@ public class DIRACAndroidActivity extends Activity{
 	}
 
 
+	public class performApiCallStats2 extends AsyncTask<String, Integer, Intent > {
+
+		protected Intent doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+
+				try {
+					
+
+					
+					response = doGet(url,getConsumer(prefs));
+					
+					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
+
+
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+startActivity(StatsIntent);
+
+try {
+	Thread.sleep(2);
+} catch (InterruptedException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+dialog.dismiss();
+			return StatsIntent;
+
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+
+		}
+
+		protected void onPostExecute(String result) {
+			
+
+		}
+
+	}
+
 	public class performApiCallStats extends AsyncTask<String, Integer, Intent > {
 
 		protected Intent doInBackground(String... urls) {
@@ -575,13 +625,12 @@ public class DIRACAndroidActivity extends Activity{
 					response = doGet(url,getConsumer(prefs));
 					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
 
-					
+
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-
 			return StatsIntent;
 
 		}
@@ -591,22 +640,8 @@ public class DIRACAndroidActivity extends Activity{
 		}
 
 		protected void onPostExecute(String result) {
-			String FILENAME = "hello_file";
-
-			FileOutputStream fos;
-			try {
-				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-				fos.write(StatsIntent.toString().getBytes());
-				fos.close();
-
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
+
 		}
 
 	}
