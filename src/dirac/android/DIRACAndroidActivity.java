@@ -219,25 +219,25 @@ public class DIRACAndroidActivity extends Activity{
 
 				myProgress = 0;
 				
-				performApiCallStats  task = new performApiCallStats();
+	//			performApiCallStats  task = new performApiCallStats();
 				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-				task.execute(new String[] { Constants.API_HISTORY});
+	//			task.execute(new String[] { Constants.API_HISTORY});
 
 
 				PBar.setProgress(10);
 				
 				
 				String myStrings = "";
-				for(String s: status)
-					if(s != status[status.length-1])
-						myStrings = myStrings+s+",";
-					else
-						myStrings = myStrings+s
-						;
+				for(String s: status){
+					//if(s != status[status.length-1])
+					//	myStrings = myStrings+s+",";
+					//else
+					//	myStrings = myStrings+s
+					//	;
 					performApiCall task2 = new performApiCall();
-					task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status="+myStrings+"flatten=true" });
-				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
-			//	}
+				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status="+myStrings+"&flatten=true" });
+					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
+				}
 
 
 
@@ -483,7 +483,11 @@ public class DIRACAndroidActivity extends Activity{
 			datasource.open();		
 			String SdefValue = "";
 			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
-			SSummary = performApiCall(Constants.API_SUMMARY+"?"+JobType);
+			if (JobType == "")
+				SSummary = performApiCall(Constants.API_SUMMARY);
+			else
+				SSummary = performApiCall(Constants.API_SUMMARY+"?"+JobType);
+			
 			summary = gson.fromJson(SSummary, StatusSummary.class);
 			datasource.parseSummary(summary);	
 			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
@@ -507,7 +511,7 @@ public class DIRACAndroidActivity extends Activity{
 
 			if (StatsIntent== null){
 				
-				performApiCallStats2  task = new performApiCallStats2();
+				performApiCallStats  task = new performApiCallStats();
 				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
 				task.execute(new String[] { Constants.API_HISTORY});
 			}
@@ -533,6 +537,11 @@ public class DIRACAndroidActivity extends Activity{
 
 					myProgress += 10;
 					publishProgress(myProgress);
+					myProgress += 10;
+					publishProgress(myProgress);
+					myProgress += 10;
+					publishProgress(myProgress);
+					publishProgress(maxProgress);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -568,7 +577,7 @@ public class DIRACAndroidActivity extends Activity{
 	}
 
 
-	public class performApiCallStats2 extends AsyncTask<String, Integer, Intent > {
+	public class performApiCallStats extends AsyncTask<String, Integer, Intent > {
 
 		protected Intent doInBackground(String... urls) {
 			String response = "";
@@ -611,41 +620,6 @@ dialog.dismiss();
 		}
 
 	}
-
-	public class performApiCallStats extends AsyncTask<String, Integer, Intent > {
-
-		protected Intent doInBackground(String... urls) {
-			String response = "";
-			for (String url : urls) {
-
-				try {
-					
-
-					
-					response = doGet(url,getConsumer(prefs));
-					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
-
-
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			return StatsIntent;
-
-		}
-
-		protected void onProgressUpdate(Integer... progress) {
-
-		}
-
-		protected void onPostExecute(String result) {
-			
-
-		}
-
-	}
-	
 	
 	
 	
