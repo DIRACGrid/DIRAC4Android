@@ -8,6 +8,7 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class StateActivity extends Activity{
@@ -72,14 +74,23 @@ lled when the activity is first created. */
 		ListView lv = (ListView) this.findViewById(R.id.STATELV);
 
 
+		View footer = getLayoutInflater().inflate(R.layout.list_footer, null);
+
+		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
+		footerTV.setText("download more");
+		
+		lv.addFooterView(footer);
+
 		// Set the ListView adapter
 		lv.setAdapter(adapter);
 
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
+				
 				// When clicked, show a toast with the TextView text
-
+if(position != myjobids.size()){
 				itemSelected=parent.getItemAtPosition(position).toString();
 				// Parse the inputstream
 				Job myjobid = myjobids.get(position);
@@ -88,7 +99,15 @@ lled when the activity is first created. */
 
 
 				myIntent.putExtra("jid", myjobid.getJid());
-				startActivity(myIntent);				
+				startActivity(myIntent);	
+}else{
+
+	ProgressDialog dialog = ProgressDialog.show(view.getContext(), "","Downloading/Loading. Please wait...", true);
+
+
+	
+	dialog.dismiss();
+}
 
 			}
 		});
@@ -97,6 +116,7 @@ lled when the activity is first created. */
 
 			public boolean onItemLongClick(AdapterView<?> parent, View arg1,
 					final int position2, long arg3) {
+				if(position2 != myjobids.size()){
 
 				itemSelected=parent.getItemAtPosition(position2).toString();
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -134,15 +154,18 @@ lled when the activity is first created. */
 				builder.show();	
 
 
-
+				}
 
 				// TODO Auto-generated method stub
 				return false;
 			}
+				
+			
 		});		
 
 
 		datasource.close();
+		
 
 	}
 

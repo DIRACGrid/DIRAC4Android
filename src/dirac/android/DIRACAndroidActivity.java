@@ -220,7 +220,7 @@ public class DIRACAndroidActivity extends Activity{
 				myProgress = 0;
 				
 	//			performApiCallStats  task = new performApiCallStats();
-				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
 	//			task.execute(new String[] { Constants.API_HISTORY});
 
 
@@ -235,8 +235,8 @@ public class DIRACAndroidActivity extends Activity{
 					//	myStrings = myStrings+s
 					//	;
 					performApiCall task2 = new performApiCall();
-				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status="+myStrings+"&flatten=true" });
-					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=100&status="+s+"&"+JobType });	
+				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+myStrings+"&flatten=true" });
+					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+s+"&"+JobType });	
 				}
 
 

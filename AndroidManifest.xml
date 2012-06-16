@@ -27,6 +27,10 @@
             android:name="JobActivity"
             android:label="JobActivity" >
         </activity>
+               <activity
+            android:name="JobDescriptionActivity"
+            android:label="JobDescriptionActivity" >
+        </activity>
         
                <activity
             android:name="StateActivity"

@@ -1,16 +1,9 @@
 package dirac.android;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -45,6 +38,7 @@ public class JobsDataSource {
 			 MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , 
 			 MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, 
 			 MySQLiteHelper.COLUMN_JOB_FLAG_KILLED,
+			 MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED,
 			 MySQLiteHelper.COLUMN_JOB_JOB_GROUP , 
 			 MySQLiteHelper.COLUMN_JOB_RESCHEDULES ,
 			 MySQLiteHelper.COLUMN_JOB_OWNER,
@@ -55,7 +49,6 @@ public class JobsDataSource {
 
 
 
-	private String[] MID = {MySQLiteHelper.COLUMN_JOB_ID};
 
 	public JobsDataSource(Context context) {
 		dbHelper = new MySQLiteHelper(context);
@@ -79,19 +72,20 @@ public class JobsDataSource {
 		values.put(MySQLiteHelper.COLUMN_JOB_APP_STATUS , i.getAppStatus());
 		values.put(MySQLiteHelper.COLUMN_JOB_MINOR_STATUS , i.getMinorStatus());
 		values.put(MySQLiteHelper.COLUMN_JOB_CPU_TIME , i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION, i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, i.getCpuTime());
-		values.put(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, i.getCpuTime());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, i.getTimes().getStartExecution());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, i.getTimes().getLastUpdate());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION, i.getTimes().getSubmission());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, i.getTimes().getLastSOL());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, i.getTimes().getEndExecution());
+		values.put(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, i.getTimes().getHeartBeat());
 		values.put(MySQLiteHelper.COLUMN_JOB_PRIORITY , i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED, i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, i.getPriority());
-		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED, i.getPriority());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, i.getFlags().getDeleted());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED, i.getFlags().getRetrieved());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, i.getFlags().getOutputSandboxReady());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , i.getFlags().getInputSandboxReady());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, i.getFlags().getAccounted());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED, i.getFlags().getKilled());
+		values.put(MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED, i.getFlags().getVerified());
 		values.put(MySQLiteHelper.COLUMN_JOB_JOB_GROUP , i.getJobGroup());
 		values.put(MySQLiteHelper.COLUMN_JOB_RESCHEDULES , i.getReschedules());
 		values.put(MySQLiteHelper.COLUMN_JOB_OWNER , i.getOwner());
@@ -130,19 +124,20 @@ public class JobsDataSource {
 				values.put(MySQLiteHelper.COLUMN_JOB_APP_STATUS , i.getAppStatus());
 				values.put(MySQLiteHelper.COLUMN_JOB_MINOR_STATUS , i.getMinorStatus());
 				values.put(MySQLiteHelper.COLUMN_JOB_CPU_TIME , i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION, i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, i.getCpuTime());
-				values.put(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, i.getCpuTime());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, i.getTimes().getStartExecution());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, i.getTimes().getLastUpdate());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION, i.getTimes().getSubmission());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, i.getTimes().getLastSOL());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, i.getTimes().getEndExecution());
+				values.put(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, i.getTimes().getHeartBeat());
 				values.put(MySQLiteHelper.COLUMN_JOB_PRIORITY , i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED, i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, i.getPriority());
-				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED, i.getPriority());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, i.getFlags().getDeleted());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED, i.getFlags().getRetrieved());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, i.getFlags().getOutputSandboxReady());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , i.getFlags().getInputSandboxReady());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, i.getFlags().getAccounted());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED, i.getFlags().getKilled());
+				values.put(MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED, i.getFlags().getVerified());
 				values.put(MySQLiteHelper.COLUMN_JOB_JOB_GROUP , i.getJobGroup());
 				values.put(MySQLiteHelper.COLUMN_JOB_RESCHEDULES , i.getReschedules());
 				values.put(MySQLiteHelper.COLUMN_JOB_OWNER , i.getOwner());
@@ -216,7 +211,6 @@ public class JobsDataSource {
 		return jobids;
 	}	
 
-	@SuppressWarnings("null")
 	public ArrayList<String[]> getAllJobIDsOfSatusTime() {
 
 		ArrayList<String[]> mysuperList = new ArrayList<String[]>() ;
@@ -328,7 +322,6 @@ public class JobsDataSource {
 		database.insert(MySQLiteHelper.DIRAC_STATS, null,values);
 	}	
 
-	@SuppressWarnings("null")
 	public Status[] getLastUpdate() {	
 		
 
@@ -395,20 +388,26 @@ public class JobsDataSource {
 		job.setSite(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_SITE)));
 		job.setOwnerGroup(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER_GROUP)));
 		job.setAppStatus(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_APP_STATUS)));
-		job.setMinorStatus(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_MINOR_STATUS)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION)));
-		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT)));
+		job.setMinorStatus(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_MINOR_STATUS)));	
+		job.setCpuTime(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_CPU_TIME)));
+		time times = new time();
+		times.setStartExecution(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION)));
+		times.setLastUpdate(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE)));
+		times.setSubmission(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION)));
+		times.setLastSOL(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL)));
+		times.setEndExecution(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION)));
+		times.setHeartBeat(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT)));
+		job.setTimes(times);
 		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_PRIORITY)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED)));
-		job.setPriority(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED)));
+		flag flags = new flag();
+		flags.setDeleted(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_DELETED)));
+		flags.setRetrieved(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED)));
+		flags.setOutputSandboxReady(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY)));
+		flags.setInputSandboxReady(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY)));
+		flags.setAccounted(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED)));
+		flags.setKilled(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_KILLED)));
+		flags.setVerified(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED)));
+		job.setFlags(flags);
 		job.setJobGroup(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_JOB_GROUP)));
 		job.setReschedules(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_RESCHEDULES)));
 		job.setOwner(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER)));

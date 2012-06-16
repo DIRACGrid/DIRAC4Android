@@ -30,6 +30,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_JOB_FLAG_INPUT_SANDBOX_READY="COLUMN_JOB_FLAG_INPUT_SANDBOX_READY";
 	public static final String COLUMN_JOB_FLAG_ACCOUNTED="COLUMN_JOB_FLAG_ACCOUNTED";
 	public static final String COLUMN_JOB_FLAG_KILLED="COLUMN_JOB_FLAG_KILLED";	
+	public static final String COLUMN_JOB_FLAG_VERIFIED="COLUMN_JOB_FLAG_VERIFIED";	
 	public static final String COLUMN_JOB_JOB_GROUP="COLUMN_JOB_JOB_GROUP";
 	public static final String COLUMN_JOB_RESCHEDULES = "COLUMN_JOB_RESCHEDULES";
 	public static final String COLUMN_JOB_OWNER ="COLUMN_JOB_OWNER";
@@ -43,7 +44,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
 
 	private static final String DATABASE_NAME = "dirac.db";
-	private static final int DATABASE_VERSION = 100;
+	private static final int DATABASE_VERSION = 102	;
 
 	// Database creation sql statement
 	private static String DATABASE_CREATE2;
@@ -75,6 +76,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_JOB_FLAG_INPUT_SANDBOX_READY + " TEXT,"
 			+ COLUMN_JOB_FLAG_ACCOUNTED + " TEXT,"
 			+ COLUMN_JOB_FLAG_KILLED + " TEXT,"
+			+ COLUMN_JOB_FLAG_VERIFIED + " TEXT,"
 			+ COLUMN_JOB_JOB_GROUP + " TEXT,"
 			+ COLUMN_JOB_RESCHEDULES + " TEXT,"
 			+ COLUMN_JOB_OWNER + " TEXT,"

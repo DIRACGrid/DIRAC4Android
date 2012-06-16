@@ -6,7 +6,7 @@
 
 
     <TextView
-        android:id="@+id/JOBLVCOLOR"  
+        android:id="@+id/JOBDCOLOR"  
         android:layout_width="fill_parent"
         android:layout_marginTop="10px"   
         android:layout_marginBottom="10px"      
@@ -17,13 +17,13 @@
          />
     
         <LinearLayout   
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"  
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"  
           android:layout_weight="20"
      >   
     
     <ListView
-        android:id="@+id/JOBLV"
+        android:id="@+id/JOBD"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
@@ -32,7 +32,7 @@
     
  
     <TextView
-        android:id="@+id/JOBLVCOLOR2"  
+        android:id="@+id/JOBDCOLOR2"  
         android:layout_width="fill_parent"
         android:layout_marginTop="10px"   
         android:layout_marginBottom="10px"      
@@ -40,6 +40,6 @@
         android:layout_marginRight="10px"
         android:layout_height="10px"  
           android:layout_weight="1"/>
-
+  
 
 </LinearLayout>
