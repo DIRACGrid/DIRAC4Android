@@ -43,7 +43,8 @@ public class StateActivity extends Activity{
 
 	Random r;
 	private 	JobArrayAdapter adapter;
-
+	private View footer; 
+	private ListView lv ;
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 	private String itemSelected;
@@ -94,15 +95,16 @@ lled when the activity is first created. */
 
 
 		// Get reference to ListView holder
-		ListView lv = (ListView) this.findViewById(R.id.STATELV);
+		lv = (ListView) this.findViewById(R.id.STATELV);
 
 
-		View footer = getLayoutInflater().inflate(R.layout.list_footer, null);
+		footer = getLayoutInflater().inflate(R.layout.list_footer, null);
 
 		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
 		footerTV.setText("download more");
 
-		lv.addFooterView(footer);
+		if(myjobids.size()%10 == 0)
+			lv.addFooterView(footer);
 
 		// Set the ListView adapter
 		lv.setAdapter(adapter);
@@ -135,9 +137,10 @@ lled when the activity is first created. */
 					Integer defInt	= 20;
 					Integer nbJob = CacheHelper.readInteger(context, CacheHelper.GETJOBSTYPE2, defInt);
 					SJobs = performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs=10&"+JobType);
+					
 					CacheHelper.writeInteger(context, CacheHelper.GETJOBSTYPE2, (nbJob+10));
 
-
+					Log.i("SJobs",SJobs);
 					datasource.open();
 					dbHelper = new MySQLiteHelper(context);
 					database = dbHelper.getWritableDatabase(); 
@@ -148,10 +151,14 @@ lled when the activity is first created. */
 					datasource.parse(jobs);	
 					database.close();	
 					Log.e(TAG,SJobs);    
-				//	Collections.reverse(jobs.getJobs());
+					Collections.reverse(jobs.getJobs());
+				//	for(int k = 0; k < jobs.getJobs().size(); k++)
+				  //  adapter.addAll(jobs.getJobs());
 					for(int k = 0; k < jobs.getJobs().size(); k++)
-						adapter.add(jobs.getJobs().get(k));
+						 adapter.add(jobs.getJobs().get(k));
 					dialog.dismiss();
+					if(jobs.getJobs().size() <10)
+						lv.removeFooterView(footer);
 
 
 				}

@@ -200,12 +200,22 @@ public class JobsDataSource {
 
 		Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATUS + "= '" + status+ "'",new String [] {});
 
+		//cursor.moveToLast();
+		//while (!cursor.isBeforeFirst()) {
+	//		Job job = cursorToComment(cursor);
+	//		jobids.add(job);
+	//		cursor.moveToPrevious();
+	//	}
+
+
 		cursor.moveToLast();
 		while (!cursor.isBeforeFirst()) {
 			Job job = cursorToComment(cursor);
 			jobids.add(job);
 			cursor.moveToPrevious();
 		}
+		
+		
 		// Make sure to close the cursor
 		cursor.close();
 		return jobids;
@@ -381,6 +391,7 @@ public class JobsDataSource {
 
 
 	private Job cursorToComment(Cursor cursor) {
+
 		Job job = new Job();		
 		job.setJid(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_ID)));
 		job.setName(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_NAME)));
@@ -413,7 +424,8 @@ public class JobsDataSource {
 		job.setOwner(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER)));
 		job.setOwnerDN(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER_DN)));
 		job.setSetup(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_SETUP)));
-		job.setChangeStatusAction(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION)));
+	//	job.setChangeStatusAction(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION)));
+
 		return job;
 	}
 }
