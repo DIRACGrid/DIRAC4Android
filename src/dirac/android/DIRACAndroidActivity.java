@@ -224,20 +224,26 @@ public class DIRACAndroidActivity extends Activity{
 	//			task.execute(new String[] { Constants.API_HISTORY});
 
 
-				PBar.setProgress(10);
+				PBar.setProgress(200);
 				
 				
 				String myStrings = "";
-				for(String s: status){
-					//if(s != status[status.length-1])
-					//	myStrings = myStrings+s+",";
-					//else
-					//	myStrings = myStrings+s
-					//	;
-					performApiCall task2 = new performApiCall();
-				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+myStrings+"&flatten=true" });
-					task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+s+"&"+JobType });	
+				
+				for(int i = 0; i< map.length;i++){
+					if(i < (map.length - 1))
+						myStrings = myStrings+map[i].name()+",";
+					else
+						myStrings = myStrings+map[i].name()
+						;
+					
 				}
+					performApiCall task2 = new performApiCall();
+				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+s+"&flatten=true" });
+					Log.i("jobs",myStrings);
+					task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType });
+	
+				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+myStrings+"&"+JobType });	
+				//}
 
 
 
@@ -535,13 +541,12 @@ public class DIRACAndroidActivity extends Activity{
 				try {
 					response = doGet(url,getConsumer(prefs));
 
-					myProgress += 10;
+					myProgress += 100;
 					publishProgress(myProgress);
-					myProgress += 10;
+					myProgress += 100;
 					publishProgress(myProgress);
-					myProgress += 10;
+					myProgress += 100;
 					publishProgress(myProgress);
-					publishProgress(maxProgress);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -569,11 +574,10 @@ public class DIRACAndroidActivity extends Activity{
 				datasource.parse(jobs);	
 				database.close();	
 			}
-			myProgress+=90;
-			publishProgress(myProgress);
+			publishProgress(maxProgress);
 
 
-		}
+		}	
 	}
 
 
@@ -625,7 +629,7 @@ dialog.dismiss();
 	
 	
 	
-		private String performApiCall(String myUrl) {
+		public String performApiCall(String myUrl) {
 
 			String jsonOutput = "";
 			try {  	      	

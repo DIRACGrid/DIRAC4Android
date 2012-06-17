@@ -43,8 +43,8 @@ public class JobsDataSource {
 			 MySQLiteHelper.COLUMN_JOB_RESCHEDULES ,
 			 MySQLiteHelper.COLUMN_JOB_OWNER,
 			 MySQLiteHelper.COLUMN_JOB_OWNER_DN,
-			 MySQLiteHelper.COLUMN_JOB_SETUP,
-			 MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION,
+			 MySQLiteHelper.COLUMN_JOB_SETUP//,
+			 //MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION,
 			};
 
 
@@ -91,7 +91,7 @@ public class JobsDataSource {
 		values.put(MySQLiteHelper.COLUMN_JOB_OWNER , i.getOwner());
 		values.put(MySQLiteHelper.COLUMN_JOB_OWNER_DN , i.getOwnerDN());
 		values.put(MySQLiteHelper.COLUMN_JOB_SETUP , i.getSetup());
-		values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
+		//values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
 
 		Cursor c = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_ID + "= '" + i.getJid()+ "'",new String [] {});
 		if(!c.moveToFirst())
@@ -143,7 +143,7 @@ public class JobsDataSource {
 				values.put(MySQLiteHelper.COLUMN_JOB_OWNER , i.getOwner());
 				values.put(MySQLiteHelper.COLUMN_JOB_OWNER_DN , i.getOwnerDN());
 				values.put(MySQLiteHelper.COLUMN_JOB_SETUP , i.getSetup());
-				values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
+			//	values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
 				test.insert(values);
 			}			  
 			database.setTransactionSuccessful();
@@ -167,11 +167,11 @@ public class JobsDataSource {
 
 
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
+		cursor.moveToLast();
+		while (!cursor.isBeforeFirst()) {
 			Job job = cursorToComment(cursor);
 			jobids.add(job);
-			cursor.moveToNext();
+			cursor.moveToPrevious();
 		}
 		// Make sure to close the cursor
 		cursor.close();
@@ -200,11 +200,11 @@ public class JobsDataSource {
 
 		Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATUS + "= '" + status+ "'",new String [] {});
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
+		cursor.moveToLast();
+		while (!cursor.isBeforeFirst()) {
 			Job job = cursorToComment(cursor);
 			jobids.add(job);
-			cursor.moveToNext();
+			cursor.moveToPrevious();
 		}
 		// Make sure to close the cursor
 		cursor.close();

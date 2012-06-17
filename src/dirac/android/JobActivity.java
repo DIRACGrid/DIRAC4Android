@@ -74,7 +74,7 @@ public class JobActivity extends Activity {
 		View footer = getLayoutInflater().inflate(R.layout.list_footer, null);
 
 		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
-		footerTV.setText("get descriptions");
+		footerTV.setText("get description");
 		
 		lv.addFooterView(footer);
 

@@ -81,8 +81,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_JOB_RESCHEDULES + " TEXT,"
 			+ COLUMN_JOB_OWNER + " TEXT,"
 			+ COLUMN_JOB_OWNER_DN + " TEXT,"
-			+ COLUMN_JOB_SETUP + " TEXT,"
-			+ COLUMN_JOB_CHANGE_STATUS_ACTION + " TEXT"
+			+ COLUMN_JOB_SETUP + " TEXT "
+			//+ COLUMN_JOB_CHANGE_STATUS_ACTION + " TEXT"
 			+ ");";
 
 
