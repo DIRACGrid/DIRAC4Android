@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import android.app.Activity;
@@ -38,7 +39,7 @@ public class PrepareRequestTokenActivity extends Activity {
     	try {
         	System.setProperty("debug", "true");
     	      this.consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-    	        this.provider = new CommonsHttpOAuthProvider(
+    	        this.provider = new DefaultOAuthProvider(
     	        		Constants.REQUEST_URL,
     	        		Constants.ACCESS_URL,
     	        		Constants.AUTHORIZE_URL);
@@ -57,8 +58,14 @@ public class PrepareRequestTokenActivity extends Activity {
 	@Override
 	public void onNewIntent(Intent intent) {
 		super.onNewIntent(intent); 
+		Log.i("TEEEEESSSSSTTTTT1", "Callback received : " );
+
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Log.i("TEEEEESSSSSTTTTT", "Callback received : " );
+
 		final Uri uri = intent.getData();
+		Log.i(TAG, "Callback received : " + uri);
+
 		if (uri != null && uri.getScheme().equals(Constants.OAUTH_CALLBACK_SCHEME)) {
 			Log.i(TAG, "Callback received : " + uri);
 			Log.i(TAG, "Retrieving Access Token");

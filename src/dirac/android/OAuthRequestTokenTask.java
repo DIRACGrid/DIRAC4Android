@@ -53,10 +53,12 @@ public class OAuthRequestTokenTask extends AsyncTask<Void, Void, Void> {
 
 		try {
 			Log.i(TAG, "Retrieving request token from DIRAC servers");
+			Log.i(TAG, "call back url "+Constants.OAUTH_CALLBACK_URL);
+
 			final String url = provider.retrieveRequestToken(consumer, Constants.OAUTH_CALLBACK_URL);
 			Log.i(TAG, "Popping a browser with the authorize URL : " + url);
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url)).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_FROM_BACKGROUND);
-			Log.i(TAG, Uri.parse(url).toString());
+			Log.i(TAG+"her", Uri.parse(url).toString());
 
 			context.startActivity(intent);
 

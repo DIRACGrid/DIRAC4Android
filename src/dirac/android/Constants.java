@@ -26,8 +26,8 @@ public class Constants {
 
 	public static final String ENCODING 		= "UTF-8";
 
-	public static final String	OAUTH_CALLBACK_SCHEME	= "test";
-	public static final String	OAUTH_CALLBACK_HOST		= "yeah";
-	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME + "://" + OAUTH_CALLBACK_HOST;
+	public static final String	OAUTH_CALLBACK_SCHEME	= "http";
+	public static final String	OAUTH_CALLBACK_HOST		= "callback";
+	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME+"://"+OAUTH_CALLBACK_HOST;
 
 }

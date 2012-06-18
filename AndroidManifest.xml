@@ -22,12 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
                <activity
             android:name="JobActivity"
             android:label="JobActivity" >
         </activity>
-               <activity
+                    <activity
             android:name="JobDescriptionActivity"
             android:label="JobDescriptionActivity" >
         </activity>
@@ -41,19 +40,36 @@
             android:name="FilterSettingsActivity"
             android:label="FilterSettingsActivity" >
         </activity>
-           <activity
-            android:name="PrepareRequestTokenActivity"
-            android:label="PrepareRequestTokenActivity" >
+              <activity
+            android:name="UserProfileActivity"
+            android:label="UserProfileActivity" >
         </activity>
-        
+       
+                
         <activity android:name=".PrepareRequestTokenActivity" android:launchMode="singleTask">>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW" />
-		<category android:name="android.intent.category.DEFAULT" />
-		<category android:name="android.intent.category.BROWSABLE" />
-		<data android:scheme="x-oauthflow" android:host="callback" />
-	</intent-filter>
+
+      <intent-filter>
+        <action
+          android:name="android.intent.action.MAIN" />
+        <category
+          android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+
+      <!-- Used for OAuth callback -->
+      <intent-filter>
+        <action
+          android:name="android.intent.action.VIEW" />
+        <category
+          android:name="android.intent.category.DEFAULT" />
+        <category
+          android:name="android.intent.category.BROWSABLE" />
+        <data
+          android:scheme="http"
+          android:host="callback" />
+      </intent-filter>
+
 </activity>
+        
         
         <activity android:name="org.achartengine.GraphicalActivity" />
                

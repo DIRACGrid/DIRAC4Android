@@ -81,9 +81,6 @@ public class DIRACAndroidActivity extends Activity{
 	private static final int Stat_Menu1 = Menu.FIRST+3;
 	public static final String PREFS_NAME = "MyPrefsFile";
 	Random r;
-	public static final String DIRAC_REQUEST_TOKEN_URL = "http://lhcb01.ecm.ub.es:9345/oauth/request_token";
-	public static final String DIRAC_ACCESS_TOKEN_URL  = "http://lhcb01.ecm.ub.es:9345/oauth/access_token";
-	public static final String DIRAC_AUTHORIZE_URL     = "http://lhcb01.ecm.ub.es:9345/oauth/authorize";
 	private Intent StatsIntent;
 
 
@@ -134,7 +131,7 @@ public class DIRACAndroidActivity extends Activity{
 		database.close();	
 		datasource.close();
 
-		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 
 		//  performApiCall();
@@ -218,30 +215,30 @@ public class DIRACAndroidActivity extends Activity{
 				PBar.setProgress(0);
 
 				myProgress = 0;
-				
-	//			performApiCallStats  task = new performApiCallStats();
+
+				//			performApiCallStats  task = new performApiCallStats();
 				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-	//			task.execute(new String[] { Constants.API_HISTORY});
+				//			task.execute(new String[] { Constants.API_HISTORY});
 
 
 				PBar.setProgress(200);
-				
-				
+
+
 				String myStrings = "";
-				
+
 				for(int i = 0; i< map.length;i++){
 					if(i < (map.length - 1))
 						myStrings = myStrings+map[i].name()+",";
 					else
 						myStrings = myStrings+map[i].name()
 						;
-					
+
 				}
-					performApiCall task2 = new performApiCall();
+				performApiCall task2 = new performApiCall();
 				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+s+"&flatten=true" });
-					Log.i("jobs",myStrings);
-					task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType });
-	
+				Log.i("jobs",myStrings);
+				task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType });
+
 				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+myStrings+"&"+JobType });	
 				//}
 
@@ -493,7 +490,7 @@ public class DIRACAndroidActivity extends Activity{
 				SSummary = performApiCall(Constants.API_SUMMARY);
 			else
 				SSummary = performApiCall(Constants.API_SUMMARY+"?"+JobType);
-			
+
 			summary = gson.fromJson(SSummary, StatusSummary.class);
 			datasource.parseSummary(summary);	
 			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
@@ -516,12 +513,12 @@ public class DIRACAndroidActivity extends Activity{
 		case Stat_Menu1:
 
 			if (StatsIntent== null){
-				
+
 				performApiCallStats  task = new performApiCallStats();
 				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
 				task.execute(new String[] { Constants.API_HISTORY});
 			}
-			
+
 			return true;
 		}	
 
@@ -588,28 +585,28 @@ public class DIRACAndroidActivity extends Activity{
 			for (String url : urls) {
 
 				try {
-					
 
-					
+
+
 					response = doGet(url,getConsumer(prefs));
-					
+
 					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
 
 
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-startActivity(StatsIntent);
+			startActivity(StatsIntent);
 
-try {
-	Thread.sleep(2);
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-dialog.dismiss();
+			try {
+				Thread.sleep(2);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			dialog.dismiss();
 			return StatsIntent;
 
 		}
@@ -619,108 +616,76 @@ dialog.dismiss();
 		}
 
 		protected void onPostExecute(String result) {
-			
+
 
 		}
 
 	}
-	
-	
-	
-	
-	
-		public String performApiCall(String myUrl) {
-
-			String jsonOutput = "";
-			try {  	      	
-
-				try{
-					jsonOutput = doGet(myUrl,getConsumer(this.prefs));
-
-				}catch (Exception e) {
-					Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
-				}
-
-			} catch (Exception e) {
-				Log.e(TAG, "Error executing request",e);
-			}
-			return jsonOutput;
-		}
 
 
 
 
 
-		public void onActivityResult(int reqCode, int resultCode, Intent data) {
-			super.onActivityResult(reqCode, resultCode, data);
+	public String performApiCall(String myUrl) {
 
-			switch (reqCode) {
-			case (PICK_CONTACT) :
-				if (resultCode == Activity.RESULT_OK) {
-					Uri contactData = data.getData();
-					Cursor c =  managedQuery(contactData, null, null, null, null);
-					if (c.moveToFirst()) {
-						//	          String name = c.getString(c.getColumnIndexOrThrow(People.NAME));
-						//         Log.i(TAG,"Response : " + "Selected contact : " + name);
-					}
-				}
-			break;
-			}
-		}	
-
-		private void clearCredentials() {
-
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			final Editor edit = prefs.edit();
-			edit.remove(OAuth.OAUTH_TOKEN);
-			edit.remove(OAuth.OAUTH_TOKEN_SECRET);
-			edit.commit();
-		}
-
-
-		private OAuthConsumer getConsumer(SharedPreferences prefs) {
-
-			//String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-			//	String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
-			String token = Constants.ACCESS_TOKEN;
-			String secret = Constants.ACCESS_TOKEN_SECRET;
-			//("getConsumer",token);
-			//Log.d("getConsumer",secret);
-			OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-			consumer.setTokenWithSecret(token, secret);
-			//	Log.d("getConsumer",consumer.toString());
-			return consumer;
-		}
-
-		private String doGet(String url,OAuthConsumer consumer) throws Exception {
-			Log.i(TAG,"Requesting URL : " + url);
+		String jsonOutput = "";
+		try {  	      	
 
 			try{
-				DefaultHttpClient httpclient = new DefaultHttpClient();
-				HttpGet request = new HttpGet(url);
-				Log.i(TAG,"Requesting URL : " + url);
-				consumer.sign(request);
-				HttpResponse response = httpclient.execute(request);
-				Log.i(TAG,"Statusline : " + response.getStatusLine());
-				InputStream data = response.getEntity().getContent();
-				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-				String responeLine;
-				StringBuilder responseBuilder = new StringBuilder();
-				while ((responeLine = bufferedReader.readLine()) != null) {
-					responseBuilder.append(responeLine);
-				}
-				Log.i(TAG,"Response : " + responseBuilder.toString());
-				return responseBuilder.toString();
+				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
+
 			}catch (Exception e) {
-				Log.e(TAG, "Error executing request",e);
-				//	textView.setText("Error retrieving contacts : " + jsonOutput);
-				return "";
-
+				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
 			}
-		}	
+
+		} catch (Exception e) {
+			Log.e(TAG, "Error executing request",e);
+		}
+		return jsonOutput;
+	}
 
 
 
-	
+	private OAuthConsumer getConsumer(SharedPreferences prefs) {
+
+		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+
+
+		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
+		consumer.setTokenWithSecret(token, secret);
+		//	Log.d("getConsumer",consumer.toString());
+		return consumer;
+	}
+
+	private String doGet(String url,OAuthConsumer consumer) throws Exception {
+		Log.i(TAG,"Requesting URL : " + url);
+
+		try{
+			DefaultHttpClient httpclient = new DefaultHttpClient();
+			HttpGet request = new HttpGet(url);
+			Log.i(TAG,"Requesting URL : " + url);
+			consumer.sign(request);
+			HttpResponse response = httpclient.execute(request);
+			Log.i(TAG,"Statusline : " + response.getStatusLine());
+			InputStream data = response.getEntity().getContent();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
+			String responeLine;
+			StringBuilder responseBuilder = new StringBuilder();
+			while ((responeLine = bufferedReader.readLine()) != null) {
+				responseBuilder.append(responeLine);
+			}
+			Log.i(TAG,"Response : " + responseBuilder.toString());
+			return responseBuilder.toString();
+		}catch (Exception e) {
+			Log.e(TAG, "Error executing request",e);
+			//	textView.setText("Error retrieving contacts : " + jsonOutput);
+			return "";
+
+		}
+	}	
+
+
+
+
 }

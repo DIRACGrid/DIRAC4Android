@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -28,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -86,6 +88,7 @@ lled when the activity is first created. */
 
 		CacheHelper.writeInteger(context, CacheHelper.GETJOBSTYPE2, myjobids.size());
 
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 		//T1.setBackgroundResource(R.color.completed);
 
@@ -217,7 +220,7 @@ lled when the activity is first created. */
 
 		});		
 
-
+ 
 		datasource.close();
 
 
@@ -249,13 +252,10 @@ lled when the activity is first created. */
 
 	private OAuthConsumer getConsumer(SharedPreferences prefs) {
 
-		//String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		//	String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
+		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
+		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
 
-		String token = Constants.ACCESS_TOKEN;
-		String secret = Constants.ACCESS_TOKEN_SECRET;
-		//("getConsumer",token);
-		//Log.d("getConsumer",secret);
+		
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
 		//	Log.d("getConsumer",consumer.toString());

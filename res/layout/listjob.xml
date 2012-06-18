@@ -20,7 +20,7 @@
 		android:paddingLeft="10dip"
 		android:paddingRight="10dip"
 		android:layout_gravity="center"
-		android:layout_width="2px"
+		android:layout_width="5px"
 		android:layout_height="wrap_content"
 		android:background="#f00" />
 	
@@ -31,6 +31,7 @@
 		android:paddingLeft="10dip"
 		android:layout_gravity="left"
 		android:layout_width="160px"
+		android:gravity="center_vertical"
 		android:layout_height="wrap_content" />
 	
 	<TextView

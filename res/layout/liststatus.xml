@@ -20,7 +20,7 @@
 		android:paddingLeft="10dip"
 		android:paddingRight="10dip"
 		android:layout_gravity="center"
-		android:layout_width="5px"
+		android:layout_width="10px"
 		android:layout_height="wrap_content"
 		android:background="#f00" />
 	

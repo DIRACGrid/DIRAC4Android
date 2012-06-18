@@ -12,7 +12,7 @@
         android:layout_marginBottom="10px"      
         android:layout_marginLeft="10px"   
         android:layout_marginRight="10px"
-        android:layout_height="10px"
+        android:layout_height="15px"
                 android:layout_weight="1"
          />
     
@@ -38,7 +38,7 @@
         android:layout_marginBottom="10px"      
         android:layout_marginLeft="10px"   
         android:layout_marginRight="10px"
-        android:layout_height="10px"  
+        android:layout_height="15px"  
           android:layout_weight="1"/>
 
 
