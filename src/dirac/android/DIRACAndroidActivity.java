@@ -60,6 +60,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.google.gson.Gson;
 
 
@@ -68,7 +69,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
-public class DIRACAndroidActivity extends Activity{
+public class DIRACAndroidActivity extends SherlockActivity{
 	private static final int MENU_NEW_GAME = 0;
 	private static final int PICK_CONTACT = 0;
 	final String TAG = getClass().getName();
@@ -461,73 +462,73 @@ public class DIRACAndroidActivity extends Activity{
 
 
 
-	public boolean onCreateOptionsMenu(Menu menu){
+//	public boolean onCreateOptionsMenu(Menu menu){
+//
+//
+//
+//		menu.add(0,UpMenu1 , 0, "Update");
+//		menu.add(0,Filt_Menu1 , 0, "Filters");
+//		menu.add(0,User_Menu1 , 0, "User Profile");
+//		menu.add(0,Stat_Menu1 , 0, "Stats");
+//
+//
+//		return true;
+//
+//	}
 
-
-
-		menu.add(0,UpMenu1 , 0, "Update");
-		menu.add(0,Filt_Menu1 , 0, "Filters");
-		menu.add(0,User_Menu1 , 0, "User Profile");
-		menu.add(0,Stat_Menu1 , 0, "Stats");
-
-
-		return true;
-
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
-
-		Gson gson = new Gson();
-		String SSummary ;
-		StatusSummary summary;
-
-		apiCall = new PerformAPICall(context,prefs);
-		switch (item.getItemId()) {
-
-		case UpMenu1:
-			database = dbHelper.getWritableDatabase();
-			datasource.open();		
-			String SdefValue = "";
-			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
-			if (JobType == "")
-				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
-			else
-				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
-
-			summary = gson.fromJson(SSummary, StatusSummary.class);
-			datasource.parseSummary(summary);	
-			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
-			loadDataOnScreen();
-			database.close();		
-			datasource.close();
-			dialog.dismiss();
-			return true;
-		case Filt_Menu1:
-			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
-			startActivity(myIntent);
-			dialog.dismiss();
-			return true;  
-		case User_Menu1:
-			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
-			startActivity(myIntent2);
-			dialog.dismiss();
-
-			return true;  
-		case Stat_Menu1:
-
-			if (StatsIntent== null){
-
-				performApiCallStats  task = new performApiCallStats();
-				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-				task.execute(new String[] { Constants.API_HISTORY});
-			}
-
-			return true;
-		}	
-
-		return false;
-	}
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
+//
+//		Gson gson = new Gson();
+//		String SSummary ;
+//		StatusSummary summary;
+//
+//		apiCall = new PerformAPICall(context,prefs);
+//		switch (item.getItemId()) {
+//
+//		case UpMenu1:
+//			database = dbHelper.getWritableDatabase();
+//			datasource.open();		
+//			String SdefValue = "";
+//			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+//			if (JobType == "")
+//				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
+//			else
+//				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
+//
+//			summary = gson.fromJson(SSummary, StatusSummary.class);
+//			datasource.parseSummary(summary);	
+//			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
+//			loadDataOnScreen();
+//			database.close();		
+//			datasource.close();
+//			dialog.dismiss();
+//			return true;
+//		case Filt_Menu1:
+//			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
+//			startActivity(myIntent);
+//			dialog.dismiss();
+//			return true;  
+//		case User_Menu1:
+//			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
+//			startActivity(myIntent2);
+//			dialog.dismiss();
+//
+//			return true;  
+//		case Stat_Menu1:
+//
+//			if (StatsIntent== null){
+//
+//				performApiCallStats  task = new performApiCallStats();
+//				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+//				task.execute(new String[] { Constants.API_HISTORY});
+//			}
+//
+//			return true;
+//		}	
+//
+//		return false;
+//	}
 
 
 
