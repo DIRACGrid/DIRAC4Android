@@ -102,7 +102,7 @@ public class DIRACAndroidActivity extends Activity{
 	protected ProgressBar PBar;
 	private int myProgress;
 	private int maxProgress  = 1100;
-
+	private PerformAPICall apiCall;
 
 	@Override	
 	public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +115,7 @@ public class DIRACAndroidActivity extends Activity{
 		datasource.open();
 		dbHelper = new MySQLiteHelper(context);
 		database = dbHelper.getWritableDatabase(); 
+
 
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -234,10 +235,14 @@ public class DIRACAndroidActivity extends Activity{
 						;
 
 				}
-				performApiCall task2 = new performApiCall();
+				apiCall.SetProgressBar(PBar);
+				apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType, "");
+				
+				
+			//	performApiCall task2 = new performApiCall();
 				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+s+"&flatten=true" });
-				Log.i("jobs",myStrings);
-				task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType });
+				//Log.i("jobs",myStrings);
+				//task2.execute(new String[] { });
 
 				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+myStrings+"&"+JobType });	
 				//}
@@ -387,11 +392,11 @@ public class DIRACAndroidActivity extends Activity{
 		try {
 			jObject1 = new JSONObject(result);
 			JSONObject menuObject = jObject1.getJSONObject("data");
-			renderer.setAxisTitleTextSize(16);
-			renderer.setChartTitleTextSize(20);
-			renderer.setLabelsTextSize(10);
-			renderer.setLegendTextSize(30);
-			renderer.setMargins(new int[] {20, 30, 15, 0});
+			renderer.setAxisTitleTextSize(30);
+			renderer.setChartTitleTextSize(30);
+			renderer.setLabelsTextSize(24);
+			renderer.setLegendTextSize(40);
+			renderer.setMargins(new int[] {70, 70, 70,70});
 			renderer.setAxesColor(Color.DKGRAY);
 			renderer.setLabelsColor(Color.LTGRAY);
 			renderer.setAntialiasing(true);
@@ -434,11 +439,9 @@ public class DIRACAndroidActivity extends Activity{
 
 					String sdate = StatusN.getString(k);
 					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
-					String attributeValue = Status.getString(sdate);
+					double  log10 = java.lang.Math.log10(Float.parseFloat((Status.getString(sdate))));
 
-
-
-					series.add(time.getTime(), Double.valueOf(attributeValue));					
+					series.add(time.getTime(), log10);					
 				}	
 
 				dataset.addSeries(series);
@@ -479,6 +482,7 @@ public class DIRACAndroidActivity extends Activity{
 		String SSummary ;
 		StatusSummary summary;
 
+		apiCall = new PerformAPICall(context,prefs);
 		switch (item.getItemId()) {
 
 		case UpMenu1:
@@ -487,9 +491,9 @@ public class DIRACAndroidActivity extends Activity{
 			String SdefValue = "";
 			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 			if (JobType == "")
-				SSummary = performApiCall(Constants.API_SUMMARY);
+				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
 			else
-				SSummary = performApiCall(Constants.API_SUMMARY+"?"+JobType);
+				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
 
 			summary = gson.fromJson(SSummary, StatusSummary.class);
 			datasource.parseSummary(summary);	
