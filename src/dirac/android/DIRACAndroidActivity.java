@@ -190,8 +190,8 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
     		return true;
     	} else if (mLocations[itemPosition].compareTo("Stats") == 0){
     		if (StatsIntent== null){
-				performApiCallStats  task = new performApiCallStats();
-				task.execute(new String[] {Constants.API_HISTORY});
+		//		performApiCallStats  task = new performApiCallStats();
+		//		task.execute(new String[] {Constants.API_HISTORY});
 			}
     	}
         return true;
