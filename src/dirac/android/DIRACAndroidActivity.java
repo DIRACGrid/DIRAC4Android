@@ -378,6 +378,75 @@ public class DIRACAndroidActivity extends Activity{
 
 
 
+	public boolean onCreateOptionsMenu(Menu menu){
+
+
+
+		menu.add(0,UpMenu1 , 0, "Update");
+		menu.add(0,Filt_Menu1 , 0, "Filters");
+		menu.add(0,User_Menu1 , 0, "User Profile");
+		menu.add(0,Stat_Menu1 , 0, "Stats");
+
+
+		return true;
+
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
+
+		Gson gson = new Gson();
+		String SSummary ;
+		StatusSummary summary;
+
+		apiCall = new PerformAPICall(context,prefs);
+		switch (item.getItemId()) {
+
+		case UpMenu1:
+			database = dbHelper.getWritableDatabase();
+			datasource.open();		
+			String SdefValue = "";
+			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+			if (JobType == "")
+				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
+			else
+				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
+
+			summary = gson.fromJson(SSummary, StatusSummary.class);
+			datasource.parseSummary(summary);	
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
+			loadDataOnScreen();
+			database.close();		
+			datasource.close();
+			dialog.dismiss();
+			return true;
+		case Filt_Menu1:
+			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
+			startActivity(myIntent);
+			dialog.dismiss();
+			return true;  
+		case User_Menu1:
+			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
+			startActivity(myIntent2);
+			dialog.dismiss();
+
+			return true;  
+		case Stat_Menu1:
+
+			if (StatsIntent== null){
+
+			//	performApiCallStats  task = new performApiCallStats();
+				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
+				//task.execute(new String[] { Constants.API_HISTORY});
+			}
+
+			return true;
+		}	
+
+		return false;
+	}
+
+
 
 
 
@@ -455,239 +524,11 @@ public class DIRACAndroidActivity extends Activity{
 			e1.printStackTrace();
 		} 
 
-		Intent intent = ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
+		Intent intent = new Intent() ;//= ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
 		return intent;
 	}
 
 
-
-	public boolean onCreateOptionsMenu(Menu menu){
-
-
-
-		menu.add(0,UpMenu1 , 0, "Update");
-		menu.add(0,Filt_Menu1 , 0, "Filters");
-		menu.add(0,User_Menu1 , 0, "User Profile");
-		menu.add(0,Stat_Menu1 , 0, "Stats");
-
-
-		return true;
-
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
-
-		Gson gson = new Gson();
-		String SSummary ;
-		StatusSummary summary;
-
-		apiCall = new PerformAPICall(context,prefs);
-		switch (item.getItemId()) {
-
-		case UpMenu1:
-			database = dbHelper.getWritableDatabase();
-			datasource.open();		
-			String SdefValue = "";
-			String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
-			if (JobType == "")
-				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
-			else
-				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
-
-			summary = gson.fromJson(SSummary, StatusSummary.class);
-			datasource.parseSummary(summary);	
-			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
-			loadDataOnScreen();
-			database.close();		
-			datasource.close();
-			dialog.dismiss();
-			return true;
-		case Filt_Menu1:
-			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
-			startActivity(myIntent);
-			dialog.dismiss();
-			return true;  
-		case User_Menu1:
-			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
-			startActivity(myIntent2);
-			dialog.dismiss();
-
-			return true;  
-		case Stat_Menu1:
-
-			if (StatsIntent== null){
-
-				performApiCallStats  task = new performApiCallStats();
-				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=100&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-				task.execute(new String[] { Constants.API_HISTORY});
-			}
-
-			return true;
-		}	
-
-		return false;
-	}
-
-
-
-	public class performApiCall extends AsyncTask<String, Integer, String> {
-
-
-
-		protected String doInBackground(String... urls) {
-			String response = "";
-			for (String url : urls) {
-
-				try {
-					response = doGet(url,getConsumer(prefs));
-
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
-					publishProgress(myProgress);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-			return response;
-
-		}
-
-		protected void onProgressUpdate(Integer... progress) {
-			// setProgressPercent(progress[0]);
-			PBar.setProgress(progress[0]);
-
-		}
-
-		protected void onPostExecute(String result) {
-
-			if(result != ""){
-
-				datasource.open();
-				database = dbHelper.getWritableDatabase(); 
-				Gson gson = new Gson();
-
-				Jobs  jobs = gson.fromJson(result, Jobs.class);
-				datasource.parse(jobs);	
-				database.close();	
-			}
-			publishProgress(maxProgress);
-
-
-		}	
-	}
-
-
-	public class performApiCallStats extends AsyncTask<String, Integer, Intent > {
-
-		protected Intent doInBackground(String... urls) {
-			String response = "";
-			for (String url : urls) {
-
-				try {
-
-
-
-					response = doGet(url,getConsumer(prefs));
-
-					StatsIntent = DIRACAndroidActivity.this.execute(context, response);
-
-
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			startActivity(StatsIntent);
-
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			dialog.dismiss();
-			return StatsIntent;
-
-		}
-
-		protected void onProgressUpdate(Integer... progress) {
-
-		}
-
-		protected void onPostExecute(String result) {
-
-
-		}
-
-	}
-
-
-
-
-
-	public String performApiCall(String myUrl) {
-
-		String jsonOutput = "";
-		try {  	      	
-
-			try{
-				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
-
-			}catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-		}
-		return jsonOutput;
-	}
-
-
-
-	private OAuthConsumer getConsumer(SharedPreferences prefs) {
-
-		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
-
-		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-		consumer.setTokenWithSecret(token, secret);
-		//	Log.d("getConsumer",consumer.toString());
-		return consumer;
-	}
-
-	private String doGet(String url,OAuthConsumer consumer) throws Exception {
-		Log.i(TAG,"Requesting URL : " + url);
-
-		try{
-			DefaultHttpClient httpclient = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url);
-			Log.i(TAG,"Requesting URL : " + url);
-			consumer.sign(request);
-			HttpResponse response = httpclient.execute(request);
-			Log.i(TAG,"Statusline : " + response.getStatusLine());
-			InputStream data = response.getEntity().getContent();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-			String responeLine;
-			StringBuilder responseBuilder = new StringBuilder();
-			while ((responeLine = bufferedReader.readLine()) != null) {
-				responseBuilder.append(responeLine);
-			}
-			Log.i(TAG,"Response : " + responseBuilder.toString());
-			return responseBuilder.toString();
-		}catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-			//	textView.setText("Error retrieving contacts : " + jsonOutput);
-			return "";
-
-		}
-	}	
 
 
 

@@ -37,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,10 @@ public class StateActivity extends Activity{
 	List<Job> myjobids;
 	private String state;
 
+	protected ProgressBar PBar;
+	private int myProgress;
+	private int maxProgress  = 1100;
+	private PerformAPICall apiCall;
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
 	/** Ca	private CommentsDataSource datasource;
@@ -112,6 +117,7 @@ lled when the activity is first created. */
 		// Set the ListView adapter
 		lv.setAdapter(adapter);
 
+		apiCall = new PerformAPICall(context,prefs);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			@SuppressWarnings("unchecked")
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -139,14 +145,14 @@ lled when the activity is first created. */
 					String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 					Integer defInt	= 20;
 					Integer nbJob = CacheHelper.readInteger(context, CacheHelper.GETJOBSTYPE2, defInt);
-					SJobs = performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs=10&"+JobType);
-					
+					SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs=10&"+JobType);
+
 					CacheHelper.writeInteger(context, CacheHelper.GETJOBSTYPE2, (nbJob+10));
 
 					Log.i("SJobs",SJobs);
 					datasource.open();
 					dbHelper = new MySQLiteHelper(context);
-					database = dbHelper.getWritableDatabase(); 
+	 
 					database = dbHelper.getWritableDatabase(); 
 					Gson gson = new Gson();
 
@@ -228,66 +234,6 @@ lled when the activity is first created. */
 
 
 
-
-
-
-	public String performApiCall(String myUrl) {
-
-		String jsonOutput = "";
-		try {  	      	
-
-			try{
-				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
-
-			}catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-		}
-		return jsonOutput;
-	}
-
-
-	private OAuthConsumer getConsumer(SharedPreferences prefs) {
-
-		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
-		
-		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-		consumer.setTokenWithSecret(token, secret);
-		//	Log.d("getConsumer",consumer.toString());
-		return consumer;
-	}
-
-	private String doGet(String url,OAuthConsumer consumer) throws Exception {
-		Log.i(TAG,"Requesting URL : " + url);
-
-		try{
-			DefaultHttpClient httpclient = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url);
-			Log.i(TAG,"Requesting URL : " + url);
-			consumer.sign(request);
-			HttpResponse response = httpclient.execute(request);
-			Log.i(TAG,"Statusline : " + response.getStatusLine());
-			InputStream data = response.getEntity().getContent();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-			String responeLine;
-			StringBuilder responseBuilder = new StringBuilder();
-			while ((responeLine = bufferedReader.readLine()) != null) {
-				responseBuilder.append(responeLine);
-			}
-			Log.i(TAG,"Response : " + responseBuilder.toString());
-			return responseBuilder.toString();
-		}catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-			//	textView.setText("Error retrieving contacts : " + jsonOutput);
-			return "";
-
-		}
-	}	
 
 
 

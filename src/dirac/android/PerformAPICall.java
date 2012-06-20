@@ -8,14 +8,22 @@ import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -35,22 +43,28 @@ public class PerformAPICall {
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
-	private Object Parser;
+	private Class<Jobs> JobsParser;
+	private Class<Status> StautsParser;
 
 
-	public PerformAPICall(Context mycontext, SharedPreferences myprefs){
-		this.context = mycontext;
-		this.prefs = myprefs;	
+	public PerformAPICall(Context myContext, SharedPreferences myPrefs){
+		this.context = myContext;
+		this.prefs = myPrefs;	
 	}
 	public void SetProgressBar(ProgressBar myPB){
 		this.PB = myPB;
 	}
 
-	public void SetClassParser(Object obj){
-		this.Parser = obj;
+
+	public void SetPrefs(SharedPreferences myPrefs){
+		this.prefs = myPrefs;
 	}
 
-	public void performApiCall(String myUrl, String Parser) {
+	public void SetContext(Context myContext){
+		this.context = myContext;
+	}
+
+	public void performApiCall(String myUrl, String type) {
 
 		performApiCall task = new performApiCall();
 		task.execute(new String[] { myUrl });
@@ -161,7 +175,7 @@ public class PerformAPICall {
 				dbHelper = new MySQLiteHelper(context);
 				database = dbHelper.getWritableDatabase(); 
 				Gson gson = new Gson();
-				Jobs  jobs = gson.fromJson(result, Jobs.class);
+				Jobs  jobs = gson.fromJson(result, JobsParser);
 				datasource.parse(jobs);	
 				database.close();	
 			}
@@ -175,14 +189,14 @@ public class PerformAPICall {
 	public class performApiCallStats extends AsyncTask<String, Integer, String > {
 
 		protected String doInBackground(String... urls) {
-			String response = "";
+			String response = "";Intent	StatsIntent;
 			for (String url : urls) {
 
 				try {
 
 					response = doGet(url,getConsumer(prefs));
 
-					//Intent	StatsIntent = DIRACAndroidActivity.this.execute(context, response);
+					StatsIntent = PerformAPICall.this.execute(context, response);
 
 
 
@@ -190,7 +204,7 @@ public class PerformAPICall {
 					e.printStackTrace();
 				}
 			}
-			//startActivity(StatsIntent);
+//			startActivity(StatsIntent);
 
 			try {
 				Thread.sleep(2);
@@ -213,6 +227,89 @@ public class PerformAPICall {
 		}
 
 	}
+
+
+
+
+
+
+	public Intent execute(Context context, String result){
+
+		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+
+		JSONObject jObject1;
+
+		try {
+			jObject1 = new JSONObject(result);
+			JSONObject menuObject = jObject1.getJSONObject("data");
+			renderer.setAxisTitleTextSize(30);
+			renderer.setChartTitleTextSize(30);
+			renderer.setLabelsTextSize(24);
+			renderer.setLegendTextSize(40);
+			renderer.setMargins(new int[] {70, 70, 70,70});
+			renderer.setAxesColor(Color.DKGRAY);
+			renderer.setLabelsColor(Color.LTGRAY);
+			renderer.setAntialiasing(true);
+			renderer.setShowGridX(true);
+			//	ArrayList<String[]> list = datasource.getAllJobIDsOfSatusTime();
+			//	double[] Range = {(double) (list.size()-10),(double) list.size()};
+			//renderer.setRange(Range);
+
+			String[] status = Status.PossibleStatus;
+			int[] Colors = Status.ColorStatus;
+			XYSeriesRenderer r;
+
+
+			for (int i = 0; i < status.length - 1 ; i++) {
+
+				JSONObject Status = null;
+				try{
+					Status = menuObject.getJSONObject(status[i]);
+					Log.i("",status[i]);
+				}catch (Exception e1) {
+					continue;
+				}
+
+
+				JSONArray StatusN = Status.names();
+
+
+
+				//	System.out.println(i);
+				//	System.out.println(status[i]);
+				//	System.out.println(Colors[i]);
+				XYSeries series = new XYSeries("");
+				series.setTitle(status[i]);
+				r = new XYSeriesRenderer();
+				r.setColor(context.getResources().getColor(Colors[i]));
+				r.setLineWidth(4);
+				renderer.addSeriesRenderer(r);
+
+				for (int k = 0; k < StatusN.length(); k++) {
+
+					String sdate = StatusN.getString(k);
+					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
+					double  log10 = java.lang.Math.log10(Float.parseFloat((Status.getString(sdate))));
+
+					series.add(time.getTime(), log10);					
+				}	
+
+				dataset.addSeries(series);
+			}
+
+
+
+
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 
+
+		Intent intent = new Intent() ;//= ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
+		return intent;
+	}
+
 
 
 
