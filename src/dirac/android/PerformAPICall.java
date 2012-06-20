@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,22 +40,24 @@ public class PerformAPICall {
 	private final String TAG = this.getClass().getName();
 	private SharedPreferences prefs;
 	private Context context;
-	private int myProgress;
+	ProgressDialog myProgress;
 
 	private JobsDataSource datasource;
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
-	private Class<Jobs> JobsParser;
-	private Class<Status> StautsParser;
 
 
 	public PerformAPICall(Context myContext, SharedPreferences myPrefs){
 		this.context = myContext;
 		this.prefs = myPrefs;	
+		this.myProgress = new ProgressDialog(context);
 	}
 
 
+	public void SetProgressDialog(ProgressDialog myProgressDialog){
+		this.myProgress = myProgressDialog;
+	}
 	public void SetPrefs(SharedPreferences myPrefs){
 		this.prefs = myPrefs;
 	}
@@ -98,7 +101,6 @@ public class PerformAPICall {
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
-		//	Log.d("getConsumer",consumer.toString());
 		return consumer;
 	}
 
@@ -133,7 +135,10 @@ public class PerformAPICall {
 
 	public class performApiCall extends AsyncTask<String, Integer, String> {
 
+		protected void onPerExecute(String myString) {
+		myProgress =	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
 
+		}	
 
 		protected String doInBackground(String... urls) {
 			String response = "";
@@ -142,12 +147,6 @@ public class PerformAPICall {
 				try {
 					response = doGet(url,getConsumer(prefs));
 
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
-					publishProgress(myProgress);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -171,13 +170,11 @@ public class PerformAPICall {
 				dbHelper = new MySQLiteHelper(context);
 				database = dbHelper.getWritableDatabase(); 
 				Gson gson = new Gson();
-				Jobs  jobs = gson.fromJson(result, JobsParser);
+				Jobs  jobs = gson.fromJson(result, Jobs.class);
 				datasource.parse(jobs);	
 				database.close();	
 			}
-			publishProgress(2000);
-
-
+			myProgress.dismiss();
 		}	
 	}
 
