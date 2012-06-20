@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,7 @@ public class PerformAPICall {
 	private Context context;
 	private int myProgress;
 	private ProgressBar PB;
+	private ProgressDialog PDialog;
 
 	private JobsDataSource datasource;
 
@@ -55,6 +57,10 @@ public class PerformAPICall {
 		this.PB = myPB;
 	}
 
+	public void SetProgressDialog(ProgressDialog myPDialog){
+		this.PDialog = myPDialog;
+	}
+
 
 	public void SetPrefs(SharedPreferences myPrefs){
 		this.prefs = myPrefs;
@@ -64,9 +70,16 @@ public class PerformAPICall {
 		this.context = myContext;
 	}
 
-	public void performApiCall(String myUrl, String type) {
-
+	public void performApiCall(String myUrl, ProgressDialog myPDialog) {
+		SetProgressDialog(myPDialog);
 		performApiCall task = new performApiCall();
+		task.execute(new String[] { myUrl });
+
+	}
+
+
+	public void performApiCallSummary(String myUrl) {
+		performApiCallSummary task = new performApiCallSummary();
 		task.execute(new String[] { myUrl });
 
 	}
@@ -80,6 +93,7 @@ public class PerformAPICall {
 		try {  	      	
 
 			try{
+
 				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
 
 			}catch (Exception e) {
@@ -89,6 +103,8 @@ public class PerformAPICall {
 		} catch (Exception e) {
 			Log.e(TAG, "Error executing request",e);
 		}
+		
+		
 		return jsonOutput;
 	}
 
@@ -98,7 +114,6 @@ public class PerformAPICall {
 
 		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
 		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
@@ -137,7 +152,10 @@ public class PerformAPICall {
 
 	public class performApiCall extends AsyncTask<String, Integer, String> {
 
+		 public void onPreExecute() {			
 
+			PDialog = ProgressDialog.show(context, "", "Downloading 10 Jobs per Status. Please wait...", true);	
+			 }
 
 		protected String doInBackground(String... urls) {
 			String response = "";
@@ -146,11 +164,9 @@ public class PerformAPICall {
 				try {
 					response = doGet(url,getConsumer(prefs));
 
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
-					publishProgress(myProgress);
-					myProgress += 100;
+					PDialog.setMessage("Loading the jobs in the DB. Please wait...");
+
+					myProgress += 500;
 					publishProgress(myProgress);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -175,12 +191,70 @@ public class PerformAPICall {
 				dbHelper = new MySQLiteHelper(context);
 				database = dbHelper.getWritableDatabase(); 
 				Gson gson = new Gson();
-				Jobs  jobs = gson.fromJson(result, JobsParser);
+
+				Jobs  jobs = gson.fromJson(result, Jobs.class);
+
 				datasource.parse(jobs);	
 				database.close();	
+
 			}
+			
+
+			PDialog.dismiss();
 			publishProgress(2000);
 
+		}	
+	}
+
+
+	public class performApiCallSummary extends AsyncTask<String, Integer, String> {
+
+		 public void onPreExecute() {			
+
+			PDialog = ProgressDialog.show(context, "", "Downloading the Summary. Please wait...", true);	
+			 }
+
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+
+				try {
+					response = doGet(url,getConsumer(prefs));
+
+					PDialog.setMessage("Loading the jobs in the DB. Please wait...");
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			return response;
+
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+			// setProgressPercent(progress[0]);
+		PB.setProgress(progress[0]);
+
+		}
+
+		protected void onPostExecute(String result) {
+
+			if(result != ""){
+				datasource = new JobsDataSource(context);
+				datasource.open();
+				dbHelper = new MySQLiteHelper(context);
+				database = dbHelper.getWritableDatabase(); 
+				Gson gson = new Gson();
+
+				StatusSummary  Summary = gson.fromJson(result, StatusSummary.class);
+				datasource.parseSummary(Summary);	
+				database.close();	
+
+			}
+			
+
+			PDialog.dismiss();
 
 		}	
 	}
@@ -189,7 +263,8 @@ public class PerformAPICall {
 	public class performApiCallStats extends AsyncTask<String, Integer, String > {
 
 		protected String doInBackground(String... urls) {
-			String response = "";Intent	StatsIntent;
+			String response = "";
+			Intent	StatsIntent;
 			for (String url : urls) {
 
 				try {

@@ -233,10 +233,12 @@ public class DIRACAndroidActivity extends Activity{
 					else
 						myStrings = myStrings+map[i].name()
 						;
-
+ 
 				}
+			//	dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
 				apiCall.SetProgressBar(PBar);
-				apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType, "");
+				apiCall.SetProgressDialog(dialog);
+				apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType, dialog);
 				
 				
 			//	performApiCall task2 = new performApiCall();
@@ -393,7 +395,6 @@ public class DIRACAndroidActivity extends Activity{
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		dialog = ProgressDialog.show(this, "",                         "Downloading/Loading. Please wait...", true);
 
 		Gson gson = new Gson();
 		String SSummary ;
@@ -418,17 +419,14 @@ public class DIRACAndroidActivity extends Activity{
 			loadDataOnScreen();
 			database.close();		
 			datasource.close();
-			dialog.dismiss();
 			return true;
 		case Filt_Menu1:
 			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
 			startActivity(myIntent);
-			dialog.dismiss();
 			return true;  
 		case User_Menu1:
 			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
 			startActivity(myIntent2);
-			dialog.dismiss();
 
 			return true;  
 		case Stat_Menu1:
