@@ -56,9 +56,8 @@
 
         <TextView
             android:id="@+id/nbtotaljob"
-            android:layout_width="fill_parent"
+            android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="left"
             android:text="Jobs in Dirac: 0" />
 

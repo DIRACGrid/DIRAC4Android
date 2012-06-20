@@ -21,6 +21,9 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Window;
+import com.actionbarsherlock.app.SherlockActivity;
+
 import com.google.gson.Gson;
 
 public class PerformAPICall {
@@ -29,7 +32,6 @@ public class PerformAPICall {
 	private SharedPreferences prefs;
 	private Context context;
 	private int myProgress;
-	private ProgressBar PB;
 
 	private JobsDataSource datasource;
 
@@ -42,9 +44,6 @@ public class PerformAPICall {
 		this.context = mycontext;
 		this.prefs = myprefs;	
 	}
-	public void SetProgressBar(ProgressBar myPB){
-		this.PB = myPB;
-	}
 
 	public void SetClassParser(Object obj){
 		this.Parser = obj;
@@ -56,9 +55,6 @@ public class PerformAPICall {
 		task.execute(new String[] { myUrl });
 
 	}
-
-
-
 
 	public String performApiCall(String myUrl) {
 
@@ -147,11 +143,11 @@ public class PerformAPICall {
 
 		}
 
-		protected void onProgressUpdate(Integer... progress) {
-			// setProgressPercent(progress[0]);
-		PB.setProgress(progress[0]);
-
-		}
+//		protected void onProgressUpdate(Integer... progress) {
+//			// setProgressPercent(progress[0]);
+//			setSupportProgress(progress[0]);
+//
+//		}
 
 		protected void onPostExecute(String result) {
 
