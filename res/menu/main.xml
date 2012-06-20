@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_user"
+          android:icon="@drawable/ic_action_user"
+          android:title="@string/menu_user"
+          android:showAsAction="always|withText">
+       <menu>
+           <item android:id="@+id/menu_mine" android:title="Mine"></item>
+           <item android:id="@+id/menu_all"  android:title="All"></item>     
+       </menu>   
+    </item>
+    <item android:id="@+id/menu_refresh"
+          android:icon="@drawable/ic_action_refresh"
+          android:title="@string/menu_refresh"
+          android:showAsAction="always|withText"/>
+
+          	<item android:id="@+id/manage_filters"
+          		  android:title="Manage filters"
+          		  android:showAsAction="never" />
+    		<item android:id="@+id/manage_certs"
+          		  android:title="Manage Certificates"
+                  android:showAsAction="never"/>
+
+        
+</menu>
