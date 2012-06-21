@@ -1,15 +1,11 @@
 package dirac.android;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.app.AlertDialog;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -17,46 +13,23 @@ import android.util.Log;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.actionbarsherlock.view.Window;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
-import oauth.signpost.OAuth;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-
-import org.achartengine.ChartFactory;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYSeriesRenderer;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +40,6 @@ import com.google.gson.Gson;
 
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
@@ -95,7 +67,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 	/**when the activity is first created. */
 	private String[] mLocations;
 
-	
+
 	private PerformAPICall apiCall;
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,15 +106,15 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
 			else
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
-			
-			
 
-		 int idefValue = 0;
-		Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
+
+
+			int idefValue = 0;
+			Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
 			summary = gson.fromJson(SSummary, StatusSummary.class);
 			Log.d("test",gg.toString());
-			
-			
+
+
 			datasource.parseSummary(summary);	
 			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
 			loadDataOnScreen();
@@ -273,7 +245,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 				setSupportProgress(0);
 
-			
+
 				String myStrings = "";
 
 				for(int i = 0; i< map.length;i++){
@@ -287,7 +259,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 				//dialog = 	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
 
 				//apiCall.SetProgressDialog(dialog);
-				
+
 
 				Integer mymax = 10;
 				mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
