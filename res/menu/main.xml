@@ -15,11 +15,13 @@
           android:showAsAction="always|withText"/>
 
           	<item android:id="@+id/manage_filters"
-          		  android:title="Manage filters"
+          		  android:title="@string/manage_filters"
           		  android:showAsAction="never" />
     		<item android:id="@+id/manage_certs"
-          		  android:title="Manage Certificates"
+          		  android:title="@string/manage_certs"
                   android:showAsAction="never"/>
-
+    		<item android:id="@+id/prefs"
+          		  android:title="@string/preferences"
+                  android:showAsAction="never"/>
         
 </menu>

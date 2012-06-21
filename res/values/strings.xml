@@ -26,5 +26,8 @@
     </string-array>
     <string name="menu_user">User</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="manage_filters">Manage filters</string>
+    <string name="manage_certs">Manage certificates</string>
+    <string name="preferences">Preferences</string>
     
 </resources>
