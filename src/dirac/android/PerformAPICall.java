@@ -9,6 +9,7 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -301,6 +302,7 @@ if(type == "Stats"){
 					String sdate = StatusN.getString(k);
 					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
 					double  log10 = java.lang.Math.log10(Float.parseFloat((Status.getString(sdate))));
+					double  nor = Float.parseFloat((Status.getString(sdate)));
 
 					series.add(time.getTime(), log10);					
 				}	
@@ -316,7 +318,7 @@ if(type == "Stats"){
 			e1.printStackTrace();
 		} 
 
-		return ChartFactory.getTimeChartIntent(context,dataset, renderer, null);
+		return ChartFactory.getTimeChartIntent(context,dataset, renderer,  null );
 		
 	}
 
