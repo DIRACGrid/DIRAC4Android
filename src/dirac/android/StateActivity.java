@@ -54,14 +54,12 @@ public class StateActivity extends Activity{
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
-	private OnItemLongClickListener listener;
 	private JobsDataSource datasource;
 	List<Job> myjobids;
 	private String state;
 
+	Integer mymax = 10;
 	protected ProgressBar PBar;
-	private int myProgress;
-	private int maxProgress  = 1100;
 	private PerformAPICall apiCall;
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
@@ -91,7 +89,7 @@ lled when the activity is first created. */
 		}
 
 
-		CacheHelper.writeInteger(context, CacheHelper.GETJOBSTYPE2, myjobids.size());
+		CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, myjobids.size());
 
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -110,8 +108,9 @@ lled when the activity is first created. */
 
 		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
 		footerTV.setText("download more");
+		mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
 
-		if(myjobids.size()%10 == 0)
+		if(myjobids.size()%mymax == 0)
 			lv.addFooterView(footer);
 
 		// Set the ListView adapter
@@ -119,7 +118,6 @@ lled when the activity is first created. */
 
 		apiCall = new PerformAPICall(context,prefs);
 		lv.setOnItemClickListener(new OnItemClickListener() {
-			@SuppressWarnings("unchecked")
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
@@ -144,10 +142,11 @@ lled when the activity is first created. */
 					String SdefValue = "";
 					String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 					Integer defInt	= 20;
-					Integer nbJob = CacheHelper.readInteger(context, CacheHelper.GETJOBSTYPE2, defInt);
-					SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs=10&"+JobType);
+					Integer nbJob = CacheHelper.readInteger(context, CacheHelper.STARTJOBNB, defInt);
 
-					CacheHelper.writeInteger(context, CacheHelper.GETJOBSTYPE2, (nbJob+10));
+					SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+
+					CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));
 
 					Log.i("SJobs",SJobs);
 					datasource.open();
@@ -166,7 +165,7 @@ lled when the activity is first created. */
 					for(int k = 0; k < jobs.getJobs().size(); k++)
 						 adapter.add(jobs.getJobs().get(k));
 					dialog.dismiss();
-					if(jobs.getJobs().size() <10)
+					if(jobs.getJobs().size() < mymax)
 						lv.removeFooterView(footer);
 
 

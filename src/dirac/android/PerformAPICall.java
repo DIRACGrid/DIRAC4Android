@@ -8,6 +8,7 @@ import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
+import org.achartengine.ChartFactory;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -67,10 +68,14 @@ public class PerformAPICall {
 	}
 
 	public void performApiCall(String myUrl, String type) {
-
-		performApiCall task = new performApiCall();
+if(type == "Stats"){
+		performApiCallStats task = new performApiCallStats();
 		task.execute(new String[] { myUrl });
-
+}else{
+	performApiCall task = new performApiCall();
+	task.execute(new String[] { myUrl });
+	
+}
 	}
 
 	public String performApiCall(String myUrl) {
@@ -135,8 +140,10 @@ public class PerformAPICall {
 
 	public class performApiCall extends AsyncTask<String, Integer, String> {
 
-		protected void onPerExecute(String myString) {
-		myProgress =	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
+		protected void onPreExecute() {
+			Integer mymax = 10;
+			mymax = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, mymax);	
+		myProgress =	ProgressDialog.show(context, "", "Downloading "+mymax.toString()+" Jobs per status. Please wait...\nHow is going your analysis?", true);
 
 		}	
 
@@ -145,8 +152,11 @@ public class PerformAPICall {
 			for (String url : urls) {
 
 				try {
-					response = doGet(url,getConsumer(prefs));
+					
+	
 
+					response = doGet(url,getConsumer(prefs));
+//publishProgress();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -156,11 +166,11 @@ public class PerformAPICall {
 
 		}
 
-//		protected void onProgressUpdate(Integer... progress) {
-//			// setProgressPercent(progress[0]);
-//			setSupportProgress(progress[0]);
-//
-//		}
+		protected void onProgressUpdate() {
+			//myProgress.setMessage("skhshk");
+			//myProgress.show();
+
+		}
 
 		protected void onPostExecute(String result) {
 
@@ -174,15 +184,20 @@ public class PerformAPICall {
 				datasource.parse(jobs);	
 				database.close();	
 			}
-			myProgress.dismiss();
+			if(myProgress.isShowing())
+				myProgress.dismiss();
 		}	
 	}
 
 
 	public class performApiCallStats extends AsyncTask<String, Integer, String > {
+		protected void onPreExecute() {
+			myProgress =	ProgressDialog.show(context, "", "Downloading the stats. Please wait...", true);
 
+			}	
 		protected String doInBackground(String... urls) {
-			String response = "";Intent	StatsIntent;
+			String response = "";
+			Intent	StatsIntent = null;
 			for (String url : urls) {
 
 				try {
@@ -197,7 +212,8 @@ public class PerformAPICall {
 					e.printStackTrace();
 				}
 			}
-//			startActivity(StatsIntent);
+			if(StatsIntent!=null)
+				context.startActivity(StatsIntent);
 
 			try {
 				Thread.sleep(2);
@@ -205,7 +221,6 @@ public class PerformAPICall {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//dialog.dismiss();
 			return response;
 
 		}
@@ -216,6 +231,8 @@ public class PerformAPICall {
 
 		protected void onPostExecute(String result) {
 
+			if(myProgress.isShowing())
+				myProgress.dismiss();
 
 		}
 
@@ -299,8 +316,8 @@ public class PerformAPICall {
 			e1.printStackTrace();
 		} 
 
-		Intent intent = new Intent() ;//= ChartFactory.getTimeChartIntent(this,dataset, renderer, null);
-		return intent;
+		return ChartFactory.getTimeChartIntent(context,dataset, renderer, null);
+		
 	}
 
 

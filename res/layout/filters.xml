@@ -5,17 +5,45 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="209dp"
         android:layout_height="58dp"
         android:orientation="horizontal" >
 
-        <Spinner
-            android:id="@+id/spinner1"
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:prompt="@string/spin_picker" />
+            android:text="Number of jobs to download:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    
 
     </LinearLayout>
+
+    
+    <EditText
+        android:id="@+id/maxJobsEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" >
+
+        <requestFocus />
+    </EditText>
+    
+    <LinearLayout
+        android:layout_width="209dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="save" />
+
+    </LinearLayout>
+
     
 </LinearLayout>

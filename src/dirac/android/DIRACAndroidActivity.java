@@ -72,16 +72,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
 public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.OnNavigationListener {
-	private static final int MENU_NEW_GAME = 0;
-	private static final int PICK_CONTACT = 0;
+
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
 	ProgressDialog dialog;
 
-	private static final int UpMenu1 = Menu.FIRST;
-	private static final int Filt_Menu1 = Menu.FIRST+1;
-	private static final int User_Menu1 = Menu.FIRST+2;
-	private static final int Stat_Menu1 = Menu.FIRST+3;
 	public static final String PREFS_NAME = "MyPrefsFile";
 	Random r;
 	private Intent StatsIntent;
@@ -95,16 +90,12 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 
-	private List<Job> countryList= new  ArrayList<Job>();
-
-	private OnItemLongClickListener listener;
 	private JobsDataSource datasource;
 
 	/**when the activity is first created. */
 	private String[] mLocations;
 
-	private int myProgress;
-	private int maxProgress  = 1100;
+	
 	private PerformAPICall apiCall;
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,20 +107,25 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		Log.d("HERE",String.valueOf(item.getItemId()));
+
 		Gson gson = new Gson();
 		String SSummary ;
 		StatusSummary summary;
+		TextView UserTV = (TextView)findViewById(R.id.userText1);
 
-		apiCall = new PerformAPICall(context,prefs);
+
 		switch (item.getItemId()) {
-		case 2131034193:
+		case R.id.menu_mine:
 			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"");	
+			UserTV.setText("Next Update: My Jobs");			
+
 			return true;
-		case 2131034194:
+		case R.id.menu_all:
 			CacheHelper.writeString(this, CacheHelper.GETJOBSTYPE,"allOwners=true");	
+			UserTV.setText("Next Update: All Onwers");			
+
 			return true;
-		case 2131034195:
+		case R.id.menu_refresh:
 			database = dbHelper.getWritableDatabase();					
 			datasource.open();	
 			String SdefValue = "";
@@ -138,22 +134,28 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
 			else
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
+			
+			
+
+		 int idefValue = 0;
+		Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
 			summary = gson.fromJson(SSummary, StatusSummary.class);
+			Log.d("test",gg.toString());
+			
+			
 			datasource.parseSummary(summary);	
 			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
 			loadDataOnScreen();
 			database.close();	
 			datasource.close();
 			return true;
-		case 2131034196:
+		case R.id.manage_filters:
 			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
 			startActivity(myIntent);
-			dialog.dismiss();
 			return true;  
-		case 2131034197:
+		case R.id.manage_certs:
 			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
 			startActivity(myIntent2);
-			dialog.dismiss();
 			return true;  
 
 		}
@@ -207,6 +209,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		datasource.close();
 
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		apiCall = new PerformAPICall(context,prefs);
 
 
 	}
@@ -216,8 +219,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 			return true;
 		} else if (mLocations[itemPosition].compareTo("Stats") == 0){
 			if (StatsIntent== null){
-				//		performApiCallStats  task = new performApiCallStats();
-				//		task.execute(new String[] {Constants.API_HISTORY});
+				apiCall.performApiCall(Constants.API_HISTORY, "Stats")	;		
 			}
 		}
 		return true;
@@ -271,16 +273,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 				setSupportProgress(0);
 
-				myProgress = 0;
-
-				//			performApiCallStats  task = new performApiCallStats();
-				//task.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status=Waiting,Done,Completed,Running,Staging,Stalled,Failed,Killed&flatten=true" });
-				//			task.execute(new String[] { Constants.API_HISTORY});
-
-
-				//	            int progress = (Window.PROGRESS_END - Window.PROGRESS_START) / 100 * 20;
-				//	            setSupportProgress(progress);
-
+			
 				String myStrings = "";
 
 				for(int i = 0; i< map.length;i++){
@@ -291,7 +284,14 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 						;
 
 				}
-				apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs=10&status="+myStrings+"&flatten=true&"+JobType, "");
+				//dialog = 	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
+
+				//apiCall.SetProgressDialog(dialog);
+				
+
+				Integer mymax = 10;
+				mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
+				apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs="+mymax.toString()+"&status="+myStrings+"&flatten=true&"+JobType, "");
 
 
 				//	performApiCall task2 = new performApiCall();

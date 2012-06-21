@@ -4,22 +4,43 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/getGrant"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="262dp"
+        android:gravity="bottom|end|right|top"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/getGrant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25px"
+            android:layout_marginRight="25px"
+            android:layout_marginTop="25px"
+            android:text="Get Grant Access" />
+
+        <Button
+            android:id="@+id/clearGrant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25px"
+            android:layout_marginRight="25px"
+            android:text="Reset Access" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Get Grant Access"
-        android:layout_marginTop="25px"
-        android:layout_marginRight="25px"
-        android:layout_marginLeft="25px"
-        />
-        
-    <Button
-        android:id="@+id/clearGrant"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Reset Access"
-        android:layout_marginRight="25px"
-        android:layout_marginLeft="25px" />
-    
+        android:gravity="bottom|end|right"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/doneUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25px"
+            android:layout_marginRight="25px"
+            android:text="Done" />
+    </LinearLayout>
+
 </LinearLayout>

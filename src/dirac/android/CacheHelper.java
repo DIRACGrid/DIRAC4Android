@@ -11,9 +11,11 @@ public class CacheHelper {
 	
 	public static final String GETJOBS = "GETJOBS";
 	public static final String GETJOBSTYPE = "GETJOBSTYPE";
-	public static final String GETJOBSTYPE2 = "GETJOBSTYPE2";
+	public static final String STARTJOBNB = "STARTJOBNB";
 	public static final String GETDESCRITPION = "GETDESCRITPION";
 	public static final String NBJOBSDB = "NBJOBSDB";
+	public static final String NMAXBJOBS = "MAXNBJOBSDB";
+
 	public static final String JOBNAME = "JOBNAME";
 	public static final String TIME = "TIME";
 	public static final String FTIME = "FINAL_TIME";
