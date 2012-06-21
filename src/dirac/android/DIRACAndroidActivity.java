@@ -150,10 +150,11 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		setContentView(R.layout.main);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-		mLocations = getResources().getStringArray(R.array.locations);
-		Context context = getSupportActionBar().getThemedContext();
-		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations, R.layout.sherlock_spinner_item);
-		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+        mLocations = getResources().getStringArray(R.array.locations);
+        Context context = getSupportActionBar().getThemedContext();
+        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations, R.layout.spinner_item);
+        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setListNavigationCallbacks(list, this);
