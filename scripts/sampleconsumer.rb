@@ -199,7 +199,7 @@ get '/jobs/:jid' do
 end
 
 get '/jobs/reschedule/:jid' do
-  response = @kitchen.put("/jobs/#{params[:jid]}")
+  response = @kitchen.post("/jobs/#{params[:jid]}")
   if response.code != "200" then
     halt "#{response.code} #{response.msg}"
   end
