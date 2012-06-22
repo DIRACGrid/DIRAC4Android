@@ -198,6 +198,15 @@ get '/jobs/:jid' do
   "<html><body><pre>" + pp_s( data ) + "</pre></body></html>"
 end
 
+get '/jobs/reschedule/:jid' do
+  response = @kitchen.put("/jobs/#{params[:jid]}")
+  if response.code != "200" then
+    halt "#{response.code} #{response.msg}"
+  end
+  data = JSON.parse( response.body )
+  "<html><body><pre>" + pp_s( data ) + "</pre></body></html>"
+end
+
 get '/jobs/:jid/description' do
   response = @kitchen.get("/jobs/#{params[:jid]}/description")
   if response.code != "200" then
