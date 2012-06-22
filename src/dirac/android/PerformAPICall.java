@@ -298,7 +298,7 @@ if(type == "Stats"){
 				renderer.addSeriesRenderer(r);
 
 				for (int k = 0; k < StatusN.length(); k++) {
-
+ 
 					String sdate = StatusN.getString(k);
 					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
 					double  log10 = java.lang.Math.log10(Float.parseFloat((Status.getString(sdate))));
@@ -318,8 +318,8 @@ if(type == "Stats"){
 			e1.printStackTrace();
 		} 
 
-	//	return ChartFactory.getTimeChartIntent(context,dataset, renderer,  null );
-		return ChartFactory.getBarChartIntent(context,dataset, renderer,  Type.STACKED );
+		return ChartFactory.getTimeChartIntent(context,dataset, renderer,  null );
+	//	return ChartFactory.getBarChartIntent(context,dataset, renderer,  Type.STACKED );
 	}
 
 
