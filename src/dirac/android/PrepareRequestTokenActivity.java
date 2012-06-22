@@ -1,12 +1,10 @@
 package dirac.android;
 
-import java.net.URLEncoder;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,10 +56,7 @@ public class PrepareRequestTokenActivity extends Activity {
 	@Override
 	public void onNewIntent(Intent intent) {
 		super.onNewIntent(intent); 
-		Log.i("TEEEEESSSSSTTTTT1", "Callback received : " );
-
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		Log.i("TEEEEESSSSSTTTTT", "Callback received : " );
 
 		final Uri uri = intent.getData();
 		Log.i(TAG, "Callback received : " + uri);

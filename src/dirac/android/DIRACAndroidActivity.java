@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.app.AlertDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -25,14 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Random;
-
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYSeriesRenderer;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
@@ -55,7 +46,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 
 	private String itemSelected;
-	private final Context context = this;
+	public final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;	
 
@@ -106,7 +97,6 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
 			else
 				SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
-
 
 
 			int idefValue = 0;
@@ -162,6 +152,9 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setListNavigationCallbacks(list, this);
 
+		Connectivity connect = new Connectivity(context);
+		if(connect.isOnline()) 
+			Log.i("test", "online!");
 
 		datasource = new JobsDataSource(this);
 		datasource.open();
