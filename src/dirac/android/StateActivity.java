@@ -57,7 +57,7 @@ public class StateActivity extends Activity{
 	private JobsDataSource datasource;
 	List<Job> myjobids;
 	private String state;
-
+private Job selectJob;
 	Integer mymax = 10;
 	protected ProgressBar PBar;
 	private PerformAPICall apiCall;
@@ -107,7 +107,7 @@ lled when the activity is first created. */
 		footer = getLayoutInflater().inflate(R.layout.list_footer, null);
 
 		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
-		footerTV.setText("download more");
+		footerTV.setText("Download more"); 
 		mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
 
 		if(myjobids.size()%mymax == 0)
@@ -179,14 +179,16 @@ lled when the activity is first created. */
 			public boolean onItemLongClick(AdapterView<?> parent, View arg1,
 					final int position2, long arg3) {
 				if(position2 != myjobids.size()){
+					selectJob = myjobids.get(position2);
 
 					itemSelected=parent.getItemAtPosition(position2).toString();
 					AlertDialog.Builder builder = new AlertDialog.Builder(context);
-					builder.setTitle("Select an Action for jobID "+itemSelected);
+					builder.setTitle("Select an Action for jobID "+selectJob.getJid());
 					builder.setItems(jodActionFailed, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
+
 							AlertDialog.Builder builder2 = new AlertDialog.Builder(context);
-							builder2.setMessage("Do you really want to "+jodActionFailed[item]+" jobID: "+itemSelected+" ?");
+							builder2.setMessage("Do you really want to "+jodActionFailed[item]+" jobID: "+selectJob.getJid()+" ?");
 							builder2.setCancelable(true);
 							//	JobID myjobid = jobList.get(position2);
 
@@ -194,20 +196,22 @@ lled when the activity is first created. */
 							case 0: 								
 								builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
 									public void onClick(DialogInterface dialog, int which) {	
-										//		adapter.remove(itemSelected);
-										//		adapter.notifyDataSetChanged();
-										Toast.makeText(getApplicationContext(), "ddddasda", Toast.LENGTH_SHORT).show();
+
+										apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
+										Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
 									}
 								});
-								builder2.setNegativeButton("Nooo", new DialogInterface.OnClickListener() {
+								builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) {
+										Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
+
 										dialog.cancel();
 									}
 								});
 								builder2.show();
 
-							case 1: Toast.makeText(getApplicationContext(), jodActionFailed[item]+"ddddasda", Toast.LENGTH_SHORT).show();
-							case 2: Toast.makeText(getApplicationContext(), jodActionFailed[item]+"ddasdadassdasdasdddd", Toast.LENGTH_SHORT).show();
+							case 1: Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();
+							case 2: Toast.makeText(getApplicationContext(), jodActionFailed[item], Toast.LENGTH_SHORT).show();
 
 							}
 						}

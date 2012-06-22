@@ -122,12 +122,15 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 			datasource.close();
 			return true;
 		case R.id.manage_filters:
-			Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
-			startActivity(myIntent);
+			//Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
+			//startActivity(myIntent);
 			return true;  
 		case R.id.manage_certs:
-			Intent myIntent2 = new Intent(context, UserProfileActivity.class);				 
-			startActivity(myIntent2);
+			startActivity(new Intent(context, UserProfileActivity.class));
+			return true;  
+
+		case R.id.prefs:
+			startActivity(new Intent(context, FilterSettingsActivity.class));
 			return true;  
 
 		}
@@ -188,11 +191,14 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 	}
 
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+
+		String SdefValue = "";
+		String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 		if (mLocations[itemPosition].compareTo("Jobs") == 0) {
 			return true;
 		} else if (mLocations[itemPosition].compareTo("Stats") == 0){
 			if (StatsIntent== null){
-				apiCall.performApiCall(Constants.API_HISTORY, "Stats")	;		
+				apiCall.performApiCall(Constants.API_HISTORY+"?"+JobType, "Stats")	;		
 			}
 		}
 		return true;

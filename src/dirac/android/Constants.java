@@ -23,6 +23,7 @@ public class Constants {
 	public static final String API_JOBS		    = BASE_URL+"/jobs";
 	public static final String API_HISTORY		= API_JOBS+"/history";
 	public static final String API_SUMMARY 		= API_JOBS+"/summary";
+	public static final String API_RESCHEDULE 		= API_JOBS+"/reschedule/";
 
 	public static final String ENCODING 		= "UTF-8";
 
