@@ -208,6 +208,10 @@ get '/jobs/:jid/description' do
 end
 
 
+get '/token' do
+	"<html><body><table><tr><td>Token</td><td>"+@kitchen.access_token.token+"</td></tr><tr><td>Secret</td><td>"+@kitchen.access_token.secret+"</td></tr></table></body></html>"
+end
+
 get '/sb/upload' do
   erb :uploadsb
 end
@@ -309,7 +313,7 @@ class Kitchen
   end
 
   def request
-    @request_token = consumer.get_request_token( { :oauth_callback => "http://lhcb08:4567/callback" } )
+    @request_token = consumer.get_request_token( { :oauth_callback => "http://localhost:4567/callback" } )
   end
 
   def session_data
@@ -369,7 +373,9 @@ __END__
 <a href="/sb/upload">Upload SB</a><br/>
 <hr>
 <a href="/reset">Reset token</a><br/>
-
+<hr>
+<a href="/token">Show access token</a><br/>
+<hr>
 @@ uploadsb
 <form method='post' action='doupload' enctype='multipart/form-data'>
 <input type='file' name='f1'/><br/>
