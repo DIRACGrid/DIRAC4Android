@@ -1,23 +1,8 @@
 package dirac.android;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import oauth.signpost.OAuth;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import com.google.gson.Gson;
 
 import android.app.Activity;
@@ -50,24 +35,27 @@ public class StateActivity extends Activity{
 	private ListView lv ;
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
-	private String itemSelected;
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
 	private JobsDataSource datasource;
 	List<Job> myjobids;
 	private String state;
-private Job selectJob;
+private Job selectJob;	
 	Integer mymax = 10;
 	protected ProgressBar PBar;
 	private PerformAPICall apiCall;
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
-	/** Ca	private CommentsDataSource datasource;
-lled when the activity is first created. */
+	private Connectivity connect;
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		
+		connect = new Connectivity(context);
 
 		datasource = new JobsDataSource(this);
 		datasource.open();
@@ -124,7 +112,6 @@ lled when the activity is first created. */
 
 				// When clicked, show a toast with the TextView text
 				if(position != myjobids.size()){
-					itemSelected=parent.getItemAtPosition(position).toString();
 					// Parse the inputstream
 					Job myjobid = myjobids.get(position);
 
@@ -135,6 +122,10 @@ lled when the activity is first created. */
 					startActivity(myIntent);	
 				}else{
 
+					
+
+					if(connect.isOnline()){
+						if(connect.isGranted()){
 					ProgressDialog dialog = ProgressDialog.show(context, "","Downloading/Loading. Please wait...", true);
 
 
@@ -167,7 +158,12 @@ lled when the activity is first created. */
 					dialog.dismiss();
 					if(jobs.getJobs().size() < mymax)
 						lv.removeFooterView(footer);
+					}else{	
+						Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();	
+					}
 
+						}else						
+						Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 
 				}
 
@@ -181,7 +177,6 @@ lled when the activity is first created. */
 				if(position2 != myjobids.size()){
 					selectJob = myjobids.get(position2);
 
-					itemSelected=parent.getItemAtPosition(position2).toString();
 					AlertDialog.Builder builder = new AlertDialog.Builder(context);
 					builder.setTitle("Select an Action for jobID "+selectJob.getJid());
 					builder.setItems(jodActionFailed, new DialogInterface.OnClickListener() {
@@ -196,9 +191,12 @@ lled when the activity is first created. */
 							case 0: 								
 								builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
 									public void onClick(DialogInterface dialog, int which) {	
-
+										
+										if(connect.isOnline()){
 										apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
 										Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
+										}else
+											Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 									}
 								});
 								builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -222,7 +220,6 @@ lled when the activity is first created. */
 
 				}
 
-				// TODO Auto-generated method stub
 				return false;
 			}
 

@@ -42,7 +42,7 @@ public class JobActivity extends Activity {
 	ArrayAdapter<String[]> adapter;
 	private JobsDataSource datasource;
 	List<String[]> job_infos;
-
+private Connectivity connect;
 	private SharedPreferences prefs;
 	private Job myjob;
 
@@ -51,6 +51,7 @@ public class JobActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mainjobinfo);
 		Intent i = getIntent();
+		connect = new Connectivity(context);
 
 		datasource = new JobsDataSource(this);
 		datasource.open();
@@ -93,6 +94,8 @@ public class JobActivity extends Activity {
 					int position, long id) {
 				if(position ==job_infos.size() ){
 
+				if(connect.isOnline()){
+					if(connect.isGranted()){
 			    	String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
 				//	JobDescription  jobd = gson.fromJson(result, JobDescription.class);
 				//	Log.e(TAG,jobd.getOwnerDN());
@@ -104,8 +107,13 @@ public class JobActivity extends Activity {
 					myIntent.putExtra("jid", myjob.getJid());
 					myIntent.putExtra("description",result);
 
-					startActivity(myIntent);			
-		
+					startActivity(myIntent);
+					}else{
+						Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();
+
+					}
+				}else
+					Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});

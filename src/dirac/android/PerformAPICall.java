@@ -44,6 +44,7 @@ public class PerformAPICall {
 	private Context context;
 	ProgressDialog myProgress;
 
+	private Connectivity connect;
 	private JobsDataSource datasource;
 
 	private SQLiteDatabase database;
@@ -54,6 +55,7 @@ public class PerformAPICall {
 		this.context = myContext;
 		this.prefs = myPrefs;	
 		this.myProgress = new ProgressDialog(context);
+		this.connect = new Connectivity(context);
 	}
 
 
@@ -69,30 +71,36 @@ public class PerformAPICall {
 	}
 
 	public void performApiCall(String myUrl, String type) {
-if(type == "Stats"){
-		performApiCallStats task = new performApiCallStats();
-		task.execute(new String[] { myUrl });
-}else{
-	performApiCall task = new performApiCall();
-	task.execute(new String[] { myUrl });
-	
-}
+		if(connect.isGranted()){
+			if(type == "Stats"){
+				performApiCallStats task = new performApiCallStats();
+				task.execute(new String[] { myUrl });
+			}else{
+				performApiCall task = new performApiCall();
+				task.execute(new String[] { myUrl });
+
+			}
+		}else{
+			Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();	
+		}
 	}
 
 	public String performApiCall(String myUrl) {
 
-		String jsonOutput = "";
-		try {  	      	
+		String jsonOutput = "failed";
+		if(connect.isGranted()){
+			try {  	      	
 
-			try{
-				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
+				try{
+					jsonOutput = doGet(myUrl,getConsumer(this.prefs));
 
-			}catch (Exception e) {
-				Toast.makeText(context, "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
+				}catch (Exception e) {
+					Toast.makeText(context, "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
+				}
+
+			} catch (Exception e) {
+				Log.e(TAG, "Error executing request",e);
 			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
 		}
 		return jsonOutput;
 	}
@@ -103,7 +111,7 @@ if(type == "Stats"){
 
 		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
 		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-		
+
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
@@ -144,7 +152,7 @@ if(type == "Stats"){
 		protected void onPreExecute() {
 			Integer mymax = 10;
 			mymax = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, mymax);	
-		myProgress =	ProgressDialog.show(context, "", "Downloading "+mymax.toString()+" Jobs per status. Please wait...\nHow is going your analysis?", true);
+			myProgress =	ProgressDialog.show(context, "", "Downloading "+mymax.toString()+" Jobs per status. Please wait...\nHow is going your analysis?", true);
 
 		}	
 
@@ -153,11 +161,11 @@ if(type == "Stats"){
 			for (String url : urls) {
 
 				try {
-					
-	
+
+
 
 					response = doGet(url,getConsumer(prefs));
-//publishProgress();
+					//publishProgress();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -195,7 +203,7 @@ if(type == "Stats"){
 		protected void onPreExecute() {
 			myProgress =	ProgressDialog.show(context, "", "Downloading the stats. Please wait...", true);
 
-			}	
+		}	
 		protected String doInBackground(String... urls) {
 			String response = "";
 			Intent	StatsIntent = null;
@@ -298,7 +306,7 @@ if(type == "Stats"){
 				renderer.addSeriesRenderer(r);
 
 				for (int k = 0; k < StatusN.length(); k++) {
- 
+
 					String sdate = StatusN.getString(k);
 					java.util.Date time=new java.util.Date(Long.parseLong(sdate)*1000);
 					double  log10 = java.lang.Math.log10(Float.parseFloat((Status.getString(sdate))));
@@ -319,7 +327,7 @@ if(type == "Stats"){
 		} 
 
 		return ChartFactory.getTimeChartIntent(context,dataset, renderer,  null );
-	//	return ChartFactory.getBarChartIntent(context,dataset, renderer,  Type.STACKED );
+		//	return ChartFactory.getBarChartIntent(context,dataset, renderer,  Type.STACKED );
 	}
 
 
