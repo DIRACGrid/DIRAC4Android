@@ -6,11 +6,13 @@
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
+        android:paddingRight="10px"
+        android:paddingLeft="10px"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/diraclogo" />
+        android:src="@drawable/dirac_splash" />
 
 </RelativeLayout>
