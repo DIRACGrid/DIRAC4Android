@@ -92,40 +92,36 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 			if(connect.isOnline()){
 				if(connect.isGranted()){
-				
-
-				database = dbHelper.getWritableDatabase();					
-				datasource.open();	
-				String SdefValue = "";
 
 
-
-				String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
-
-				
-				if (JobType == "")
-					SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
-				else	
-					SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
-				
-				int idefValue = 0;
-				Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
-				summary = gson.fromJson(SSummary, StatusSummary.class);
-				Log.d("test",gg.toString());
+					database = dbHelper.getWritableDatabase();					
+					datasource.open();	
+					String SdefValue = "";
 
 
-				datasource.parseSummary(summary);	
-				CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
-				loadDataOnScreen();
-				database.close();	
-				datasource.close();	
-				}else
-					Toast.makeText(context, "app not granted, please proceed throuth the \"Manage Certificates\" settings", Toast.LENGTH_SHORT).show();	
+
+					String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+
+
+					if (JobType == "")
+						SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
+					else	
+						SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
+
+					int idefValue = 0;
+					Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
+					summary = gson.fromJson(SSummary, StatusSummary.class);
+					Log.d("test",gg.toString());
+
+
+					datasource.parseSummary(summary);	
+					CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
+					loadDataOnScreen();
+					database.close();	
+					datasource.close();	
+				}
 			}
-			else
-				Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 
-			
 			return true;
 		case R.id.manage_filters:
 			//Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
@@ -187,7 +183,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 		loadDataOnScreen();
 
-connect.isGranted();
+		connect.isGranted();
 		database.close();	
 		datasource.close();
 
@@ -207,8 +203,6 @@ connect.isGranted();
 			if (StatsIntent== null){
 				if(connect.isOnline())
 					apiCall.performApiCall(Constants.API_HISTORY+"?"+JobType, "Stats")	;
-				else
-					Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 			}
 		}
 		return true;
@@ -281,9 +275,9 @@ connect.isGranted();
 				Integer mymax = 10;
 				mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
 				if(connect.isOnline())
-					apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs="+mymax.toString()+"&status="+myStrings+"&flatten=true&"+JobType, "");
-				else
-					Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
+					if (connect.isGranted())
+						apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs="+mymax.toString()+"&status="+myStrings+"&flatten=true&"+JobType, "");
+
 
 
 				//	performApiCall task2 = new performApiCall();

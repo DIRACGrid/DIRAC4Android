@@ -42,7 +42,7 @@ public class JobActivity extends Activity {
 	ArrayAdapter<String[]> adapter;
 	private JobsDataSource datasource;
 	List<String[]> job_infos;
-private Connectivity connect;
+	private Connectivity connect;
 	private SharedPreferences prefs;
 	private Job myjob;
 
@@ -58,14 +58,14 @@ private Connectivity connect;
 		myjob = datasource.getJobInfo(i.getStringExtra("jid"));	
 
 		datasource.close();
-		 		 		
+
 		job_infos = parse_again(myjob);
 
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
 		adapter = new JobInfoArrayAdapter(getApplicationContext(), R.layout.listjob, job_infos);
 
-		
+
 		TextView tt = (TextView) this.findViewById(R.id.JOBLVCOLOR);
 		Status status = new Status();
 		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
@@ -79,7 +79,7 @@ private Connectivity connect;
 
 		TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
 		footerTV.setText("Get JDL");
-		
+
 		lv.addFooterView(footer);
 
 
@@ -94,34 +94,30 @@ private Connectivity connect;
 					int position, long id) {
 				if(position ==job_infos.size() ){
 
-				if(connect.isOnline()){
-					if(connect.isGranted()){
-			    	String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
-				//	JobDescription  jobd = gson.fromJson(result, JobDescription.class);
-				//	Log.e(TAG,jobd.getOwnerDN());
-			    	
-			    	
-					Intent myIntent = new Intent(view.getContext(), JobDescriptionActivity.class);			
+					if(connect.isOnline()){
+						if(connect.isGranted()){
+							String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
+							//	JobDescription  jobd = gson.fromJson(result, JobDescription.class);
+							//	Log.e(TAG,jobd.getOwnerDN());
 
 
-					myIntent.putExtra("jid", myjob.getJid());
-					myIntent.putExtra("description",result);
+							Intent myIntent = new Intent(view.getContext(), JobDescriptionActivity.class);			
 
-					startActivity(myIntent);
-					}else{
-						Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();
 
+							myIntent.putExtra("jid", myjob.getJid());
+							myIntent.putExtra("description",result);
+
+							startActivity(myIntent);
+						}
 					}
-				}else
-					Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 
 	}
-	
 
-	
+
+
 
 	public List<String[]> parse_again(Job i){
 
@@ -242,12 +238,12 @@ private Connectivity connect;
 
 	}
 
-	
-	
 
-	
-	
-	
+
+
+
+
+
 	private String performApiCall(String myUrl) {
 
 		String jsonOutput = "";
@@ -272,7 +268,7 @@ private Connectivity connect;
 		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
 		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
 
-	
+
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
 		consumer.setTokenWithSecret(token, secret);
 		//	Log.d("getConsumer",consumer.toString());

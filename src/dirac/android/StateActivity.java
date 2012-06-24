@@ -41,20 +41,20 @@ public class StateActivity extends Activity{
 	private JobsDataSource datasource;
 	List<Job> myjobids;
 	private String state;
-private Job selectJob;	
+	private Job selectJob;	
 	Integer mymax = 10;
 	protected ProgressBar PBar;
 	private PerformAPICall apiCall;
 	final String TAG = getClass().getName();
 	private SharedPreferences prefs;
 	private Connectivity connect;
-	
-	
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		
+
 		connect = new Connectivity(context);
 
 		datasource = new JobsDataSource(this);
@@ -122,49 +122,45 @@ private Job selectJob;
 					startActivity(myIntent);	
 				}else{
 
-					
+
 
 					if(connect.isOnline()){
 						if(connect.isGranted()){
-					ProgressDialog dialog = ProgressDialog.show(context, "","Downloading/Loading. Please wait...", true);
+							ProgressDialog dialog = ProgressDialog.show(context, "","Downloading/Loading. Please wait...", true);
 
 
-					String SJobs = "";
-					String SdefValue = "";
-					String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
-					Integer defInt	= 20;
-					Integer nbJob = CacheHelper.readInteger(context, CacheHelper.STARTJOBNB, defInt);
+							String SJobs = "";
+							String SdefValue = "";
+							String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
+							Integer defInt	= 20;
+							Integer nbJob = CacheHelper.readInteger(context, CacheHelper.STARTJOBNB, defInt);
 
-					SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+							SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
 
-					CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));
+							CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));
 
-					Log.i("SJobs",SJobs);
-					datasource.open();
-					dbHelper = new MySQLiteHelper(context);
-	 
-					database = dbHelper.getWritableDatabase(); 
-					Gson gson = new Gson();
+							Log.i("SJobs",SJobs);
+							datasource.open();
+							dbHelper = new MySQLiteHelper(context);
 
-					Jobs  jobs = gson.fromJson(SJobs, Jobs.class);
-					datasource.parse(jobs);	
-					database.close();	
-					Log.e(TAG,SJobs);    
-					Collections.reverse(jobs.getJobs());
-				//	for(int k = 0; k < jobs.getJobs().size(); k++)
-				  //  adapter.addAll(jobs.getJobs());
-					for(int k = 0; k < jobs.getJobs().size(); k++)
-						 adapter.add(jobs.getJobs().get(k));
-					dialog.dismiss();
-					if(jobs.getJobs().size() < mymax)
-						lv.removeFooterView(footer);
-					}else{	
-						Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();	
+							database = dbHelper.getWritableDatabase(); 
+							Gson gson = new Gson();
+
+							Jobs  jobs = gson.fromJson(SJobs, Jobs.class);
+							datasource.parse(jobs);	
+							database.close();	
+							Log.e(TAG,SJobs);    
+							Collections.reverse(jobs.getJobs());
+							//	for(int k = 0; k < jobs.getJobs().size(); k++)
+							//  adapter.addAll(jobs.getJobs());
+							for(int k = 0; k < jobs.getJobs().size(); k++)
+								adapter.add(jobs.getJobs().get(k));
+							dialog.dismiss();
+							if(jobs.getJobs().size() < mymax)
+								lv.removeFooterView(footer);
+						}
+
 					}
-
-						}else						
-						Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
-
 				}
 
 			}
@@ -191,10 +187,10 @@ private Job selectJob;
 							case 0: 								
 								builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
 									public void onClick(DialogInterface dialog, int which) {	
-										
+
 										if(connect.isOnline()){
-										apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
-										Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
+											apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
+											Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
 										}else
 											Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
 									}
@@ -226,7 +222,7 @@ private Job selectJob;
 
 		});		
 
- 
+
 		datasource.close();
 
 
