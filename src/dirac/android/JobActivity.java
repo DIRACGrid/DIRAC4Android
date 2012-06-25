@@ -1,23 +1,7 @@
 package dirac.android;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import oauth.signpost.OAuth;
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,20 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class JobActivity extends Activity {
 
-	private static final String TAG = "hehe";
 	ArrayAdapter<String[]> adapter;
 	private JobsDataSource datasource;
 	List<String[]> job_infos;
@@ -99,19 +78,9 @@ public class JobActivity extends Activity {
 						if(connect.isGranted()){
 							
 							
+							apiCall.SetExtraInfo(myjob.getJid());
 							apiCall.performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description", "JDL");
-							//String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
-							//	JobDescription  jobd = gson.fromJson(result, JobDescription.class);
-							//	Log.e(TAG,jobd.getOwnerDN());
-
-
-							//Intent myIntent = new Intent(view.getContext(), JobDescriptionActivity.class);			
-
-
-							//myIntent.putExtra("jid", myjob.getJid());
-							//myIntent.putExtra("description",result);
-
-							//startActivity(myIntent);
+							
 						}
 					}
 				}
@@ -242,69 +211,6 @@ public class JobActivity extends Activity {
 
 	}
 
-
-
-
-
-
-
-	private String performApiCall(String myUrl) {
-
-		String jsonOutput = "";
-		try {  	      	
-
-			try{
-				jsonOutput = doGet(myUrl,getConsumer(this.prefs));
-
-			}catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "ERROR CONNECTIUON", Toast.LENGTH_LONG).show();			//	textView.setText("Error retrieving contacts : " + jsonOutput);.show
-			}
-
-		} catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-		}
-		return jsonOutput;
-	}
-
-
-	private OAuthConsumer getConsumer(SharedPreferences prefs) {
-
-		String token = prefs.getString(OAuth.OAUTH_TOKEN, "");
-		String secret = prefs.getString(OAuth.OAUTH_TOKEN_SECRET, "");
-
-
-		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
-		consumer.setTokenWithSecret(token, secret);
-		//	Log.d("getConsumer",consumer.toString());
-		return consumer;
-	}
-
-	private String doGet(String url,OAuthConsumer consumer) throws Exception {
-		Log.i(TAG,"Requesting URL : " + url);
-
-		try{
-			DefaultHttpClient httpclient = new DefaultHttpClient();
-			HttpGet request = new HttpGet(url);
-			Log.i(TAG,"Requesting URL : " + url);
-			consumer.sign(request);
-			HttpResponse response = httpclient.execute(request);
-			Log.i(TAG,"Statusline : " + response.getStatusLine());
-			InputStream data = response.getEntity().getContent();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(data));
-			String responeLine;
-			StringBuilder responseBuilder = new StringBuilder();
-			while ((responeLine = bufferedReader.readLine()) != null) {
-				responseBuilder.append(responeLine);
-			}
-			Log.i(TAG,"Response : " + responseBuilder.toString());
-			return responseBuilder.toString();
-		}catch (Exception e) {
-			Log.e(TAG, "Error executing request",e);
-			//	textView.setText("Error retrieving contacts : " + jsonOutput);
-			return "";
-
-		}
-	}	
 
 
 

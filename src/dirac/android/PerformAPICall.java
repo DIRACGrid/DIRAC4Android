@@ -3,6 +3,7 @@ package dirac.android;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -29,6 +30,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -49,7 +52,12 @@ public class PerformAPICall {
 
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
+	
+	private String extraInfo;
 
+	private ListView mylv ;
+	private JobArrayAdapter myJobArrayAdapter ;
+	private View myFooter;
 
 	public PerformAPICall(Context myContext, SharedPreferences myPrefs){
 		this.context = myContext;
@@ -65,11 +73,20 @@ public class PerformAPICall {
 	public void SetPrefs(SharedPreferences myPrefs){
 		this.prefs = myPrefs;
 	}
+	
+	public void SetLV(ListView myLV, JobArrayAdapter myJobArrayAdapter, View myfooter){
+		this.mylv = myLV;
+		this.myJobArrayAdapter = myJobArrayAdapter;
+		this.myFooter = myfooter;		
+	}
 
 	public void SetContext(Context myContext){
 		this.context = myContext;
 	}
 
+	public void SetExtraInfo(String myExtra){
+		this.extraInfo = myExtra;
+	}
 	public void performApiCall(String myUrl, String type) {
 		if(connect.isGranted()){
 			if(type == "Stats"){
@@ -78,12 +95,12 @@ public class PerformAPICall {
 			}else if (type == "JDL"){
 				performApiCallJDL task = new performApiCallJDL();
 				task.execute(new String[] { myUrl });
-
-			}else{
-
-				performApiCall task = new performApiCall();
+			}else if (type == "AddNew"){
+				performApiCallAddNew task = new performApiCallAddNew();
 				task.execute(new String[] { myUrl });
-				
+			}else{
+				performApiCall task = new performApiCall();
+				task.execute(new String[] { myUrl });				
 			}
 		}else{
 			Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();	
@@ -252,7 +269,74 @@ public class PerformAPICall {
 
 	}
 	
-	
+
+	public class performApiCallAddNew extends AsyncTask<String, Integer, String > {
+		protected void onPreExecute() {
+			myProgress =	ProgressDialog.show(context, "", "Downloading the new Jobs. Please wait...", true);
+
+		}	
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+
+				try {
+
+					response = doGet(url,getConsumer(prefs));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+
+		}
+
+		protected void onPostExecute(String result) {
+
+			datasource = new JobsDataSource(context);
+			datasource.open();
+			dbHelper = new MySQLiteHelper(context);
+
+			database = dbHelper.getWritableDatabase(); 
+			Gson gson = new Gson();
+
+			Jobs  jobs = gson.fromJson(result, Jobs.class);
+			datasource.parse(jobs);	
+			datasource.close();
+			database.close();	
+			Collections.reverse(jobs.getJobs());
+
+			//	for(int k = 0; k < jobs.getJobs().size(); k++)
+			//  adapter.addAll(jobs.getJobs());
+			for(int k = 0; k < jobs.getJobs().size(); k++)
+				myJobArrayAdapter.add(jobs.getJobs().get(k));
+			
+
+			int mymax = 10;
+			mymax = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, mymax);	
+
+
+
+			if(jobs.getJobs().size() < mymax)
+				mylv.removeFooterView(myFooter);
+
+Log.d("here1", "06");
+
+
+			if(myProgress.isShowing())
+				myProgress.dismiss();
+			
+
+Log.d("here1", "07");	
+
+		}
+
+	}
+
+
 	
 	public class performApiCallJDL extends AsyncTask<String, Integer, String > {
 		protected void onPreExecute() {
@@ -287,7 +371,7 @@ public class PerformAPICall {
 
 
 			myIntent.putExtra("description",result);
-
+			myIntent.putExtra("jid", extraInfo);
 			context.startActivity(myIntent);
 			
 

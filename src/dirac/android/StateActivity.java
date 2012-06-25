@@ -76,6 +76,7 @@ public class StateActivity extends Activity{
 
 		}
 
+		datasource.close();
 
 		CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, myjobids.size());
 
@@ -103,8 +104,8 @@ public class StateActivity extends Activity{
 
 		// Set the ListView adapter
 		lv.setAdapter(adapter);
-
 		apiCall = new PerformAPICall(context,prefs);
+		apiCall.SetLV(lv, adapter, footer);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -126,7 +127,8 @@ public class StateActivity extends Activity{
 
 					if(connect.isOnline()){
 						if(connect.isGranted()){
-							ProgressDialog dialog = ProgressDialog.show(context, "","Downloading/Loading. Please wait...", true);
+							
+							
 
 
 							String SJobs = "";
@@ -135,29 +137,11 @@ public class StateActivity extends Activity{
 							Integer defInt	= 20;
 							Integer nbJob = CacheHelper.readInteger(context, CacheHelper.STARTJOBNB, defInt);
 
-							SJobs =  apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+							apiCall.performApiCall(Constants.API_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType,"AddNew");
 
+							
 							CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));
 
-							Log.i("SJobs",SJobs);
-							datasource.open();
-							dbHelper = new MySQLiteHelper(context);
-
-							database = dbHelper.getWritableDatabase(); 
-							Gson gson = new Gson();
-
-							Jobs  jobs = gson.fromJson(SJobs, Jobs.class);
-							datasource.parse(jobs);	
-							database.close();	
-							Log.e(TAG,SJobs);    
-							Collections.reverse(jobs.getJobs());
-							//	for(int k = 0; k < jobs.getJobs().size(); k++)
-							//  adapter.addAll(jobs.getJobs());
-							for(int k = 0; k < jobs.getJobs().size(); k++)
-								adapter.add(jobs.getJobs().get(k));
-							dialog.dismiss();
-							if(jobs.getJobs().size() < mymax)
-								lv.removeFooterView(footer);
 						}
 
 					}
@@ -223,7 +207,6 @@ public class StateActivity extends Activity{
 		});		
 
 
-		datasource.close();
 
 
 	}
