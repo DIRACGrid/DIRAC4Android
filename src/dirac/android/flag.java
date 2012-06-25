@@ -15,7 +15,7 @@ public class flag {
 	public void setVerified(String verified) {
 		this.verified = verified;
 	}
-	
+	 
 	public String getDeleted() {
 		return deleted;
 	}

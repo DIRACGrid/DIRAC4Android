@@ -10,7 +10,6 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.BarChart.Type;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -22,24 +21,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.actionbarsherlock.view.Window;
-import com.actionbarsherlock.app.SherlockActivity;
 
 
 import com.google.gson.Gson;
@@ -57,10 +49,8 @@ public class PerformAPICall {
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 	
-	private Activity activity;
 	
 	private String extraInfo;
-	private SurfaceHolder mStateHolder;
 
 	private ListView mylv ;
 	private JobArrayAdapter myJobArrayAdapter ;

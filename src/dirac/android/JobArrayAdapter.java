@@ -16,7 +16,6 @@ public class JobArrayAdapter extends ArrayAdapter<Job> {
 	private TextView jobIDName;
 	private TextView jobIDID;
 	private TextView jobIDColor;
-	private TextView jobIDState;
 	private List<Job> JobIDs = new ArrayList<Job>();
 
 	public JobArrayAdapter(Context context, int textViewResourceId,

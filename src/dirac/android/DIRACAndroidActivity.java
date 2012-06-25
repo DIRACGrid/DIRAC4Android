@@ -1,6 +1,5 @@
 package dirac.android;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -25,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Random;
+
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
@@ -193,6 +192,22 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		apiCall = new PerformAPICall(context,prefs);
 
 
+		
+//		HttpClient client = CustomSSLSocketFactory.getNewHttpClient(DIRACAndroidActivity.this);
+	//	String formDataServiceUrl = Constants.REQUEST_URL;
+	//	HttpPost post = new HttpPost(formDataServiceUrl);
+	//	post.setHeader("ping", "test");
+		 
+//		try {
+//			HttpResponse result = client.execute(post);
+	//	} catch (ClientProtocolException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+	//	} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 	}
 
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
@@ -251,7 +266,6 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 
 		
-			String[] status = Status.PossibleStatus;
 			lv.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
@@ -349,7 +363,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 				datasource.open();
 				database = dbHelper.getWritableDatabase(); 
 
-				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
+				dbHelper.deleteTable(database, MySQLiteHelper.DIRAC_JOBS);
 
 				database.close();	
 				datasource.close();

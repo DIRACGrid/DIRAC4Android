@@ -53,7 +53,7 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 		StateColor = (TextView) row.findViewById(R.id.state_color);
 		StateName.setText(state.name());
 		StateNum.setText(state.number());
-		StateColor.setBackgroundColor(context.getResources().getColor(state.ColorStatus[state.get(state.name())]));
+		StateColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[state.get(state.name())]));
 
 
 		return row;

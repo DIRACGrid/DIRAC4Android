@@ -48,9 +48,9 @@ public class JobActivity extends Activity {
 
 		TextView tt = (TextView) this.findViewById(R.id.JOBLVCOLOR);
 		Status status = new Status();
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+		tt.setBackgroundColor(getResources().getColor(Status.ColorStatus[status.get(myjob.getStatus())]));
 		tt = (TextView) this.findViewById(R.id.JOBLVCOLOR2);
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+		tt.setBackgroundColor(getResources().getColor(Status.ColorStatus[status.get(myjob.getStatus())]));
 
 
 		// Get reference to ListView holder

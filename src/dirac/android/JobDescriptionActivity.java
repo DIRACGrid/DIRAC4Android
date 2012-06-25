@@ -9,16 +9,13 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class JobDescriptionActivity extends Activity {
 
-	private static final String TAG = "hehe";
 	ArrayAdapter<String[]> adapter;
 	private JobsDataSource datasource;
 	List<String[]> job_infos;
@@ -45,9 +42,9 @@ public class JobDescriptionActivity extends Activity {
 
 		TextView tt = (TextView) this.findViewById(R.id.JOBDCOLOR);
 		Status status = new Status();
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+		tt.setBackgroundColor(getResources().getColor(Status.ColorStatus[status.get(myjob.getStatus())]));
 		tt = (TextView) this.findViewById(R.id.JOBDCOLOR2);
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+		tt.setBackgroundColor(getResources().getColor(Status.ColorStatus[status.get(myjob.getStatus())]));
 
 
 

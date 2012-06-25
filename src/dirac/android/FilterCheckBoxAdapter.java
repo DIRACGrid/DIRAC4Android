@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 
 public class FilterCheckBoxAdapter extends BaseExpandableListAdapter {
 
-    private Context context;
+ //   private Context context;
     private ArrayList<String> groups;
     private ArrayList<ArrayList<String>> sites;
     private LayoutInflater inflater;
@@ -20,7 +19,7 @@ public class FilterCheckBoxAdapter extends BaseExpandableListAdapter {
     public FilterCheckBoxAdapter(Context context, 
                         ArrayList<String> groups,
 						ArrayList<ArrayList<String>> sites ) { 
-        this.context = context;
+   //     this.context = context;
 		this.groups = groups;
         this.sites = sites;
         inflater = LayoutInflater.from( context );

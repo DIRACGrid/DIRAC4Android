@@ -1,6 +1,5 @@
 package dirac.android;
 
-import java.util.List;
 
 
 public class Job  {

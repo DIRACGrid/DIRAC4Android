@@ -1,21 +1,16 @@
 package dirac.android;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import com.google.gson.Gson;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,8 +28,6 @@ public class StateActivity extends Activity{
 	private 	JobArrayAdapter adapter;
 	private View footer; 
 	private ListView lv ;
-	private SQLiteDatabase database;
-	private MySQLiteHelper dbHelper;
 	private final Context context = this;
 	private	final CharSequence[] jodActionFailed = {"Reschedule", "Delete", "Kill"};
 	ArrayAdapter<String> adapter2;
@@ -131,7 +124,6 @@ public class StateActivity extends Activity{
 							
 
 
-							String SJobs = "";
 							String SdefValue = "";
 							String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 							Integer defInt	= 20;
