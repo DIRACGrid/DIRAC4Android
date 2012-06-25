@@ -23,7 +23,7 @@ public class JobDescriptionActivity extends Activity {
 	private JobsDataSource datasource;
 	List<String[]> job_infos;
 
-	private Job myjob;
+//	private Job myjob;
 	private String result;
 	private List<String[]> infos;
 	
@@ -34,20 +34,20 @@ public class JobDescriptionActivity extends Activity {
 		setContentView(R.layout.mainjobdescription);
 		Intent i = getIntent();
 
-		datasource = new JobsDataSource(this);
-		datasource.open();
-		myjob = datasource.getJobInfo(i.getStringExtra("jid"));	
+	//	datasource = new JobsDataSource(this);
+	//	datasource.open();
+	//	myjob = datasource.getJobInfo(i.getStringExtra("jid"));	
 		result = i.getStringExtra("description");	
 
 		datasource.close();
 		 		 		
 
 		
-		TextView tt = (TextView) this.findViewById(R.id.JOBDCOLOR);
-		Status status = new Status();
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
-		tt = (TextView) this.findViewById(R.id.JOBDCOLOR2);
-		tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+	//	TextView tt = (TextView) this.findViewById(R.id.JOBDCOLOR);
+	//	Status status = new Status();
+	//	tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
+	//	tt = (TextView) this.findViewById(R.id.JOBDCOLOR2);
+	//	tt.setBackgroundColor(getResources().getColor(status.ColorStatus[status.get(myjob.getStatus())]));
 	
 		
 
@@ -88,7 +88,7 @@ public class JobDescriptionActivity extends Activity {
 		lv.setAdapter(adapter);
 
 
-		setTitle("Job id: "+myjob.getJid() +" description");
+	//	setTitle("Job id: "+myjob.getJid() +" description");
 
 
 		

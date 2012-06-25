@@ -45,6 +45,7 @@ public class JobActivity extends Activity {
 	private Connectivity connect;
 	private SharedPreferences prefs;
 	private Job myjob;
+	private PerformAPICall apiCall;
 
 	private final Context context = this;
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class JobActivity extends Activity {
 		job_infos = parse_again(myjob);
 
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
+		apiCall = new PerformAPICall(context,prefs);
 		adapter = new JobInfoArrayAdapter(getApplicationContext(), R.layout.listjob, job_infos);
 
 
@@ -96,18 +97,21 @@ public class JobActivity extends Activity {
 
 					if(connect.isOnline()){
 						if(connect.isGranted()){
-							String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
+							
+							
+							apiCall.performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description", "JDL");
+							//String result = performApiCall(Constants.API_JOBS+"/"+myjob.getJid()+"/description");
 							//	JobDescription  jobd = gson.fromJson(result, JobDescription.class);
 							//	Log.e(TAG,jobd.getOwnerDN());
 
 
-							Intent myIntent = new Intent(view.getContext(), JobDescriptionActivity.class);			
+							//Intent myIntent = new Intent(view.getContext(), JobDescriptionActivity.class);			
 
 
-							myIntent.putExtra("jid", myjob.getJid());
-							myIntent.putExtra("description",result);
+							//myIntent.putExtra("jid", myjob.getJid());
+							//myIntent.putExtra("description",result);
 
-							startActivity(myIntent);
+							//startActivity(myIntent);
 						}
 					}
 				}

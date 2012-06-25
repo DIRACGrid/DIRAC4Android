@@ -75,10 +75,15 @@ public class PerformAPICall {
 			if(type == "Stats"){
 				performApiCallStats task = new performApiCallStats();
 				task.execute(new String[] { myUrl });
-			}else{
-				performApiCall task = new performApiCall();
+			}else if (type == "JDL"){
+				performApiCallJDL task = new performApiCallJDL();
 				task.execute(new String[] { myUrl });
 
+			}else{
+
+				performApiCall task = new performApiCall();
+				task.execute(new String[] { myUrl });
+				
 			}
 		}else{
 			Toast.makeText(context, "App not granted, please proceed throuth the \"Manage certificates\" settings", Toast.LENGTH_SHORT).show();	
@@ -242,6 +247,49 @@ public class PerformAPICall {
 
 			if(myProgress.isShowing())
 				myProgress.dismiss();
+
+		}
+
+	}
+	
+	
+	
+	public class performApiCallJDL extends AsyncTask<String, Integer, String > {
+		protected void onPreExecute() {
+			myProgress =	ProgressDialog.show(context, "", "Downloading the JDL. Please wait...", true);
+
+		}	
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+
+				try {
+
+					response = doGet(url,getConsumer(prefs));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+
+		}
+
+		protected void onProgressUpdate(Integer... progress) {
+
+		}
+
+		protected void onPostExecute(String result) {
+
+			if(myProgress.isShowing())
+				myProgress.dismiss();
+			
+			Intent myIntent = new Intent(context, JobDescriptionActivity.class);			
+
+
+			myIntent.putExtra("description",result);
+
+			context.startActivity(myIntent);
+			
 
 		}
 
