@@ -1,5 +1,6 @@
 package dirac.android;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,32 +94,35 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 			if(connect.isOnline()){
 				if(connect.isGranted()){
 
-
+					datasource.open();
 					database = dbHelper.getWritableDatabase();					
-					datasource.open();	
+
 					String SdefValue = "";
+
 
 
 
 					String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 
 
-					if (JobType == "")
-						SSummary = apiCall.performApiCall(Constants.API_SUMMARY);
-					else	
-						SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?"+JobType);
 
-					int idefValue = 0;
-					Integer gg = CacheHelper.readInteger(context, CacheHelper.NMAXBJOBS, idefValue);
+					SSummary = apiCall.performApiCall(Constants.API_SUMMARY+"?lastUpdateTime=360&"+JobType);
+
 					summary = gson.fromJson(SSummary, StatusSummary.class);
-					Log.d("test",gg.toString());
+
 
 
 					datasource.parseSummary(summary);	
+
+
 					CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,true);	
-					loadDataOnScreen();
-					database.close();	
+
+
 					datasource.close();	
+					database.close();	
+
+
+					loadDataOnScreen();
 				}
 			}
 
@@ -175,18 +179,16 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
-		}
+		} 
 
 		Boolean defValueb = false;
 		CacheHelper.writeBoolean(context,CacheHelper.GETJOBS, defValueb);
 		CacheHelper.writeString(context,CacheHelper.GETJOBSTYPE, "");
 
-		loadDataOnScreen();
-
-		connect.isGranted();
 		database.close();	
 		datasource.close();
-
+		
+		loadDataOnScreen();
 		this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		apiCall = new PerformAPICall(context,prefs);
 
@@ -214,6 +216,9 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 		////// Create a customized ArrayAdapter
 
+		datasource.open();
+		database = dbHelper.getWritableDatabase(); 
+		
 		final Status[] map = datasource.getLastUpdate(); 
 		if(map[0]!=null){
 
@@ -242,70 +247,10 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 			}
 
-			if(test.booleanValue()){
-
-				String[] status = Status.PossibleStatus;
 
 
 
-
-				datasource.open();
-				database = dbHelper.getWritableDatabase(); 
-				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-
-
-				setSupportProgress(0);
-
-
-				String myStrings = "";
-
-				for(int i = 0; i< map.length;i++){
-					if(i < (map.length - 1))
-						myStrings = myStrings+map[i].name()+",";
-					else
-						myStrings = myStrings+map[i].name()
-						;
-
-				}
-				//dialog = 	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
-
-				//apiCall.SetProgressDialog(dialog);
-
-
-				Integer mymax = 10;
-				mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
-				if(connect.isOnline())
-					if (connect.isGranted())
-						apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?maxJobs="+mymax.toString()+"&status="+myStrings+"&flatten=true&"+JobType, "");
-
-
-
-				//	performApiCall task2 = new performApiCall();
-				//	task2.execute(new String[] { Constants.API_JOBS+"/groupby/status?maxJobs=20&status="+s+"&flatten=true" });
-				//Log.i("jobs",myStrings);
-				//task2.execute(new String[] { });
-
-				//	task2.execute(new String[] { Constants.API_JOBS+"?maxJobs=20&status="+myStrings+"&"+JobType });	
-				//}
-
-
-
-
-
-			}else{				
-				Log.d("cache test","false");		
-			}
-			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,false);	
-
-
-
-			//	Gson gson = new Gson();
-			//	Jobs jobs = gson.fromJson(Sjobs, Jobs.class);
-			//	dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
-			//	datasource.parse(jobs);		
-			//	database.close();		
-			//	datasource.close();
-
+		
 			String[] status = Status.PossibleStatus;
 			lv.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view,
@@ -395,9 +340,50 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 
 
 			LU.setText(datasource.getLastUpdateTime());	
+			
+
+			database.close();	
+			datasource.close();
+			if(test.booleanValue()){
+
+				datasource.open();
+				database = dbHelper.getWritableDatabase(); 
+
+				dbHelper.deleteTable(database, dbHelper.DIRAC_JOBS);
+
+				database.close();	
+				datasource.close();
+				setSupportProgress(0);
+
+
+				String myStrings = "";
+
+				for(int i = 0; i< map.length;i++){
+					if(i < (map.length - 1))
+						myStrings = myStrings+map[i].name()+",";
+					else
+						myStrings = myStrings+map[i].name()
+						;
+
+				}
+				//dialog = 	ProgressDialog.show(context, "", "Downloading/Loading. Please wait...", true);
+
+				//apiCall.SetProgressDialog(dialog);
+
+
+				Integer mymax = 10;
+				mymax = CacheHelper.readInteger(getApplicationContext(), CacheHelper.NMAXBJOBS, mymax);	
+				if(connect.isOnline())
+					if (connect.isGranted())
+						apiCall.performApiCall( Constants.API_JOBS+"/groupby/status?lastUpdate=36&maxJobs="+mymax.toString()+"&status="+myStrings+"&flatten=true&"+JobType, "");
+
+
+			}
+			
+			CacheHelper.writeBoolean(this, CacheHelper.GETJOBS,false);	
+
 		}
-
-
+	
 
 
 

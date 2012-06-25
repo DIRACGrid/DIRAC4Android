@@ -69,6 +69,14 @@ get '/callback' do
   redirect '/'
 end
 
+get '/jobs/test' do
+  response = @kitchen.get("/jobs?LastUpdateTime=360&maxJobs=2")
+  if response.code != "200" then
+    halt "#{response.code} #{response.msg}"
+  end
+  data = JSON.parse( response.body )
+  "<html><body><pre>" + pp_s( data ) + "</pre></body></html>"
+end
 get '/jobs/all' do
   response = @kitchen.get("/jobs?allOwners=true")
   if response.code != "200" then

@@ -17,12 +17,7 @@ public class SplashScreen extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("here","here0");
         setContentView(R.layout.splash_screen);
-      //  ImageView IV = (ImageView)findViewById(R.id.imageView1);
-     //   IV.setImageResource(R.drawable.dirac_splash_lowres);
-        Log.d("here","here1");
-        // thread for displaying the SplashScreen
         Thread splashTread = new Thread() {
 			@Override
             public void run() {

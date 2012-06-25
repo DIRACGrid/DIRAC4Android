@@ -17,35 +17,35 @@ public class JobsDataSource {
 	private SQLiteDatabase database;
 	private MySQLiteHelper dbHelper;
 	private String[] allColumns = { 
-			 MySQLiteHelper.COLUMN_JOB_ID,  
-			 MySQLiteHelper.COLUMN_JOB_NAME, 
-			 MySQLiteHelper.COLUMN_JOB_STATUS, 
-			 MySQLiteHelper.COLUMN_JOB_SITE ,
-			 MySQLiteHelper.COLUMN_JOB_OWNER_GROUP, 
-			 MySQLiteHelper.COLUMN_JOB_APP_STATUS ,
-			 MySQLiteHelper.COLUMN_JOB_MINOR_STATUS , 
-			 MySQLiteHelper.COLUMN_JOB_CPU_TIME ,
-			 MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, 
-			 MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, 
-			 MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION,
-			 MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, 
-			 MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, 
-			 MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, 
-			 MySQLiteHelper.COLUMN_JOB_PRIORITY ,
-			 MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, 
-			 MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED,
-			 MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, 
-			 MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , 
-			 MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, 
-			 MySQLiteHelper.COLUMN_JOB_FLAG_KILLED,
-			 MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED,
-			 MySQLiteHelper.COLUMN_JOB_JOB_GROUP , 
-			 MySQLiteHelper.COLUMN_JOB_RESCHEDULES ,
-			 MySQLiteHelper.COLUMN_JOB_OWNER,
-			 MySQLiteHelper.COLUMN_JOB_OWNER_DN,
-			 MySQLiteHelper.COLUMN_JOB_SETUP//,
-			 //MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION,
-			};
+			MySQLiteHelper.COLUMN_JOB_ID,  
+			MySQLiteHelper.COLUMN_JOB_NAME, 
+			MySQLiteHelper.COLUMN_JOB_STATUS, 
+			MySQLiteHelper.COLUMN_JOB_SITE ,
+			MySQLiteHelper.COLUMN_JOB_OWNER_GROUP, 
+			MySQLiteHelper.COLUMN_JOB_APP_STATUS ,
+			MySQLiteHelper.COLUMN_JOB_MINOR_STATUS , 
+			MySQLiteHelper.COLUMN_JOB_CPU_TIME ,
+			MySQLiteHelper.COLUMN_JOB_TIME_START_EXECUTION, 
+			MySQLiteHelper.COLUMN_JOB_TIME_LAST_UPDATE, 
+			MySQLiteHelper.COLUMN_JOB_TIME_SUBMISSION,
+			MySQLiteHelper.COLUMN_JOB_TIME_LAST_SQL, 
+			MySQLiteHelper.COLUMN_JOB_TIME_END_EXECUTION, 
+			MySQLiteHelper.COLUMN_JOB_TIME_HEART_BEAT, 
+			MySQLiteHelper.COLUMN_JOB_PRIORITY ,
+			MySQLiteHelper.COLUMN_JOB_FLAG_DELETED, 
+			MySQLiteHelper.COLUMN_JOB_FLAG_RETREIVED,
+			MySQLiteHelper.COLUMN_JOB_FLAG_OUTPUT_SANDBOX_READY, 
+			MySQLiteHelper.COLUMN_JOB_FLAG_INPUT_SANDBOX_READY , 
+			MySQLiteHelper.COLUMN_JOB_FLAG_ACCOUNTED, 
+			MySQLiteHelper.COLUMN_JOB_FLAG_KILLED,
+			MySQLiteHelper.COLUMN_JOB_FLAG_VERIFIED,
+			MySQLiteHelper.COLUMN_JOB_JOB_GROUP , 
+			MySQLiteHelper.COLUMN_JOB_RESCHEDULES ,
+			MySQLiteHelper.COLUMN_JOB_OWNER,
+			MySQLiteHelper.COLUMN_JOB_OWNER_DN,
+			MySQLiteHelper.COLUMN_JOB_SETUP//,
+			//MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION,
+	};
 
 
 
@@ -143,7 +143,7 @@ public class JobsDataSource {
 				values.put(MySQLiteHelper.COLUMN_JOB_OWNER , i.getOwner());
 				values.put(MySQLiteHelper.COLUMN_JOB_OWNER_DN , i.getOwnerDN());
 				values.put(MySQLiteHelper.COLUMN_JOB_SETUP , i.getSetup());
-			//	values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
+				//	values.put(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION , i.getChangeStatusAction());
 				test.insert(values);
 			}			  
 			database.setTransactionSuccessful();
@@ -152,12 +152,12 @@ public class JobsDataSource {
 			database.endTransaction();
 		}
 	}	
-	
 
-	
-	
-	
-	
+
+
+
+
+
 	public List<Job> getAllJobIDs() {
 		List<Job> jobids = new ArrayList<Job>();
 
@@ -177,8 +177,8 @@ public class JobsDataSource {
 		cursor.close();
 		return jobids;
 	}
-	
-	
+
+
 	public Job getJobInfo(String jid) {
 
 
@@ -190,9 +190,9 @@ public class JobsDataSource {
 		cursor.close();
 		return job;
 	}	
-	
-	
-	
+
+
+
 	public List<Job> getAllJobIDsOfSatus(String status) {
 		List<Job> jobids = new ArrayList<Job>();
 
@@ -202,10 +202,10 @@ public class JobsDataSource {
 
 		//cursor.moveToLast();
 		//while (!cursor.isBeforeFirst()) {
-	//		Job job = cursorToComment(cursor);
-	//		jobids.add(job);
-	//		cursor.moveToPrevious();
-	//	}
+		//		Job job = cursorToComment(cursor);
+		//		jobids.add(job);
+		//		cursor.moveToPrevious();
+		//	}
 
 
 		cursor.moveToLast();
@@ -214,8 +214,8 @@ public class JobsDataSource {
 			jobids.add(job);
 			cursor.moveToPrevious();
 		}
-		
-		
+
+
 		// Make sure to close the cursor
 		cursor.close();
 		return jobids;
@@ -252,7 +252,7 @@ public class JobsDataSource {
 
 
 		ContentValues values = new ContentValues();
-		
+
 		String defVal = "0";
 		if(Summary.getChecking() != "Checking")
 			defVal = Summary.getChecking();
@@ -297,16 +297,16 @@ public class JobsDataSource {
 		if(Summary.getWaiting() != "Waiting")
 			defVal = Summary.getWaiting();
 		values.put("Waiting", defVal);	
-		
-			
-		
+
+
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		Date date = new Date();
-	//	System.out.println(dateFormat.format(date));
+		//	System.out.println(dateFormat.format(date));
 		values.put(MySQLiteHelper.DATE_TIME,dateFormat.format(date));
 
 		database.insert(MySQLiteHelper.DIRAC_STATS, null,values);
-	//	System.out.println(dateFormat.format(date));
+		//	System.out.println(dateFormat.format(date));
 
 	}	
 
@@ -333,7 +333,7 @@ public class JobsDataSource {
 	}	
 
 	public Status[] getLastUpdate() {	
-		
+
 
 
 		Cursor cursor = database.query(MySQLiteHelper.DIRAC_STATS,
@@ -352,7 +352,7 @@ public class JobsDataSource {
 			for(int i = 0; i < status.length;i++){
 
 				Status state = new Status(status[i],cursor.getString(cursor.getColumnIndex(status[i])));
-		
+
 
 				if(Integer.parseInt(state.number()) == 0){
 
@@ -424,7 +424,7 @@ public class JobsDataSource {
 		job.setOwner(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER)));
 		job.setOwnerDN(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_OWNER_DN)));
 		job.setSetup(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_SETUP)));
-	//	job.setChangeStatusAction(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION)));
+		//	job.setChangeStatusAction(cursor.getString(cursor.getColumnIndex(MySQLiteHelper.COLUMN_JOB_CHANGE_STATUS_ACTION)));
 
 		return job;
 	}

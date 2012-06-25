@@ -32,7 +32,6 @@ public class Connectivity {
 
 
 	public boolean isGranted(){		
-		Log.i("here1","not rganted");
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -41,7 +40,6 @@ public class Connectivity {
 
 
 		if(token != "no" && secret != "no"){
-			Log.i("here","not rganted");
 			return true;
 		}else{
 			Toast.makeText(context, "app not granted, please proceed throuth the \"Manage Certificates\" settings", Toast.LENGTH_SHORT).show();	
