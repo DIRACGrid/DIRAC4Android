@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import java.util.Random;
 
+import org.apache.http.client.HttpClient;
+
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
@@ -192,21 +194,6 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 		apiCall = new PerformAPICall(context,prefs);
 
 
-		
-//		HttpClient client = CustomSSLSocketFactory.getNewHttpClient(DIRACAndroidActivity.this);
-	//	String formDataServiceUrl = Constants.REQUEST_URL;
-	//	HttpPost post = new HttpPost(formDataServiceUrl);
-	//	post.setHeader("ping", "test");
-		 
-//		try {
-//			HttpResponse result = client.execute(post);
-	//	} catch (ClientProtocolException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-	//	} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		
 	}
 

@@ -1,5 +1,7 @@
 package dirac.android;
 
+import java.util.Set;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,6 +17,8 @@ public class CacheHelper {
 	public static final String GETDESCRITPION = "GETDESCRITPION";
 	public static final String NBJOBSDB = "NBJOBSDB";
 	public static final String NMAXBJOBS = "MAXNBJOBSDB";
+	public static final String NBCERT = "NBCERT";
+	public static final String CERTREADY = "CERTREADY";
 
 	public static final String JOBNAME = "JOBNAME";
 	public static final String TIME = "TIME";
@@ -40,6 +44,8 @@ public class CacheHelper {
 		return getPreferences(context).getInt(key, defValue);
 	}
 
+
+	
 	public static void writeString(Context context, String key, String value) {
 		getEditor(context).putString(key, value).commit();
 
