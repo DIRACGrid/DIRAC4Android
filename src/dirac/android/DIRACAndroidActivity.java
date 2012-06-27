@@ -24,9 +24,6 @@ import android.widget.Toast;
 
 import java.util.Random;
 
-import org.apache.http.client.HttpClient;
-
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
 import com.google.gson.Gson;
@@ -128,10 +125,7 @@ public class DIRACAndroidActivity extends SherlockActivity implements ActionBar.
 			}
 
 			return true;
-		case R.id.manage_filters:
-			//Intent myIntent = new Intent(context, FilterSettingsActivity.class);				 
-			//startActivity(myIntent);
-			return true;  
+			
 		case R.id.manage_certs:
 			startActivity(new Intent(context, UserProfileActivity.class));
 			return true;  

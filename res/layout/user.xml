@@ -4,27 +4,24 @@
         android:layout_height="fill_parent"
         android:gravity="bottom|end|right|top"
         android:orientation="vertical" 
-            android:layout_marginLeft="25px"
-            android:layout_marginRight="25px">
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp">
 
 
         <Button
             android:id="@+id/loadCert"
-            android:layout_marginTop="25px"
+            android:layout_marginTop="25dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Load Certificate" />
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/getGrant"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Get Grant Access" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/clearGrant"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reset Access" />
+            android:layout_height="wrap_content" />
 
 
             <requestFocus />

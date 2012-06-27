@@ -112,7 +112,9 @@ public class UserProfileActivity  extends Activity {
 		Button launchOauth = (Button) findViewById(R.id.getGrant);
 		Button clearCredentials = (Button) findViewById(R.id.clearGrant);
 		Button loadCert = (Button) findViewById(R.id.loadCert);
-
+		launchOauth.setText("Get Grant Access");
+		clearCredentials.setText("Reset Access");
+		loadCert.setText("Load your Certificate");
 		launchOauth.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(connect.isOnline())
@@ -233,7 +235,6 @@ public class UserProfileActivity  extends Activity {
 						alert.setView(input);
 
 						alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-							@SuppressWarnings("null")
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String value = input.getText().toString();
 								try {

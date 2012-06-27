@@ -13,10 +13,6 @@
           android:icon="@drawable/ic_action_refresh"
           android:title="@string/menu_refresh"
           android:showAsAction="always|withText"/>
-
-          	<item android:id="@+id/manage_filters"
-          		  android:title="@string/manage_filters"
-          		  android:showAsAction="never" />
     		<item android:id="@+id/manage_certs"
           		  android:title="@string/manage_certs"
                   android:showAsAction="never"/>

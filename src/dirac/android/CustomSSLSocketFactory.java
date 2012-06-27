@@ -1,8 +1,6 @@
 package dirac.android;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
+import java.io.IOException;import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -11,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Enumeration;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;

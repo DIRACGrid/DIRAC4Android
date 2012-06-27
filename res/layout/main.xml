@@ -7,7 +7,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"        
+       android:layout_marginLeft="3dp"
+       android:layout_marginRight="3dp" >
 
         <TextView
             android:id="@+id/userText1"
@@ -16,53 +18,46 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="right"
-            android:text="last update:" />
-    </LinearLayout>
+            android:text="@string/lup" />
+        
+                </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"        
+       android:layout_marginLeft="3dp"
+       android:layout_marginRight="3dp" >
 
         <TextView
             android:id="@+id/lastup"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:gravity="right"
-            android:text="10/10/10 12:12:12" />
+            android:gravity="right" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="3px"
-        android:orientation="horizontal" >
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="3px"
-        android:orientation="horizontal" >
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"         
+       android:layout_marginLeft="3dp"
+       android:layout_marginRight="3dp">
 
         <TextView
             android:id="@+id/nbtotaljob"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Jobs in Dirac: 0" />
+            android:gravity="left"/>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_weight="1"
@@ -70,7 +65,7 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:layout_width="10px"
+                android:layout_width="10dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
@@ -161,23 +156,14 @@
                 android:layout_weight="1"
                 android:background="@color/Killed"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <TextView
-                android:layout_width="10px"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="3px"
-        android:orientation="horizontal" >
-    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal" 
         android:layout_weight="7">
 

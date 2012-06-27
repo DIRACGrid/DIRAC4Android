@@ -1,7 +1,5 @@
 package dirac.android;
 
-import java.util.Set;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

@@ -5,13 +5,13 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
     android:id="@+id/stateRow"
-    android:paddingTop="4px"
-    android:paddingBottom="4px" >
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp" >
 	
     
     	<TextView
 		android:layout_gravity="center"
-		android:layout_width="10px"
+		android:layout_width="5dp"
 		android:layout_height="wrap_content" />
 	
     
@@ -20,23 +20,21 @@
 		android:paddingLeft="10dip"
 		android:paddingRight="10dip"
 		android:layout_gravity="center"
-		android:layout_width="10px"
+		android:layout_width="5dp"
 		android:layout_height="wrap_content"
 		android:background="#f00" />
 	
 	
 	<TextView
 		android:id="@+id/state_name"
-		android:text="job_id"
 		android:paddingLeft="10dip"
 		android:layout_gravity="left"
-		android:layout_width="300px"
+		android:layout_width="150dp"
 		android:layout_height="wrap_content"		
 	    android:textAppearance="?android:attr/textAppearanceLarge"  />
 	
 	<TextView
 		android:id="@+id/state_num"
-		android:text="job_name"
 		android:paddingLeft="10dip"
 		android:layout_gravity="left"
 		android:layout_height="wrap_content"

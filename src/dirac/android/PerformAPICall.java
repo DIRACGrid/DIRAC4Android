@@ -209,7 +209,7 @@ public class PerformAPICall {
 		}
 
 		protected void onProgressUpdate() {
-			//myProgress.setMessage("skhshk");
+			//myProgress.setMessage("hola");
 			//myProgress.show();
 
 		}
@@ -244,7 +244,6 @@ public class PerformAPICall {
 				try {
 
 					response = doGet(url,getConsumer(prefs));
-
 					StatsIntent = PerformAPICall.this.execute(context, response);
 
 
@@ -259,7 +258,6 @@ public class PerformAPICall {
 			try {
 				Thread.sleep(2);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return response;
@@ -460,7 +458,6 @@ public class PerformAPICall {
 
 
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} 
 		

@@ -25,7 +25,7 @@ public class FilterSettingsActivity  extends Activity {
 		myMaxJob.setText(mymax.toString());
 
 		
-		
+		save.setText("Save");
 		
 		save.setOnClickListener(new OnClickListener(){
 
