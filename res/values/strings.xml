@@ -4,7 +4,7 @@
     <string name="app_name">DIRACAndroid</string>
     <string name="desc">splash_screen_dirac</string>
     <string name="lup">last update:</string>
-     <string name="filt1">Number of jobs to download:</string>
+     <string name="filt1"># jobs per dnl:</string><string name="filt2">auto-grant</string>
     <color name="Running">#3A89C9</color>
     <color name="Completed">#1B325F</color>
     <color name="Failed">#F60B00</color>
@@ -32,5 +32,8 @@
     <string name="manage_filters">Manage filters</string>
     <string name="manage_certs">Manage certificates</string>
     <string name="preferences">Preferences</string>
+    <color name="Deleted">#50575c</color>
+    <string name="about">about</string>
+    <string name="save">save</string>
     
 </resources>

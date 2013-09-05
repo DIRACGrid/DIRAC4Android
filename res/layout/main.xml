@@ -55,7 +55,7 @@
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:gravity="left"/>
-
+            
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -148,13 +148,21 @@
                 android:layout_weight="1"
                 android:background="@color/Failed"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
+            
             <TextView
                 android:id="@+id/tKilled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/Killed"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/tDeleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/Deleted"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </LinearLayout>

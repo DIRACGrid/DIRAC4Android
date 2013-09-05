@@ -1,4 +1,4 @@
-package dirac.android;
+package dirac.gsonconfig;
 
 public class flag {
 	private String verified;

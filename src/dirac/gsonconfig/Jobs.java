@@ -1,4 +1,4 @@
-package dirac.android;
+package dirac.gsonconfig;
 import java.util.List;
 
 public class Jobs {

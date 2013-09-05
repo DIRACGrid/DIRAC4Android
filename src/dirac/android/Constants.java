@@ -2,26 +2,24 @@ package dirac.android;
 
 public class Constants {
 
-	public static final String CONSUMER_KEY 	= "be99ba61cbe5fcba8d631d0135ea6294";
-	public static final String CONSUMER_SECRET 	= "7d86c156217881b4dae0d046ade697c4";
+ 
 	
-	public static final String BASE_URL 		= "http://lhcb01.ecm.ub.es:9354";
+    public static final String BASE_URL 		= "https://lhcb01.ecm.ub.es";
+    public static final String PORT 		    = "9354";
 
-	public static final String REQUEST_URL 		= BASE_URL+"/oauth/request_token";
-	public static final String ACCESS_URL 		= BASE_URL+"/oauth/access_token";  
-	public static final String AUTHORIZE_URL 	= BASE_URL+"/oauth/authorize";
+    public static final String BASE_URL_PORT    = BASE_URL+":"+PORT;
 
-	public static final String API_JOBS		    = BASE_URL+"/jobs";
-	public static final String API_HISTORY		= API_JOBS+"/history";
-	public static final String API_SUMMARY 		= API_JOBS+"/summary";
-	public static final String API_RESCHEDULE 	= API_JOBS+"/reschedule/";
+    public static final String ENCODING 		= "UTF-8";
 
-	public static final String ENCODING 		= "UTF-8";
 
+    public static final String REQUEST_GROUPS 		= BASE_URL_PORT+"/oauth2/groups";
+    public static final String REQUEST_SETUPS 		= BASE_URL_PORT+"/oauth2/setups";
+    public static final String REQUEST_TOKEN 		= BASE_URL_PORT+"/oauth2/token";
+    public static final String AUTHORIZE_URL 	    = BASE_URL_PORT+"/oauth2/auth";
 	
-	//SCHEME SHOULD BE: x-dirac-android-activity
-	public static final String	OAUTH_CALLBACK_SCHEME	= "http";
-	public static final String	OAUTH_CALLBACK_HOST		= "callback";
-	public static final String	OAUTH_CALLBACK_URL		= OAUTH_CALLBACK_SCHEME+"://"+OAUTH_CALLBACK_HOST;
+    public static final String REQUEST_JOBS 		= BASE_URL_PORT+"/jobs";
+    public static final String REQUEST_HISTORY		= REQUEST_JOBS+"/history";
+    public static final String REQUEST_SUMMARY 		= REQUEST_JOBS+"/summary";
+    public static final String REQUEST_RESCHEDULE 	= REQUEST_JOBS+"/reschedule/";
 
 }

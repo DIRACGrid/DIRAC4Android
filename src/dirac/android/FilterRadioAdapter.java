@@ -11,16 +11,16 @@ import java.util.ArrayList;
 
 public class FilterRadioAdapter extends BaseExpandableListAdapter {
 
-  //  private Context context;
+    //  private Context context;
     private ArrayList<String> groups;
     private ArrayList<ArrayList<String>> sites;
     private LayoutInflater inflater;
 
     public FilterRadioAdapter(Context context, 
-                        ArrayList<String> groups,
-						ArrayList<ArrayList<String>> sites ) { 
-    //    this.context = context;
-		this.groups = groups;
+			      ArrayList<String> groups,
+			      ArrayList<ArrayList<String>> sites ) { 
+	//    this.context = context;
+	this.groups = groups;
         this.sites = sites;
         inflater = LayoutInflater.from( context );
     }
@@ -40,8 +40,8 @@ public class FilterRadioAdapter extends BaseExpandableListAdapter {
         else
             v = inflater.inflate(R.layout.item_radiobutton, parent, false); 
         String c = (String)getChild( groupPosition, childPosition );
-		RadioButton cb = (RadioButton)v.findViewById( R.id.radioButton1);
-		cb.setText(c);
+	RadioButton cb = (RadioButton)v.findViewById( R.id.radioButton1);
+	cb.setText(c);
         cb.setChecked( false );
         return v;
     }
@@ -69,9 +69,9 @@ public class FilterRadioAdapter extends BaseExpandableListAdapter {
         else
             v = inflater.inflate(R.layout.group_row, parent, false); 
         String gt = (String)getGroup( groupPosition );
-		TextView colorGroup = (TextView)v.findViewById( R.id.childname );
-		if( gt != null )
-			colorGroup.setText( gt );
+	TextView colorGroup = (TextView)v.findViewById( R.id.childname );
+	if( gt != null )
+	    colorGroup.setText( gt );
         return v;
     }
 

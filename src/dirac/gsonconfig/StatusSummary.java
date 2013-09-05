@@ -1,4 +1,4 @@
-package dirac.android;
+package dirac.gsonconfig;
 
 public class StatusSummary {
 	
@@ -14,6 +14,7 @@ public class StatusSummary {
 	private String	Staging   = "Staging";
 	private String	Stalled   = "Stalled";
 	private String	Waiting   = "Waiting";
+	private String	Deleted   = "Deleted";
 	
 	public String getStaging() {
 		return Staging;
@@ -80,6 +81,13 @@ public class StatusSummary {
 	}
 	public void setChecking(String Checking) {
 		this.Checking = Checking;
+	}
+	
+	public String getDeleted() {
+		return Deleted;
+	}
+	public void setDeleted(String Deleted) {
+		this.Deleted = Deleted;
 	}
 	
 	

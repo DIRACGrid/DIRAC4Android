@@ -1,4 +1,4 @@
-package dirac.android;
+package dirac.gsonconfig;
 
 public class time {
 	private String startExecution;

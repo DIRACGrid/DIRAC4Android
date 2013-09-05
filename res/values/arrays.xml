@@ -2,6 +2,6 @@
 <resources>
     <string-array name="locations">
         <item>Jobs</item>
-        <item>Stats</item>
+        <item>History</item>
     </string-array>
 </resources>

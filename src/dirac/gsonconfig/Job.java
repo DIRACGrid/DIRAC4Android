@@ -1,4 +1,4 @@
-package dirac.android;
+package dirac.gsonconfig;
 
 
 
@@ -9,12 +9,12 @@ public class Job  {
 	private String ownerGroup;
 	private String jid;
 	private String appStatus;
-	private String 	minorStatus	;
-	private String 	site;
-	private String 	cpuTime	;
-	private time times;
+	private String minorStatus	;
+	private String site;
+	private String cpuTime	;
+	private time   times;
 	private String priority;
-	private flag flags;
+	private flag   flags;
 	private String jobGroup;
 	private String reschedules;
 	private String owner;
