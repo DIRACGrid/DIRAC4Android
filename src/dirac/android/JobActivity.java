@@ -55,7 +55,7 @@ public class JobActivity extends Activity {
 	View footer = getLayoutInflater().inflate(R.layout.list_footer, null);
 
 	TextView footerTV = (TextView)footer.findViewById(R.id.footer_text);
-	footerTV.setText("Get JDL");
+	footerTV.setText("Get Manifest");
 
 	lv.addFooterView(footer);
 
@@ -76,7 +76,7 @@ public class JobActivity extends Activity {
 							
 							
 				apiCall.SetExtraInfo(myjob.getJid());
-				apiCall.getJDL(Constants.REQUEST_JOBS+"/"+myjob.getJid()+"/description");
+				apiCall.getManifest(Constants.REQUEST_JOBS+"/"+myjob.getJid()+"/manifest");
 							
 			    }
 			}
@@ -95,50 +95,50 @@ public class JobActivity extends Activity {
 	List<String[]> infos = new ArrayList<String[]>();
 	String[] temp = new String[2];
 
-	temp[0] = "Name";
+	temp[0] = "name";
 	temp[1] = i.getName();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Status";
+	temp[0] = "status";
 	temp[1] = i.getStatus();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Site";
+	temp[0] = "site";
 	temp[1] =i.getSite();	
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Owner Group";
+	temp[0] = "owner Group";
 	temp[1] = i.getOwnerGroup();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "App Status";
+	temp[0] = "app Status";
 	temp[1] = i.getAppStatus();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Minor Status";
+	temp[0] = "minor Status";
 	temp[1] = i.getMinorStatus();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Owner";
+	temp[0] = "owner";
 	temp[1] = i.getOwner();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Owner DN";
+	temp[0] = "owner DN";
 	temp[1] = i.getOwnerDN();
 	infos.add(temp);
 
 	temp = new String[2];
-	temp[0] = "Job Group";
+	temp[0] = "job Group";
 	temp[1] = i.getJobGroup();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Reschedules";
+	temp[0] = "reschedules";
 	temp[1] = i.getReschedules();
 	infos.add(temp);
 
 
 	temp = new String[2];
-	temp[0] = "Setup";
+	temp[0] = "setup";
 	temp[1] = i.getSetup();
 	infos.add(temp);
 	temp = new String[2];
@@ -146,59 +146,59 @@ public class JobActivity extends Activity {
 	temp[1] = i.getCpuTime();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Start Execution";
+	temp[0] = "start Execution";
 	temp[1] = i.getTimes().getStartExecution();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Last Update";
+	temp[0] = "last Update";
 	temp[1] = i.getTimes().getLastUpdate();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Submission";
+	temp[0] = "submission";
 	temp[1] = i.getTimes().getSubmission();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Last SOL";
+	temp[0] = "last SOL";
 	temp[1] = i.getTimes().getLastSOL();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "End Execution";
+	temp[0] = "end Execution";
 	temp[1] = i.getTimes().getEndExecution();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Heart Beat";
+	temp[0] = "heart Beat";
 	temp[1] = i.getTimes().getHeartBeat();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Priority";
+	temp[0] = "priority";
 	temp[1] = i.getPriority();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Verified Flag";
+	temp[0] = "verified Flag";
 	temp[1] = i.getFlags().getVerified();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Deleted Flag";
+	temp[0] = "deleted Flag";
 	temp[1] = i.getFlags().getDeleted();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Retrieved Flag";
+	temp[0] = "retrieved Flag";
 	temp[1] = i.getFlags().getRetrieved();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Output SB Ready";
+	temp[0] = "output SB Ready";
 	temp[1] = i.getFlags().getOutputSandboxReady();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Input SB Ready";
+	temp[0] = "input SB Ready";
 	temp[1] = i.getFlags().getInputSandboxReady();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Accounted Flag";
+	temp[0] = "accounted Flag";
 	temp[1] = i.getFlags().getAccounted();
 	infos.add(temp);
 	temp = new String[2];
-	temp[0] = "Killed Flag";
+	temp[0] = "killed Flag";
 	temp[1] = i.getFlags().getKilled();
 	infos.add(temp);
 

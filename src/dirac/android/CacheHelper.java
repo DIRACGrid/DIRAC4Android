@@ -33,6 +33,8 @@ public class CacheHelper {
     public static final String LASTUPDATE =  "LASTUPDATE";
     public static final String ALLENTRIES =  "ALLENTRIES";
     public static final String AUTOUPDATE =  "AUTOUPDATE";
+    public static final String SITESUMMARY =  "SITESUMMARY";
+    public static final String SITESUMMARYBOOL =  "SITESUMMARYBOOL";
 
     public static void writeBoolean(Context context, String key, boolean value) {
 	getEditor(context).putBoolean(key, value).commit();

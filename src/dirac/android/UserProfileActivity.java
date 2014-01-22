@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
 import android.security.KeyChainException;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -119,6 +120,53 @@ public class UserProfileActivity  extends Activity {
 
 				    CacheHelper.writeBoolean(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,true);
 				    dialog.cancel();
+					Integer defValue = 0;
+					Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
+
+					HashMap<String, String> maplist;
+					maplist = new HashMap<String, String>();
+					final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);	
+					Log.i("def", nbcert.toString());
+					if(connect.isGranted() && (nbcert > 0)){
+
+
+
+					    maplist.put("line1", "Access using:");
+					    list.add(maplist);
+
+					    for(Integer i = 0; i < nbcert; i++){
+
+						maplist = new HashMap<String, String>();
+
+						String alias = "";
+						alias = CacheHelper.readString(context, "cert_"+i.toString()+"_line1" ,alias);	
+						String info = "";
+						info= CacheHelper.readString(context, "cert_"+i.toString()+"_line2" , info);	
+						maplist.put("line1",alias);
+						maplist.put("line2",info);
+						list.add(maplist);
+
+
+					    }
+
+
+					}else{
+					    maplist.put("line1", "Load your certificate and then ask for a grant access");
+					    list.add(maplist);
+					}	
+					
+					
+
+					lvListe = (ListView)findViewById(R.id.listCert);
+					String[] from = { "line1", "line2" };
+
+					int[] to = { android.R.id.text1, android.R.id.text2 };
+
+
+					//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
+					SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
+
+					lvListe.setAdapter(adapter);
 							
 								
 								
@@ -130,11 +178,58 @@ public class UserProfileActivity  extends Activity {
 				public void onClick(DialogInterface dialog, int which) {			
 				    CacheHelper.writeBoolean(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,false);
 				    dialog.cancel();
+					Integer defValue = 0;
+					Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
+
+					HashMap<String, String> maplist;
+					maplist = new HashMap<String, String>();
+					final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);	
+					Log.i("def", nbcert.toString());
+					if(connect.isGranted() && (nbcert > 0)){
+
+
+
+					    maplist.put("line1", "Access using:");
+					    list.add(maplist);
+
+					    for(Integer i = 0; i < nbcert; i++){
+
+						maplist = new HashMap<String, String>();
+
+						String alias = "";
+						alias = CacheHelper.readString(context, "cert_"+i.toString()+"_line1" ,alias);	
+						String info = "";
+						info= CacheHelper.readString(context, "cert_"+i.toString()+"_line2" , info);	
+						maplist.put("line1",alias);
+						maplist.put("line2",info);
+						list.add(maplist);
+
+
+					    }
+
+
+					}else{
+					    maplist.put("line1", "Load your certificate and then ask for a grant access");
+					    list.add(maplist);
+					}	
+					
+					
+
+					lvListe = (ListView)findViewById(R.id.listCert);
+					String[] from = { "line1", "line2" };
+
+					int[] to = { android.R.id.text1, android.R.id.text2 };
+
+
+					//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
+					SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
+
+					lvListe.setAdapter(adapter);
 				}
-			    });
+			});
 			builder.show();
-						
-						
+
+	
 
 		    }
 

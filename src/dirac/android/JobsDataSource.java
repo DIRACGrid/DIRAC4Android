@@ -201,33 +201,79 @@ public class JobsDataSource {
 
 
 
-    public List<Job> getAllJobIDsOfSatus(String status) {
-	List<Job> jobids = new ArrayList<Job>();
+    public List<Job> getAllJobIDsOfStatus(String status) {
+    	List<Job> jobids = new ArrayList<Job>();
 
 
 
-	Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATUS + "= '" + status+ "'",new String [] {});
+    	Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_STATUS + "= '" + status+ "'",new String [] {});
 
-	//cursor.moveToLast();
-	//while (!cursor.isBeforeFirst()) {
-	//		Job job = cursorToComment(cursor);
-	//		jobids.add(job);
-	//		cursor.moveToPrevious();
-	//	}
-
-
-	cursor.moveToLast();
-	while (!cursor.isBeforeFirst()) {
-	    Job job = cursorToComment(cursor);
-	    jobids.add(job);
-	    cursor.moveToPrevious();
-	}
+    	//cursor.moveToLast();
+    	//while (!cursor.isBeforeFirst()) {
+    	//		Job job = cursorToComment(cursor);
+    	//		jobids.add(job);
+    	//		cursor.moveToPrevious();
+    	//	}
 
 
-	// Make sure to close the cursor
-	cursor.close();
-	return jobids;
-    }	
+    	cursor.moveToLast();
+    	while (!cursor.isBeforeFirst()) {
+    	    Job job = cursorToComment(cursor);
+    	    jobids.add(job);
+    	    cursor.moveToPrevious();
+    	}
+
+
+    	// Make sure to close the cursor
+    	cursor.close();
+    	return jobids;
+        }	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public List<Job> getAllJobIDsOfSites(String status) {
+    	List<Job> jobids = new ArrayList<Job>();
+
+
+
+    	Cursor cursor = database.rawQuery("SELECT * FROM " + MySQLiteHelper.DIRAC_JOBS + " WHERE " + MySQLiteHelper.COLUMN_JOB_SITE + "= '" + status+ "'",new String [] {});
+
+    	//cursor.moveToLast();
+    	//while (!cursor.isBeforeFirst()) {
+    	//		Job job = cursorToComment(cursor);
+    	//		jobids.add(job);
+    	//		cursor.moveToPrevious();
+    	//	}
+
+
+    	cursor.moveToLast();
+    	while (!cursor.isBeforeFirst()) {
+    	    Job job = cursorToComment(cursor);
+    	    jobids.add(job);
+    	    cursor.moveToPrevious();
+    	}
+
+
+    	// Make sure to close the cursor
+    	cursor.close();
+    	return jobids;
+        }	
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public ArrayList<String[]> getAllJobIDsOfSatusTime() {
 
@@ -322,7 +368,7 @@ public class JobsDataSource {
 
     }	
 
-    public void creatTableOfSatus() {		
+    public void creatTableOfStatus() {		
 
 
 	ContentValues values = new ContentValues();
@@ -344,6 +390,12 @@ public class JobsDataSource {
 	database.insert(MySQLiteHelper.DIRAC_STATS, null,values);
     }	
 
+
+
+    
+    
+    
+    
     public Status[] getLastUpdate() {	
 
 

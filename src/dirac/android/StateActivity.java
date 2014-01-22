@@ -5,21 +5,17 @@ import java.util.Random;
 
 import dirac.gsonconfig.Job;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class StateActivity extends Activity{
 
@@ -58,26 +54,18 @@ public class StateActivity extends Activity{
   //  Integer totNn = 0;
 	if(b!=null){
 	    state = b.getString("myState");
-	    myjobids = datasource.getAllJobIDsOfSatus(state);
+	    
+	    if(CacheHelper.readBoolean(context, CacheHelper.SITESUMMARYBOOL, false))
+		    myjobids = datasource.getAllJobIDsOfSites(state);
+    	else   		
+    	    myjobids = datasource.getAllJobIDsOfStatus(state);
 	    
 
 		final Status[] map = datasource.getLastUpdate(); 
 		
 
 		Integer totStatus = map.length;
-/*
-		for(int i = 0; i<totStatus; i++){
 
-			Log.i(map[i].name(),map[i].number());
-			Log.i(map[i].name().toString(),state.toString());
-			if (map[i].name().toString()!= state.toString()){
-				totNn = Integer.getInteger(map[i].number());
-				Log.i(map[i].name(),map[i].number());
-				Log.i(map[i].name(),totNn.toString());
-			}
-		}
-		
-	*/	
 		
 	    
 	    adapter = new JobArrayAdapter(
@@ -91,6 +79,8 @@ public class StateActivity extends Activity{
 	}
 
 	datasource.close();
+	
+	
 
 	CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, myjobids.size());
 
@@ -146,8 +136,12 @@ public class StateActivity extends Activity{
 				String JobType = CacheHelper.readString(context, CacheHelper.GETJOBSTYPE, SdefValue);
 				Integer defInt	= 20;
 				Integer nbJob = CacheHelper.readInteger(context, CacheHelper.STARTJOBNB, defInt);
-
-				apiCall.getNewJobs(Constants.REQUEST_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+				
+				Log.i("addnew", JobType);
+				if(CacheHelper.readBoolean(context, CacheHelper.SITESUMMARYBOOL, false))
+			    	apiCall.getNewJobs(Constants.REQUEST_JOBS+"?site="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+			    else   		
+			    	apiCall.getNewJobs(Constants.REQUEST_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
 
 							
 				CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));
@@ -159,7 +153,10 @@ public class StateActivity extends Activity{
 
 		}
 	    });
-
+	
+	
+	
+/*
 	lv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 		public boolean onItemLongClick(AdapterView<?> parent, View arg1,
@@ -178,28 +175,28 @@ public class StateActivity extends Activity{
 				    //	JobID myjobid = jobList.get(position2);
 
 				    switch(item){
-					/*
-					  case 0: 								
-					  builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
-					  public void onClick(DialogInterface dialog, int which) {	
+					
+					//  case 0: 								
+///					  builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
+					  //public void onClick(DialogInterface dialog, int which) {	
 
-					  if(connect.isOnline()){
-					  apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
-					  Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
-					  }else
-					  Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
-					  }
-					  });
-					  builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					  public void onClick(DialogInterface dialog, int which) {
-					  Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
-
-					  dialog.cancel();
-					  }
-					  });
-					  builder2.show();
-					*/
-				    case 0:
+					  //if(connect.isOnline()){
+					  //apiCall.performApiCall(Constants.API_RESCHEDULE+selectJob.getJid());
+					  //Toast.makeText(getApplicationContext(), "Rescheduled", Toast.LENGTH_SHORT).show();
+					  //}else
+					  //Toast.makeText(context, "no internet connectivity", Toast.LENGTH_SHORT).show();
+					  //}
+					  //});
+					  ///builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//					  public void onClick(DialogInterface dialog, int which) {
+	//				  Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
+//
+	//				  dialog.cancel();
+		//			  }
+			//		  });
+				//	  builder2.show();
+					
+									    case 0:
 					builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
 						public void onClick(DialogInterface dialog, int which) {	
 
@@ -237,7 +234,7 @@ public class StateActivity extends Activity{
 	    });		
 
 
-
+*/
 
     }
 

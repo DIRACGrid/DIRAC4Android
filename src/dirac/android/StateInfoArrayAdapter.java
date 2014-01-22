@@ -1,7 +1,10 @@
 package dirac.android;
 
 
+import java.util.StringTokenizer;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,8 +63,13 @@ public class StateInfoArrayAdapter extends ArrayAdapter<Status> {
 	StateColor = (TextView) row.findViewById(R.id.state_color);
 	StateName.setText(state.name());
 	StateNum.setText(state.number());
-	StateColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[state.get(state.name())]));
-
+	StringTokenizer tokens = new StringTokenizer(state.name(), ".");
+	if(tokens.countTokens() > 1){
+		
+	StateColor.setBackgroundColor(context.getResources().getColor(R.color.sites));
+	}else{
+		StateColor.setBackgroundColor(context.getResources().getColor(Status.ColorStatus[state.get(state.name())]));
+	}
 
 	return row;
     }
