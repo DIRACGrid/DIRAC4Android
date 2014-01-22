@@ -13,7 +13,6 @@ public class AboutActivity  extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 
     	
-    	//test push
     	
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.about);
