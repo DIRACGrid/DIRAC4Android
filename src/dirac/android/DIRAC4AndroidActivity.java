@@ -33,7 +33,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 
-public class DIRACAndroidActivity extends SherlockActivity implements
+public class DIRAC4AndroidActivity extends SherlockActivity implements
 		ActionBar.OnNavigationListener {
 
 	final String TAG = getClass().getName();

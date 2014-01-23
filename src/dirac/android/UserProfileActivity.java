@@ -98,7 +98,6 @@ checkall();
 						runOnUiThread(new Runnable() {
 			    			
 			    			public void run() {
-			    				Log.i("here", "HERRRE");
 			    				checkall();
 
 			    		    }

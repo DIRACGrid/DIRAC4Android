@@ -51,11 +51,13 @@ import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import dirac.android.R.color;
 import dirac.gsonconfig.Entries;
 import dirac.gsonconfig.GToken;
 import dirac.gsonconfig.Jobs;
@@ -470,7 +472,7 @@ public class PerformAPICall2 {
 
 				try {
 					getToken(url, getMyHttpClient(context));
-
+					
 				} catch (Exception e) {
 					Log.e(TAG, "Error during OAUth retrieve request token", e);
 				}
@@ -483,7 +485,14 @@ public class PerformAPICall2 {
 			if (myProgress.isShowing()) {
 				myProgress.dismiss();
 			}
-		}
+	    	Button launchOauth = (Button) activity.findViewById(R.id.getGrant);
+
+	        	launchOauth.setText("You have Grant Access");
+	      //  	launchOauth.setBackgroundColor(activity.getResources().getColor(color.DarkGreen));
+
+        	
+	        }
+	       
 
 	}
 

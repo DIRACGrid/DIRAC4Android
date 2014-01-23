@@ -32,7 +32,7 @@ public class SplashScreen extends Activity {
 			// do nothing
 		    } finally {
 			finish();
-			Intent intent = new Intent(SplashScreen.this, DIRACAndroidActivity.class);
+			Intent intent = new Intent(SplashScreen.this, DIRAC4AndroidActivity.class);
 			startActivity(intent);
 		    }
 		}
