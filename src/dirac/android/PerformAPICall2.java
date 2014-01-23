@@ -60,7 +60,9 @@ import com.google.gson.Gson;
 import dirac.android.R.color;
 import dirac.gsonconfig.Entries;
 import dirac.gsonconfig.GToken;
+import dirac.gsonconfig.Groups;
 import dirac.gsonconfig.Jobs;
+import dirac.gsonconfig.Setups;
 import dirac.gsonconfig.StatusSummary;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -155,6 +157,7 @@ public class PerformAPICall2 {
 		task.execute(new String[] { myUrl });
 	}
 
+
 	public void getNewJobs(String myUrl) {
 		performApiCallAddNew task = new performApiCallAddNew();
 		task.execute(new String[] { myUrl });
@@ -175,6 +178,14 @@ public class PerformAPICall2 {
 		task.execute(new String[] { myUrl });
 	}
 
+	
+
+	public void getGroupAndSetup(String myUrl, String myUrln) {
+		OAuth2RequestGroupAndSetup task = new OAuth2RequestGroupAndSetup();
+		task.execute(new String[] { myUrl , myUrln});
+	}
+	
+	
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	private HttpClient getMyHttpClient(Context mycontext) {
 
@@ -372,8 +383,6 @@ public class PerformAPICall2 {
 		Log.d(TAG, "Retrieving token from DIRAC servers");
 		Log.d(TAG, "url " + Constants.REQUEST_TOKEN);
 
-		Log.d(TAG, CacheHelper.readString(context, CacheHelper.SHPREF_GROUP,
-				"No Groups"));
 
 		// """OAUTH 2 """" implemetantion....
 		String formDataServiceUrl = Constants.REQUEST_TOKEN;
@@ -381,8 +390,8 @@ public class PerformAPICall2 {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
 		nameValuePairs.add(new BasicNameValuePair("grant_type",
 				"client_credentials"));
-		nameValuePairs.add(new BasicNameValuePair("group", "lhcb_user"));
-		nameValuePairs.add(new BasicNameValuePair("setup", "LHCb-Production"));
+		nameValuePairs.add(new BasicNameValuePair("group", CacheHelper.readString(context, CacheHelper.DIRACGROUP, "")));
+		nameValuePairs.add(new BasicNameValuePair("setup", CacheHelper.readString(context, CacheHelper.DIRACSETUP, "")));
 		try {
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		} catch (UnsupportedEncodingException e2) {
@@ -455,6 +464,170 @@ public class PerformAPICall2 {
 
 	}
 
+	
+	
+
+	private String getGroupAndSetup(String urlG, String urlS, HttpClient myHttpClient)
+			throws Exception {
+
+		Log.d(TAG, "Retrieving Group and Setup from DIRAC servers");
+		
+	
+		
+		
+		
+		// """OAUTH 2 """" implemetantion....
+		HttpGet get = new HttpGet(urlG);
+
+		HttpResponse result22 = null;
+		try {
+			result22 = myHttpClient.execute(get);
+		} catch (ClientProtocolException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		InputStream data23 = null;
+		try {
+			data23 = result22.getEntity().getContent();
+		} catch (IllegalStateException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		BufferedReader token_ret = new BufferedReader(new InputStreamReader(
+				data23));
+
+		StringBuilder sb3 = new StringBuilder();
+
+		String line = null;
+		try {
+			while ((line = token_ret.readLine()) != null) {
+				sb3.append(line + "\n");
+			}
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		String myline = sb3.toString();
+		
+		
+		
+		
+		
+		// """OAUTH 2 """" implemetantion....
+		HttpGet getb = new HttpGet(urlS);
+
+		HttpResponse result22b = null;
+		try {
+			result22b = myHttpClient.execute(getb);
+		} catch (ClientProtocolException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		InputStream data23b = null;
+		try {
+			data23b = result22b.getEntity().getContent();
+		} catch (IllegalStateException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		BufferedReader token_retb = new BufferedReader(new InputStreamReader(
+				data23b));
+
+		StringBuilder sb3b = new StringBuilder();
+
+		String lineb = null;
+		try {
+			while ((lineb = token_retb.readLine()) != null) {
+				sb3b.append(lineb + "\n");
+			}
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		String mylineb = sb3b.toString();
+		
+		
+
+		CacheHelper.writeString(context, CacheHelper.SHPREF_GROUPS, myline);
+		CacheHelper.writeString(context, CacheHelper.SHPREF_SETUPS, mylineb);
+
+	
+		
+		
+		
+		
+		return myline;
+		
+		
+		
+	}
+
+	
+	public class OAuth2RequestGroupAndSetup extends
+			AsyncTask<String, String, String> {
+
+		protected void onPreExecute() {
+			myProgress = ProgressDialog.show(context, "",
+					"Getting the possible groups and setups. Please wait...", true);
+
+		}
+
+		@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+		@Override
+		protected String doInBackground(String... urls) {
+
+
+				try {
+					getGroupAndSetup(urls[0], urls[1], getMyHttpClient(context));
+					
+				} catch (Exception e) {
+					Log.e(TAG, "Error during OAUth retrieve groups and setups.", e);
+				}
+			
+			return "";
+		}
+
+		protected void onPostExecute(String result) {
+
+			if (myProgress.isShowing()) {
+				myProgress.dismiss();
+			}
+
+	    	Button loadServ = (Button) activity.findViewById(R.id.loadServ);
+
+	    	String test1 = CacheHelper.readString(context, CacheHelper.SHPREF_GROUPS, "");
+	    	String test2 = CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS, "");
+	    	String test3 = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
+	    	if(test1 != "" && test2 != "" && test3 != ""){
+	    		
+
+
+	    		loadServ.setText("Using Server: "+test3);
+	    		loadServ.setBackgroundColor(activity.getResources().getColor(color.DarkGreen));
+
+	    		
+	    	}
+
+	}
+	}
+	
+	
+
 	public class OAuth2RequestTokenTask extends
 			AsyncTask<String, String, String> {
 
@@ -488,7 +661,7 @@ public class PerformAPICall2 {
 	    	Button launchOauth = (Button) activity.findViewById(R.id.getGrant);
 
 	        	launchOauth.setText("You have Grant Access");
-	      //  	launchOauth.setBackgroundColor(activity.getResources().getColor(color.DarkGreen));
+	        	launchOauth.setBackgroundColor(activity.getResources().getColor(color.DarkGreen));
 
         	
 	        }

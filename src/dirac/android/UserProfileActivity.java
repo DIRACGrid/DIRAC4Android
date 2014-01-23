@@ -4,8 +4,14 @@ package dirac.android;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import com.google.gson.Gson;
 
 import dirac.android.R.color;
+import dirac.gsonconfig.Groups;
+import dirac.gsonconfig.Setups;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.annotation.SuppressLint;
@@ -20,6 +26,7 @@ import android.security.KeyChainAliasCallback;
 import android.security.KeyChainException;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -40,6 +47,9 @@ public class UserProfileActivity  extends Activity {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.user);
 	Button loadCert = (Button) findViewById(R.id.loadCert);
+	Button loadServ = (Button) findViewById(R.id.loadServ);
+	Button loadRole = (Button) findViewById(R.id.loadRole);
+	Button loadProd = (Button) findViewById(R.id.loadProd);
 	Button clearCredentials = (Button) findViewById(R.id.clearGrant);
 	Button launchOauth = (Button) findViewById(R.id.getGrant);
 checkall();	
@@ -49,34 +59,31 @@ checkall();
 
 
 
-/*	
-  lvListe = (ListView)findViewById(R.id.listCert);
-	String[] from = { "line1", "line2" };
 
-	int[] to = { android.R.id.text1, android.R.id.text2 };
-
-
-	//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
-	SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
-
-	lvListe.setAdapter(adapter);
-
-*/
 	
 	
-	
-//	loadCert.setText("Load your Certificate");
 	launchOauth.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    if(connect.isOnline()){
-						
+		    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+		    	String DiracGroup = CacheHelper.readString(context, CacheHelper.DIRACGROUP, "");
+		    	String DiracSetup = CacheHelper.readString(context, CacheHelper.DIRACSETUP, "");
+				Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, 0);
+
+		    	
+		    if(DiracServer!="" && DiracSetup!="" && DiracGroup!=""&& nbcert>0){
 						
 
 			apiCall = new PerformAPICall2(context);
 
+			Activity activityContext = (Activity) context;
+			apiCall.SetActivity(activityContext);
+
 			apiCall.getAccess(Constants.REQUEST_TOKEN);
 
-						
+			
+			
+			
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setMessage("Do you want to enable  ''auto - grant'' (this option could be (un)set in the preferences)");
 			builder.setCancelable(true);
@@ -134,9 +141,13 @@ checkall();
 
 	
 
+		    }else{
+		    	
+		    	Toast.makeText(context, "Select your Certificate, Server, Group and Setup", Toast.LENGTH_SHORT).show();
+	
 		    }
 		       
-
+		    }
 		
 						
 
@@ -246,9 +257,180 @@ checkall();
 	    });
 
 
+
+	loadServ.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+			
+			
+			Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, 0);
+
+	    	
+	    if(connect.isOnline() && nbcert>0){
+					
+
+			
+			
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    context,
+                    android.R.layout.select_dialog_singlechoice);
+            arrayAdapter.add("lhcb01.ecm.ub.es");
+            arrayAdapter.add("lhcb01.ecm.ub.es");
+            builderSingle.setNegativeButton("cancel",
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            String strName = arrayAdapter.getItem(which);
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
+                            builderInner.setMessage(strName);
+
+                        	CacheHelper.writeString(context, CacheHelper.DIRACSERVER, strName);
+                        	apiCall = new PerformAPICall2(context);
+
+                			Activity activityContext = (Activity) context;
+                			apiCall.SetActivity(activityContext);
+
+                			apiCall.getGroupAndSetup(Constants.REQUEST_GROUPS,Constants.REQUEST_SETUPS);
+                        }
+                    });
+            builderSingle.show();
+
+		}else{
+	    	Toast.makeText(context, "Select your Certificate", Toast.LENGTH_SHORT).show();
+
+		}
+		};
 		
+		
+		
+		});
 
+	
+	
+	
 
+	loadRole.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+			
+	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
+		    if(connect.isOnline() && DiracServer!=""){
+			
+			
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    context,
+                    android.R.layout.select_dialog_singlechoice);
+        	
+            
+            	Gson gson = new Gson();
+            	Groups mygroups = gson.fromJson(CacheHelper.readString(context, CacheHelper.SHPREF_GROUPS,"NONE"), Groups.class);
+
+            	Log.i("rest",mygroups.getGroups().toString());
+            	List<String> myGroups = mygroups.getGroups();	
+            	Iterator<String> iterator = myGroups.iterator();
+            	while (iterator.hasNext()) {
+            		String tmp = iterator.next();
+            		System.out.println(tmp);
+                    arrayAdapter.add(tmp);
+            	}
+            
+            
+            builderSingle.setNegativeButton("cancel",
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            String strName = arrayAdapter.getItem(which);
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
+                            builderInner.setMessage(strName);
+
+                        	CacheHelper.writeString(context, CacheHelper.DIRACGROUP, strName);
+                        
+                           checkall();
+                        }
+                    });
+            builderSingle.show();
+		}else{
+	    	Toast.makeText(context, "Select a server", Toast.LENGTH_SHORT).show();
+
+		}
+		};
+		});
+	
+	
+	loadProd.setOnClickListener(new View.OnClickListener() {
+		public void onClick(View v) {
+			
+
+			
+	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
+		    if(connect.isOnline() && DiracServer!=""){
+		    	
+		    	
+			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                    context,
+                    android.R.layout.select_dialog_singlechoice);
+        	
+            
+            	Gson gson = new Gson();
+            	Setups mysetups = gson.fromJson(CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS,"NONE"), Setups.class);
+
+            	Log.i("rest",mysetups.getSetups().toString());
+            	List<String> mySetups = mysetups.getSetups();	
+            	Iterator<String> iterator = mySetups.iterator();
+            	while (iterator.hasNext()) {
+            		String tmp = iterator.next();
+            		System.out.println(tmp);
+                    arrayAdapter.add(tmp);
+            	}
+            
+            
+            builderSingle.setNegativeButton("cancel",
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            builderSingle.setAdapter(arrayAdapter,
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            String strName = arrayAdapter.getItem(which);
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
+                            builderInner.setMessage(strName);
+
+                        	CacheHelper.writeString(context, CacheHelper.DIRACSETUP, strName);
+                        
+                           checkall();
+                        }
+                    });
+            builderSingle.show();
+            }else{
+    	    	Toast.makeText(context, "Select a Server", Toast.LENGTH_SHORT).show();
+
+    		}
+		};
+		});
 
 
     }
@@ -266,10 +448,16 @@ checkall();
 
     private void clearCredentials() {
 
-	
+    	CacheHelper.writeString(context, CacheHelper.DIRACSERVER, "");
+ 
 	CacheHelper.writeInteger(context, CacheHelper.NBCERT ,0);
 	CacheHelper.writeBoolean(context, CacheHelper.CERTREADY, false);
 	CacheHelper.writeString(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN, "no");
+	CacheHelper.writeString(context, CacheHelper.SHPREF_GROUPS, "");
+	CacheHelper.writeString(context, CacheHelper.SHPREF_SETUPS, "");
+	CacheHelper.writeString(context, CacheHelper.DIRACGROUP, "");
+	CacheHelper.writeString(context, CacheHelper.DIRACSETUP, "");
+	
 	CacheHelper.writeLong(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME, -1);
 checkall();
 	Toast.makeText(this.getApplicationContext(), "Your credentials have been cleared", Toast.LENGTH_SHORT).show();
@@ -299,10 +487,10 @@ checkall();
     	}
 
        	Button loadServ = (Button) findViewById(R.id.loadServ);
-    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "NONE");
+    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-    	
-      	if((DiracServer != "NONE")){
+    	Log.i("here",DiracServer);
+      	if((DiracServer != "")){
 
     		loadServ.setText("Using Server: "+DiracServer);
     		loadServ.setBackgroundColor(getResources().getColor(color.DarkGreen));
@@ -313,35 +501,35 @@ checkall();
     		loadServ.setBackgroundColor(getResources().getColor(color.DarkRed));
     	}
       	
-      	
+
        	Button loadRole = (Button) findViewById(R.id.loadRole);
-    	String DiracRole = CacheHelper.readString(context, CacheHelper.DIRACROLE, "NONE");
+    	String DiracRole = CacheHelper.readString(context, CacheHelper.DIRACGROUP, "");
 
     	
-      	if((DiracRole != "NONE")){
+      	if((DiracRole != "")){
 
-    		loadRole.setText("Using Role: "+DiracRole);
+    		loadRole.setText("Using Group: "+DiracRole);
     		loadRole.setBackgroundColor(getResources().getColor(color.DarkGreen));
 
     	}else{
 
-    		loadRole.setText("Select a DIRAC Role");
+    		loadRole.setText("Select a DIRAC Group");
     		loadRole.setBackgroundColor(getResources().getColor(color.DarkRed));
     	}
       	
       	
        	Button loadProd = (Button) findViewById(R.id.loadProd);
-    	String DiracProd = CacheHelper.readString(context, CacheHelper.DIRACPROD, "NONE");
+    	String DiracProd = CacheHelper.readString(context, CacheHelper.DIRACSETUP, "");
 
     	
-      	if((DiracProd != "NONE")){
+      	if((DiracProd != "")){
 
-    		loadProd.setText("Using Env: "+DiracProd);
+    		loadProd.setText("Using Setup: "+DiracProd);
     		loadProd.setBackgroundColor(getResources().getColor(color.DarkGreen));
 
     	}else{
 
-    		loadProd.setText("Select a DIRAC Env");
+    		loadProd.setText("Select a DIRAC Setup");
     		loadProd.setBackgroundColor(getResources().getColor(color.DarkRed));
     	}
       	

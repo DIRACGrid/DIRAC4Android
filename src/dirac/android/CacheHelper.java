@@ -26,6 +26,8 @@ public class CacheHelper {
     public static final String USEIT  = "USEIT";
     public static final String SHPREF_GROUP  = "SHPREF_GROUP";
     public static final String SHPREF_SETUP  = "SHPREF_SETUP";
+    public static final String SHPREF_GROUPS  = "SHPREF_GROUPS";
+    public static final String SHPREF_SETUPS  = "SHPREF_SETUPS";
     public static final String SHPREF_KEY_ACCESS_TOKEN  = "SHPREF_KEY_ACCESS_TOKEN";
     public static final String SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE  = "SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE";
     public static final String SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME =  "SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME";
@@ -36,8 +38,8 @@ public class CacheHelper {
     public static final String SITESUMMARY =  "SITESUMMARY";
     public static final String SITESUMMARYBOOL =  "SITESUMMARYBOOL";
     public static final String DIRACSERVER =  "DIRACESERVER";
-    public static final String DIRACROLE =  "DIRACROLE";
-    public static final String DIRACPROD =  "DIRACPROD";
+    public static final String DIRACGROUP =  "DIRACGROUP";
+    public static final String DIRACSETUP =  "DIRACSETUP";
 
     public static void writeBoolean(Context context, String key, boolean value) {
 	getEditor(context).putBoolean(key, value).commit();

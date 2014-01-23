@@ -1,13 +1,15 @@
 package dirac.android;
 
-public class Constants {
+import android.app.Activity;
+import android.content.Context;
 
- 
-	
-    public static final String BASE_URL 		= "https://lhcb01.ecm.ub.es";
-    public static final String PORT 		    = "9354";
+public class Constants{
+    
+    public final static  String BASE_URL 		= "https://"+"lhcb01.ecm.ub.es";
+;
+    public  final static String PORT 		    = "9354";
 
-    public static final String BASE_URL_PORT    = BASE_URL+":"+PORT;
+    public  static final String BASE_URL_PORT    = BASE_URL+":"+PORT;
 
     public static final String ENCODING 		= "UTF-8";
 
