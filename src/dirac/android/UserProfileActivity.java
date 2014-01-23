@@ -5,8 +5,10 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dirac.android.R.color;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+@SuppressLint("ResourceAsColor")
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class UserProfileActivity  extends Activity {
 
@@ -29,7 +32,6 @@ public class UserProfileActivity  extends Activity {
     private final Context context = this;
     private Connectivity connect;
     private static final int REQUEST_PICK_FILE = 1;
-    private ListView lvListe;
     private String myalias = "";
     private PerformAPICall2 apiCall;
 
@@ -37,49 +39,18 @@ public class UserProfileActivity  extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.user);
-
-
+	Button loadCert = (Button) findViewById(R.id.loadCert);
+	Button clearCredentials = (Button) findViewById(R.id.clearGrant);
+	Button launchOauth = (Button) findViewById(R.id.getGrant);
+checkall();	
 	CacheHelper.writeBoolean(context, CacheHelper.CERTREADY, false); 
 
 	setTitle("dirac > user profile");
 
-	connect = new Connectivity(context);
-	Integer defValue = 0;
-	Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
-
-	HashMap<String, String> maplist;
-	maplist = new HashMap<String, String>();
-	final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);
-
-	if(connect.isGranted() && (nbcert > 0)){
 
 
-
-	    maplist.put("line1", "Access using:");
-	    list.add(maplist);
-
-	    for(Integer i = 0; i < nbcert; i++){
-
-		maplist = new HashMap<String, String>();
-
-		String alias = "";
-		alias = CacheHelper.readString(context, "cert_"+i.toString()+"_line1" ,alias);	
-		String info = "";
-		info= CacheHelper.readString(context, "cert_"+i.toString()+"_line2" , info);	
-		maplist.put("line1",alias);
-		maplist.put("line2",info);
-		list.add(maplist);
-
-
-	    }
-
-
-	}else{
-	    maplist.put("line1", "Load your certificate and then ask for a grant access");
-	    list.add(maplist);
-	}
-
-	lvListe = (ListView)findViewById(R.id.listCert);
+/*	
+  lvListe = (ListView)findViewById(R.id.listCert);
 	String[] from = { "line1", "line2" };
 
 	int[] to = { android.R.id.text1, android.R.id.text2 };
@@ -90,15 +61,11 @@ public class UserProfileActivity  extends Activity {
 
 	lvListe.setAdapter(adapter);
 
-
-
-
-	Button launchOauth = (Button) findViewById(R.id.getGrant);
-	Button clearCredentials = (Button) findViewById(R.id.clearGrant);
-	Button loadCert = (Button) findViewById(R.id.loadCert);
-	launchOauth.setText("Get Grant Access");
-	clearCredentials.setText("Reset Access");
-	loadCert.setText("Load your Certificate");
+*/
+	
+	
+	
+//	loadCert.setText("Load your Certificate");
 	launchOauth.setOnClickListener(new View.OnClickListener() {
 		public void onClick(View v) {
 		    if(connect.isOnline()){
@@ -123,54 +90,23 @@ public class UserProfileActivity  extends Activity {
 					Integer defValue = 0;
 					Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
 
-					HashMap<String, String> maplist;
-					maplist = new HashMap<String, String>();
-					final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);	
 					Log.i("def", nbcert.toString());
 					if(connect.isGranted() && (nbcert > 0)){
 
 
 
-					    maplist.put("line1", "Access using:");
-					    list.add(maplist);
+						runOnUiThread(new Runnable() {
+			    			
+			    			public void run() {
+			    				Log.i("here", "HERRRE");
+			    				checkall();
 
-					    for(Integer i = 0; i < nbcert; i++){
-
-						maplist = new HashMap<String, String>();
-
-						String alias = "";
-						alias = CacheHelper.readString(context, "cert_"+i.toString()+"_line1" ,alias);	
-						String info = "";
-						info= CacheHelper.readString(context, "cert_"+i.toString()+"_line2" , info);	
-						maplist.put("line1",alias);
-						maplist.put("line2",info);
-						list.add(maplist);
+			    		    }
+			    		});
 
 
-					    }
 
-
-					}else{
-					    maplist.put("line1", "Load your certificate and then ask for a grant access");
-					    list.add(maplist);
-					}	
-					
-					
-
-					lvListe = (ListView)findViewById(R.id.listCert);
-					String[] from = { "line1", "line2" };
-
-					int[] to = { android.R.id.text1, android.R.id.text2 };
-
-
-					//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
-					SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
-
-					lvListe.setAdapter(adapter);
-							
-								
-								
-						
+					}		
 								
 				}
 			    });
@@ -180,51 +116,19 @@ public class UserProfileActivity  extends Activity {
 				    dialog.cancel();
 					Integer defValue = 0;
 					Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
-
-					HashMap<String, String> maplist;
-					maplist = new HashMap<String, String>();
-					final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);	
 					Log.i("def", nbcert.toString());
 					if(connect.isGranted() && (nbcert > 0)){
 
+						runOnUiThread(new Runnable() {
+			    			
+			    			public void run() {
+			    				
+			    				checkall();
 
+			    		    }
+			    		});
 
-					    maplist.put("line1", "Access using:");
-					    list.add(maplist);
-
-					    for(Integer i = 0; i < nbcert; i++){
-
-						maplist = new HashMap<String, String>();
-
-						String alias = "";
-						alias = CacheHelper.readString(context, "cert_"+i.toString()+"_line1" ,alias);	
-						String info = "";
-						info= CacheHelper.readString(context, "cert_"+i.toString()+"_line2" , info);	
-						maplist.put("line1",alias);
-						maplist.put("line2",info);
-						list.add(maplist);
-
-
-					    }
-
-
-					}else{
-					    maplist.put("line1", "Load your certificate and then ask for a grant access");
-					    list.add(maplist);
-					}	
-					
-					
-
-					lvListe = (ListView)findViewById(R.id.listCert);
-					String[] from = { "line1", "line2" };
-
-					int[] to = { android.R.id.text1, android.R.id.text2 };
-
-
-					//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
-					SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
-
-					lvListe.setAdapter(adapter);
+					}
 				}
 			});
 			builder.show();
@@ -232,6 +136,10 @@ public class UserProfileActivity  extends Activity {
 	
 
 		    }
+		       
+
+		
+						
 
 		}
 	    });
@@ -295,10 +203,15 @@ public class UserProfileActivity  extends Activity {
 
 							       CacheHelper.writeInteger(context, CacheHelper.NBCERT ,certi);										
 							       CacheHelper.writeBoolean(context, CacheHelper.CERTREADY, true); 
-										
-										
-					
-										
+							       
+							       runOnUiThread(new Runnable() {
+					    			
+					    			public void run() {
+					    				
+					    				checkall();
+
+					    		    }
+					    		});
 										
 										
 										
@@ -319,9 +232,10 @@ public class UserProfileActivity  extends Activity {
 			
 		    //cert ready
 				  
-				  
+			 checkall(); 
 
 		}
+
 	    });
 
 
@@ -358,32 +272,95 @@ public class UserProfileActivity  extends Activity {
 	CacheHelper.writeBoolean(context, CacheHelper.CERTREADY, false);
 	CacheHelper.writeString(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN, "no");
 	CacheHelper.writeLong(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME, -1);
-
-	HashMap<String, String> maplist;
-	maplist = new HashMap<String, String>();
-	ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>(2);
-
-
-	maplist.put("line1", "Load your certificate and then ask for a grant access");
-	list.add(maplist);
-
-
-	lvListe = (ListView)findViewById(R.id.listCert);
-	String[] from = { "line1", "line2" };
-
-	int[] to = { android.R.id.text1, android.R.id.text2 };
-
-
-	//	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,android.R.layout.simple_list_item_2, android.R.id.text1, listeStrings);
-	SimpleAdapter adapter = new SimpleAdapter(context, list, android.R.layout.simple_list_item_2, from, to);  
-
-	lvListe.setAdapter(adapter);
-
-
-
+checkall();
 	Toast.makeText(this.getApplicationContext(), "Your credentials have been cleared", Toast.LENGTH_SHORT).show();
     }
 
 
 
+    void checkall(){
+    	
+
+    	connect = new Connectivity(context);
+    	Integer defValue = 0;
+    	Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, defValue);
+    	
+    	
+    	Button loadCert = (Button) findViewById(R.id.loadCert);
+    	
+    	if((nbcert > 0)){
+
+    		loadCert.setText("Using cert: "+CacheHelper.readString(context, CacheHelper.CERTALIAS, "ERROR"));
+    		loadCert.setBackgroundColor(getResources().getColor(color.DarkGreen));
+
+    	}else{
+
+    		loadCert.setText("Select certificate");
+    		loadCert.setBackgroundColor(getResources().getColor(color.DarkRed));
+    	}
+
+       	Button loadServ = (Button) findViewById(R.id.loadServ);
+    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "NONE");
+
+    	
+      	if((DiracServer != "NONE")){
+
+    		loadServ.setText("Using Server: "+DiracServer);
+    		loadServ.setBackgroundColor(getResources().getColor(color.DarkGreen));
+
+    	}else{
+
+    		loadServ.setText("Select a DIRAC Server");
+    		loadServ.setBackgroundColor(getResources().getColor(color.DarkRed));
+    	}
+      	
+      	
+       	Button loadRole = (Button) findViewById(R.id.loadRole);
+    	String DiracRole = CacheHelper.readString(context, CacheHelper.DIRACROLE, "NONE");
+
+    	
+      	if((DiracRole != "NONE")){
+
+    		loadRole.setText("Using Role: "+DiracRole);
+    		loadRole.setBackgroundColor(getResources().getColor(color.DarkGreen));
+
+    	}else{
+
+    		loadRole.setText("Select a DIRAC Role");
+    		loadRole.setBackgroundColor(getResources().getColor(color.DarkRed));
+    	}
+      	
+      	
+       	Button loadProd = (Button) findViewById(R.id.loadProd);
+    	String DiracProd = CacheHelper.readString(context, CacheHelper.DIRACPROD, "NONE");
+
+    	
+      	if((DiracProd != "NONE")){
+
+    		loadProd.setText("Using Env: "+DiracProd);
+    		loadProd.setBackgroundColor(getResources().getColor(color.DarkGreen));
+
+    	}else{
+
+    		loadProd.setText("Select a DIRAC Env");
+    		loadProd.setBackgroundColor(getResources().getColor(color.DarkRed));
+    	}
+      	
+    	
+    	Button launchOauth = (Button) findViewById(R.id.getGrant);
+
+    if(connect.isGranted() && nbcert > 0){
+    	launchOauth.setText("You have Grant Access");
+    	launchOauth.setBackgroundColor(getResources().getColor(color.DarkGreen));
+
+    }else{
+    	launchOauth.setText("Get Grant Access");
+    	launchOauth.setBackgroundColor(getResources().getColor(color.DarkRed));
+    }
+    	Button clearCredentials = (Button) findViewById(R.id.clearGrant);
+    	clearCredentials.setText("Reset Access");
+    	
+    }
+    
+    
 }

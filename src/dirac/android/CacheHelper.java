@@ -35,6 +35,9 @@ public class CacheHelper {
     public static final String AUTOUPDATE =  "AUTOUPDATE";
     public static final String SITESUMMARY =  "SITESUMMARY";
     public static final String SITESUMMARYBOOL =  "SITESUMMARYBOOL";
+    public static final String DIRACSERVER =  "DIRACESERVER";
+    public static final String DIRACROLE =  "DIRACROLE";
+    public static final String DIRACPROD =  "DIRACPROD";
 
     public static void writeBoolean(Context context, String key, boolean value) {
 	getEditor(context).putBoolean(key, value).commit();
