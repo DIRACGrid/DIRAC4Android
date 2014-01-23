@@ -1,5 +1,8 @@
 package dirac.android;
 
+import java.util.Arrays;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 
@@ -23,5 +26,7 @@ public class Constants{
     public static final String REQUEST_HISTORY		= REQUEST_JOBS+"/history";
     public static final String REQUEST_SUMMARY 		= REQUEST_JOBS+"/summary";
     public static final String REQUEST_RESCHEDULE 	= REQUEST_JOBS+"/reschedule/";
+    public static final List<String> SERVERS 	    = Arrays.asList("lhcb01.ecm.ub.es",
+    																"test.dirac.org");
 
 }

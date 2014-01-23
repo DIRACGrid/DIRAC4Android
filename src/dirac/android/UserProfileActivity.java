@@ -3,6 +3,7 @@ package dirac.android;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,13 +53,29 @@ public class UserProfileActivity  extends Activity {
 	Button loadProd = (Button) findViewById(R.id.loadProd);
 	Button clearCredentials = (Button) findViewById(R.id.clearGrant);
 	Button launchOauth = (Button) findViewById(R.id.getGrant);
-checkall();	
+    checkall();	
 	CacheHelper.writeBoolean(context, CacheHelper.CERTREADY, false); 
 
 	setTitle("dirac > user profile");
-
-
-
+	
+	String Servers = "";
+	
+	if(CacheHelper.readString(context, CacheHelper.SERVERS, Servers) == ""){
+	//First time
+   	Iterator<String> iterator = Constants.SERVERS.iterator();
+	while (iterator.hasNext()) {
+		String tmp = iterator.next();
+		if (Servers == ""){
+	        Servers = tmp ;
+		}else{
+	        Servers = Servers+","+tmp ;
+		}
+	}
+	
+	CacheHelper.writeString(context, CacheHelper.SERVERS, Servers);
+	
+	
+	}
 
 	
 	
@@ -274,8 +291,21 @@ checkall();
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     context,
                     android.R.layout.simple_list_item_single_choice);
-            arrayAdapter.add("lhcb01.ecm.ub.es");
+            
+
+            
+            String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
+            
+            List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
+        	Iterator<String> iterator = Servers.iterator();
+        	while (iterator.hasNext()) {
+        		String tmp = iterator.next();
+                arrayAdapter.add(tmp);
+        	}
             arrayAdapter.add("add new server");
+            
+            
+            
             builderSingle.setNeutralButton("cancel",
                     new DialogInterface.OnClickListener() {
 
@@ -289,7 +319,7 @@ checkall();
                         public void onClick(DialogInterface dialog, int which) {
                         	
                        
-                	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
+                	    	final String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
 
                         	AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 			builder.setMessage("Are you sure you want to remove this server ("+DiracServer+") from the list");
@@ -300,15 +330,38 @@ checkall();
                 				public void onClick(DialogInterface dialog, int which) {	
 
                 			
-                                	arrayAdapter.notifyDataSetChanged();
+                			       	arrayAdapter.clear();
+                                	
+                                    String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
+                                    servers = "";     
+                                    List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
+                                	Iterator<String> iterator = Servers.iterator();
+                                	while (iterator.hasNext()) {
+                                		String tmp = iterator.next();
+                                	    if(tmp == DiracServer) continue;
+                                		if (servers == ""){
+                                	        servers = tmp ;
+                                		}else{
+                                	        servers = servers+","+tmp ;
+                                		}
+                                        arrayAdapter.add(tmp);
+                                	}
+                                    CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
 
+                                    arrayAdapter.add("add new server");
+                        
+                                    
+                                	
+                                	arrayAdapter.notifyDataSetChanged();
+                					
+                				
                 								
                 				}
                 			    });
                 			builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                 				public void onClick(DialogInterface dialog, int which) {			
                 				  
-
+                					dialog.dismiss();
                 					
                 				}
                 			});
@@ -347,7 +400,22 @@ checkall();
                     
                     if(strName == "add new server"){
 
-                    	arrayAdapter.add("test");
+                    	arrayAdapter.clear();
+                    	
+                    	 
+                        String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
+                        servers = servers+","+"new.server.ch";     
+                        CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
+                        List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
+                    	Iterator<String> iterator = Servers.iterator();
+                    	while (iterator.hasNext()) {
+                    		String tmp = iterator.next();
+                            arrayAdapter.add(tmp);
+                    	}
+                        arrayAdapter.add("add new server");
+            
+                        
+                    	
                     	arrayAdapter.notifyDataSetChanged();
                     	
                     }else{

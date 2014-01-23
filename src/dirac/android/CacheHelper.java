@@ -41,6 +41,7 @@ public class CacheHelper {
     public static final String DIRACSERVER_TMP =  "DIRACESERVER_TMP";
     public static final String DIRACGROUP =  "DIRACGROUP";
     public static final String DIRACSETUP =  "DIRACSETUP";
+    public static final String SERVERS =  "SERVERS";
 
     public static void writeBoolean(Context context, String key, boolean value) {
 	getEditor(context).putBoolean(key, value).commit();
