@@ -273,48 +273,111 @@ checkall();
 			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     context,
-                    android.R.layout.select_dialog_singlechoice);
+                    android.R.layout.simple_list_item_single_choice);
             arrayAdapter.add("lhcb01.ecm.ub.es");
-            arrayAdapter.add("lhcb01.ecm.ub.es");
-            builderSingle.setNegativeButton("cancel",
+            arrayAdapter.add("add new server");
+            builderSingle.setNeutralButton("cancel",
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-
-            builderSingle.setAdapter(arrayAdapter,
+            builderSingle.setNegativeButton("delete",
                     new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int which) {
-                            String strName = arrayAdapter.getItem(which);
-                            AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
-                            builderInner.setMessage(strName);
+                        	
+                       
+                	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
 
-                        	CacheHelper.writeString(context, CacheHelper.DIRACSERVER, strName);
+                        	AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                			builder.setMessage("Are you sure you want to remove this server ("+DiracServer+") from the list");
+                			builder.setCancelable(true);
+                						
+                						
+                			builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {								
+                				public void onClick(DialogInterface dialog, int which) {	
+
+                			
+                                	arrayAdapter.notifyDataSetChanged();
+
+                								
+                				}
+                			    });
+                			builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                				public void onClick(DialogInterface dialog, int which) {			
+                				  
+
+                					
+                				}
+                			});
+                			builder.show();
+                            dialog.dismiss();
+                        }
+                    });
+
+            
+            
+            
+            
+            builderSingle.setPositiveButton("done",
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                        	
+                        	CacheHelper.writeString(context, CacheHelper.DIRACSERVER,CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, ""));
+
                         	apiCall = new PerformAPICall2(context);
 
                 			Activity activityContext = (Activity) context;
                 			apiCall.SetActivity(activityContext);
-
                 			apiCall.getGroupAndSetup(Constants.REQUEST_GROUPS,Constants.REQUEST_SETUPS);
+                        	
+                        	
+                            dialog.dismiss();
                         }
                     });
-            builderSingle.show();
 
+            
+            
+            builderSingle.setSingleChoiceItems(arrayAdapter, -1, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                	String strName = arrayAdapter.getItem(item);
+                    
+                    if(strName == "add new server"){
+
+                    	arrayAdapter.add("test");
+                    	arrayAdapter.notifyDataSetChanged();
+                    	
+                    }else{
+                    
+                    AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
+                    builderInner.setMessage(strName);
+
+                	CacheHelper.writeString(context, CacheHelper.DIRACSERVER_TMP, strName);
+                    }
+                
+                }
+            });
+            
+        
+
+            AlertDialog alert = builderSingle.create();
+            alert.show();    
+            
+            
 		}else{
 	    	Toast.makeText(context, "Select your Certificate", Toast.LENGTH_SHORT).show();
 
 		}
 		};
 		
-		
+	
 		
 		});
 
-	
-	
+
 	
 
 	loadRole.setOnClickListener(new View.OnClickListener() {

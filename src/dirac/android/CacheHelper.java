@@ -38,6 +38,7 @@ public class CacheHelper {
     public static final String SITESUMMARY =  "SITESUMMARY";
     public static final String SITESUMMARYBOOL =  "SITESUMMARYBOOL";
     public static final String DIRACSERVER =  "DIRACESERVER";
+    public static final String DIRACSERVER_TMP =  "DIRACESERVER_TMP";
     public static final String DIRACGROUP =  "DIRACGROUP";
     public static final String DIRACSETUP =  "DIRACSETUP";
 

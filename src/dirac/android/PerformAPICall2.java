@@ -87,6 +87,13 @@ public class PerformAPICall2 {
 	private StateInfoArrayAdapter myStateInfoArrayAdapter;
 	private View myFooter;
 
+	
+	
+	
+	
+	
+	
+	
 	public PerformAPICall2(Context myContext) {
 
 		this.context = myContext;
