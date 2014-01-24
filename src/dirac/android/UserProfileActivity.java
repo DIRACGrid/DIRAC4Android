@@ -65,7 +65,7 @@ public class UserProfileActivity  extends Activity {
    	Iterator<String> iterator = Constants.SERVERS.iterator();
 	while (iterator.hasNext()) {
 		String tmp = iterator.next();
-		if (Servers == ""){
+		if (Servers.equals("")){
 	        Servers = tmp ;
 		}else{
 	        Servers = Servers+","+tmp ;
@@ -88,7 +88,7 @@ public class UserProfileActivity  extends Activity {
 				Integer nbcert = CacheHelper.readInteger(context, CacheHelper.NBCERT, 0);
 
 		    	
-		    if(DiracServer!="" && DiracSetup!="" && DiracGroup!=""&& nbcert>0){
+		    if(!DiracServer.equals("") && !DiracSetup.equals("") && !DiracGroup.equals("") && nbcert>0){
 						
 
 			apiCall = new PerformAPICall2(context);
@@ -319,7 +319,7 @@ public class UserProfileActivity  extends Activity {
                         public void onClick(DialogInterface dialog, int which) {
                         	
                        
-                	    	final String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
+                	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
 
                         	AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 			builder.setMessage("Are you sure you want to remove this server ("+DiracServer+") from the list");
@@ -333,13 +333,22 @@ public class UserProfileActivity  extends Activity {
                 			       	arrayAdapter.clear();
                                 	
                                     String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
-                                    servers = "";     
                                     List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
+                                    servers = "";     
+                        	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
+
                                 	Iterator<String> iterator = Servers.iterator();
                                 	while (iterator.hasNext()) {
                                 		String tmp = iterator.next();
-                                	    if(tmp == DiracServer) continue;
-                                		if (servers == ""){
+                                	    if(tmp.equals(DiracServer)){
+                                    	    Log.i("LOO","FF");
+
+                                	    	continue;
+                                	    }
+                                	    Log.i("LOO","F"+tmp+"F");
+                                	    Log.i("LOO","F"+DiracServer+"F");
+
+                                		if (servers.equals("")){
                                 	        servers = tmp ;
                                 		}else{
                                 	        servers = servers+","+tmp ;
@@ -347,7 +356,7 @@ public class UserProfileActivity  extends Activity {
                                         arrayAdapter.add(tmp);
                                 	}
                                     CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
-
+Log.i("LOO",servers);
                                     arrayAdapter.add("add new server");
                         
                                     
@@ -398,7 +407,7 @@ public class UserProfileActivity  extends Activity {
                 public void onClick(DialogInterface dialog, int item) {
                 	String strName = arrayAdapter.getItem(item);
                     
-                    if(strName == "add new server"){
+                    if(strName.equals("add new server")){
 
                     	arrayAdapter.clear();
                     	
@@ -453,7 +462,7 @@ public class UserProfileActivity  extends Activity {
 			
 	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-		    if(connect.isOnline() && DiracServer!=""){
+		    if(connect.isOnline() && !DiracServer.equals("")){
 			
 			
 			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -512,7 +521,7 @@ public class UserProfileActivity  extends Activity {
 			
 	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-		    if(connect.isOnline() && DiracServer!=""){
+		    if(connect.isOnline() && !DiracServer.equals("")){
 		    	
 		    	
 			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -621,7 +630,7 @@ checkall();
     	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
     	Log.i("here",DiracServer);
-      	if((DiracServer != "")){
+      	if(!DiracServer.equals("")){
 
     		loadServ.setText("Using Server: "+DiracServer);
     		loadServ.setBackgroundColor(getResources().getColor(color.DarkGreen));
@@ -637,7 +646,7 @@ checkall();
     	String DiracRole = CacheHelper.readString(context, CacheHelper.DIRACGROUP, "");
 
     	
-      	if((DiracRole != "")){
+      	if(!DiracRole.equals("")){
 
     		loadRole.setText("Using Group: "+DiracRole);
     		loadRole.setBackgroundColor(getResources().getColor(color.DarkGreen));
@@ -653,7 +662,7 @@ checkall();
     	String DiracProd = CacheHelper.readString(context, CacheHelper.DIRACSETUP, "");
 
     	
-      	if((DiracProd != "")){
+      	if(!DiracProd.equals("")){
 
     		loadProd.setText("Using Setup: "+DiracProd);
     		loadProd.setBackgroundColor(getResources().getColor(color.DarkGreen));
