@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -341,12 +342,8 @@ public class UserProfileActivity  extends Activity {
                                 	while (iterator.hasNext()) {
                                 		String tmp = iterator.next();
                                 	    if(tmp.equals(DiracServer)){
-                                    	    Log.i("LOO","FF");
-
                                 	    	continue;
                                 	    }
-                                	    Log.i("LOO","F"+tmp+"F");
-                                	    Log.i("LOO","F"+DiracServer+"F");
 
                                 		if (servers.equals("")){
                                 	        servers = tmp ;
@@ -356,7 +353,7 @@ public class UserProfileActivity  extends Activity {
                                         arrayAdapter.add(tmp);
                                 	}
                                     CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
-Log.i("LOO",servers);
+
                                     arrayAdapter.add("add new server");
                         
                                     
@@ -390,6 +387,12 @@ Log.i("LOO",servers);
                         	
                         	CacheHelper.writeString(context, CacheHelper.DIRACSERVER,CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, ""));
 
+                        	CacheHelper.writeString(context, CacheHelper.SHPREF_GROUPS, "");
+                        	CacheHelper.writeString(context, CacheHelper.SHPREF_SETUPS, "");
+                        	CacheHelper.writeString(context, CacheHelper.DIRACGROUP, "");
+                        	CacheHelper.writeString(context, CacheHelper.DIRACSETUP, "");
+                        	
+                        	
                         	apiCall = new PerformAPICall2(context);
 
                 			Activity activityContext = (Activity) context;
@@ -409,23 +412,69 @@ Log.i("LOO",servers);
                     
                     if(strName.equals("add new server")){
 
-                    	arrayAdapter.clear();
                     	
+                    	
+                    	
+                    	
+
+                    	 AlertDialog.Builder helpBuilder = new AlertDialog.Builder(context);
+                   	 
+                    	 final EditText input = new EditText(context);
+                    	 input.setSingleLine();
+                    	 input.setText(""); 
+                    	 helpBuilder.setMessage("new servers:");
+
+                    	 helpBuilder.setView(input);
                     	 
-                        String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
-                        servers = servers+","+"new.server.ch";     
-                        CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
-                        List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
-                    	Iterator<String> iterator = Servers.iterator();
-                    	while (iterator.hasNext()) {
-                    		String tmp = iterator.next();
-                            arrayAdapter.add(tmp);
-                    	}
-                        arrayAdapter.add("add new server");
-            
-                        
+                    	 helpBuilder.setPositiveButton("add",
+                    	   new DialogInterface.OnClickListener() {
+
+                    	    public void onClick(DialogInterface dialog, int which) {
+                    	     // Do nothing but close the dialog
+                    	    	
+
+                                String servers = CacheHelper.readString(context, CacheHelper.SERVERS, "");     
+                                servers = servers+","+input.getText().toString();  
+                                CacheHelper.writeString(context, CacheHelper.SERVERS, servers);  
+
+                             	
+                            	arrayAdapter.clear();
+                            	
+
+                                List<String> Servers = Arrays.asList(servers.split("\\s*,\\s*"));
+                            	Iterator<String> iterator = Servers.iterator();
+                            	while (iterator.hasNext()) {
+                            		String tmp = iterator.next();
+                                    arrayAdapter.add(tmp);
+                            	}
+                                arrayAdapter.add("add new server");
+                    
+                                
+                            	
+                            	arrayAdapter.notifyDataSetChanged();
+                    	    }
+                    	   });
+
+                    	 helpBuilder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+
+                    	  public void onClick(DialogInterface dialog, int which) {
+                    	   // Do nothing
+                    	  }
+                    	 });
+                    	 
+                    
+
+                    	 // Remember, create doesn't show the dialog
+                    	 AlertDialog helpDialog = helpBuilder.create();
+                    	 helpDialog.show();
                     	
-                    	arrayAdapter.notifyDataSetChanged();
+                    	
+                    	
+                    	
+                    	
+                    	
+                    	
+           
                     	
                     }else{
                     
