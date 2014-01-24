@@ -268,7 +268,6 @@ public class PerformAPICall2 {
 			// CacheHelper.writeLong(context,
 			// CacheHelper.SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME, newtime);
 
-			Log.i("url", url);
 			HttpGet myjobs = new HttpGet(url);
 			myjobs.setHeader("Authorization", "bearer " + mytoken);
 
@@ -329,7 +328,6 @@ public class PerformAPICall2 {
 		// CacheHelper.writeLong(context,
 		// CacheHelper.SHPREF_KEY_ACCESS_TOKEN_EXPIRES_TIME, newtime);
 
-		Log.i(url, url);
 
 		HttpPost post = new HttpPost(url);
 
@@ -387,7 +385,6 @@ public class PerformAPICall2 {
 		long mseconds = c.getTimeInMillis();
 		CacheHelper.writeLong(context, CacheHelper.LASTUPDATE, mseconds);
 
-		Log.i("del", responseBuilder.toString());
 		return responseBuilder.toString();
 
 	}
@@ -452,7 +449,6 @@ public class PerformAPICall2 {
 		}
 
 		String myline = sb3.toString();
-		Log.i("myT",myline);
 		
 		GToken mytoken;
 		Gson gson = new Gson();
@@ -496,8 +492,6 @@ public class PerformAPICall2 {
 	
 		
 
-		Log.i("urlG",urlG);
-		Log.i("urlS",urlS);
 		
 		// """OAUTH 2 """" implemetantion....
 		HttpGet get = new HttpGet(urlG);
@@ -1025,13 +1019,9 @@ public class PerformAPICall2 {
 					// r1= doGet(urls[0]+"?group=name",myclient);
 					r1 = doGet(urls[0], myclient);
 					r2 = doGet(urls[1], myclient);
-					Log.i("i",r1);
-					Log.i("i",r2);
 					publishProgress("Downloading your last jobs. Please wait...\nHow is going your analysis?");
 					// r2= doGet(urls[1]+"&site=LCG.RAL.uk",myclient);
 					r3 = doGet(urls[2], myclient);
-
-					Log.i("i",r3);
 				}
 
 			} catch (Exception e) {
@@ -1073,7 +1063,6 @@ public class PerformAPICall2 {
 			if (result.get(1) != "") {
 				CacheHelper.writeString(context, CacheHelper.SITESUMMARY,
 						result.get(1));
-				Log.i("ger",result.get(1) );
 				if (CacheHelper.readBoolean(context,
 						CacheHelper.SITESUMMARYBOOL, false)) {
 					JSONObject jObject;
@@ -1094,7 +1083,6 @@ public class PerformAPICall2 {
 							temp[0] = output;
 							temp[1] = jObject.getString(tmp);
 
-							Log.i(output, jObject.getString(tmp));
 							dirac.android.Status state = new dirac.android.Status(
 									output, jObject.getString(tmp));
 							map[k] = state;
@@ -1224,7 +1212,6 @@ public class PerformAPICall2 {
 
 				try {
 
-					Log.i("history", url);
 
 					HttpClient myclient = getMyHttpClient(context);
 					if (CacheHelper.readBoolean(context,
@@ -1467,7 +1454,6 @@ public class PerformAPICall2 {
 
 			database = dbHelper.getWritableDatabase();
 			Gson gson = new Gson();
-			Log.i("gson", result);
 			Jobs jobs = gson.fromJson(result, Jobs.class);
 			datasource.parse(jobs);
 			datasource.close();
