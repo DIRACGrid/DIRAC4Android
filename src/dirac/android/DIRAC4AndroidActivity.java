@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -19,6 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
@@ -35,10 +37,11 @@ import android.widget.ListView;
 
 public class DIRAC4AndroidActivity extends SherlockActivity implements
 		ActionBar.OnNavigationListener {
-
 	final String TAG = getClass().getName();
 	ProgressDialog dialog;
 
+    private String BASE_URL;
+	
 	public static final String PREFS_NAME = "MyPrefsFile";
 	Random r;
 	private Intent StatsIntent;
@@ -88,6 +91,9 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 		case R.id.menu_refresh:
 
 			if (connect.isOnline()) {
+				
+				BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
 				datasource.open();
 				database = dbHelper.getWritableDatabase();
 
@@ -130,14 +136,14 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 						CacheHelper.NMAXBJOBS, mymax);
 				if (JobType == "") {
 					apiCall.getSummaryandJobs(
-							Constants.REQUEST_SUMMARY,
-							Constants.REQUEST_SUMMARY + "?group=Site",
-							Constants.REQUEST_JOBS + "?maxJobs="
+							BASE_URL+Constants.REQUEST_SUMMARY,
+							BASE_URL+Constants.REQUEST_SUMMARY + "?group=Site",
+							BASE_URL+Constants.REQUEST_JOBS + "?maxJobs="
 									+ mymax.toString());
 				} else {
-					apiCall.getSummaryandJobs(Constants.REQUEST_SUMMARY + "?"
-							+ JobType, Constants.REQUEST_SUMMARY + "?"
-							+ JobType + "&group=Site", Constants.REQUEST_JOBS
+					apiCall.getSummaryandJobs(BASE_URL+Constants.REQUEST_SUMMARY + "?"
+							+ JobType, BASE_URL+Constants.REQUEST_SUMMARY + "?"
+							+ JobType + "&group=Site", BASE_URL+Constants.REQUEST_JOBS
 							+ "?maxJobs=" + mymax.toString() + "&" + JobType);
 
 				}
@@ -179,6 +185,7 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		// ActionBarSherlock
 		// getSupportActionBar().setDisplayShowHomeEnabled(false);
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -247,7 +254,10 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 					// "Not available yet",Toast.LENGTH_LONG).show();
 					// apiCall.getHistory(Constants.REQUEST_HISTORY+"?"+JobType)
 					// ;
-					apiCall.getHistory(Constants.REQUEST_HISTORY);
+					BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
+					
+					apiCall.getHistory(BASE_URL+Constants.REQUEST_HISTORY);
 			}
 		}
 		return true;

@@ -91,13 +91,14 @@ public class UserProfileActivity  extends Activity {
 		    	
 		    if(!DiracServer.equals("") && !DiracSetup.equals("") && !DiracGroup.equals("") && nbcert>0){
 						
+		   String BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
 			apiCall = new PerformAPICall2(context);
 
 			Activity activityContext = (Activity) context;
 			apiCall.SetActivity(activityContext);
 
-			apiCall.getAccess(Constants.REQUEST_TOKEN);
+			apiCall.getAccess(BASE_URL+Constants.REQUEST_TOKEN);
 
 			
 			
@@ -385,19 +386,21 @@ public class UserProfileActivity  extends Activity {
 
                         public void onClick(DialogInterface dialog, int which) {
                         	
-                        	CacheHelper.writeString(context, CacheHelper.DIRACSERVER,CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, ""));
+                        	
+                        	String Serv = CacheHelper.readString(context, CacheHelper.DIRACSERVER_TMP, "");
+                        	CacheHelper.writeString(context, CacheHelper.DIRACSERVER, Serv);
 
                         	CacheHelper.writeString(context, CacheHelper.SHPREF_GROUPS, "");
                         	CacheHelper.writeString(context, CacheHelper.SHPREF_SETUPS, "");
                         	CacheHelper.writeString(context, CacheHelper.DIRACGROUP, "");
                         	CacheHelper.writeString(context, CacheHelper.DIRACSETUP, "");
-                        	
+                        	Serv = "https://"+Serv;
                         	
                         	apiCall = new PerformAPICall2(context);
 
                 			Activity activityContext = (Activity) context;
                 			apiCall.SetActivity(activityContext);
-                			apiCall.getGroupAndSetup(Constants.REQUEST_GROUPS,Constants.REQUEST_SETUPS);
+                			apiCall.getGroupAndSetup(Serv+Constants.REQUEST_GROUPS,Serv+Constants.REQUEST_SETUPS);
                         	
                         	
                             dialog.dismiss();
@@ -412,11 +415,7 @@ public class UserProfileActivity  extends Activity {
                     
                     if(strName.equals("add new server")){
 
-                    	
-                    	
-                    	
-                    	
-
+            
                     	 AlertDialog.Builder helpBuilder = new AlertDialog.Builder(context);
                    	 
                     	 final EditText input = new EditText(context);
@@ -511,7 +510,8 @@ public class UserProfileActivity  extends Activity {
 			
 	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-		    if(connect.isOnline() && !DiracServer.equals("")){
+	    	String TESTGroups = CacheHelper.readString(context, CacheHelper.SHPREF_GROUPS,"");
+		    if(connect.isOnline() && !DiracServer.equals("") && !TESTGroups.equals("")){
 			
 			
 			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -567,10 +567,10 @@ public class UserProfileActivity  extends Activity {
 		public void onClick(View v) {
 			
 
-			
-	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-		    if(connect.isOnline() && !DiracServer.equals("")){
+	    	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+	    	String TESTSetups = CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS,"");
+		    if(connect.isOnline() && !DiracServer.equals("") && !TESTSetups.equals("")){
 		    	
 		    	
 			AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
@@ -580,7 +580,7 @@ public class UserProfileActivity  extends Activity {
         	
             
             	Gson gson = new Gson();
-            	Setups mysetups = gson.fromJson(CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS,"NONE"), Setups.class);
+            	Setups mysetups = gson.fromJson(CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS,""), Setups.class);
 
             	Log.i("rest",mysetups.getSetups().toString());
             	List<String> mySetups = mysetups.getSetups();	
@@ -678,7 +678,6 @@ checkall();
        	Button loadServ = (Button) findViewById(R.id.loadServ);
     	String DiracServer = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-    	Log.i("here",DiracServer);
       	if(!DiracServer.equals("")){
 
     		loadServ.setText("Using Server: "+DiracServer);

@@ -87,8 +87,8 @@ public class PerformAPICall2 {
 	private StateInfoArrayAdapter myStateInfoArrayAdapter;
 	private View myFooter;
 
-	
-	
+
+    private String BASE_URL;
 	
 	
 	
@@ -101,6 +101,9 @@ public class PerformAPICall2 {
 		this.connect = new Connectivity(context);
 		datasource = new JobsDataSource(context);
 		dbHelper = new MySQLiteHelper(context);
+		BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+		
+		
 	}
 
 	public void SetProgressDialog(ProgressDialog myProgressDialog) {
@@ -281,6 +284,11 @@ public class PerformAPICall2 {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
+			
+			
+			Integer myint = result2jobs.getStatusLine().getStatusCode();
+			Log.i("resp",myint.toString());
+			
 			InputStream data2jobs = null;
 			try {
 				data2jobs = result2jobs.getEntity().getContent();
@@ -388,12 +396,11 @@ public class PerformAPICall2 {
 			throws Exception {
 
 		Log.d(TAG, "Retrieving token from DIRAC servers");
-		Log.d(TAG, "url " + Constants.REQUEST_TOKEN);
+		Log.d(TAG, "url " +BASE_URL + Constants.REQUEST_TOKEN);
 
 
 		// """OAUTH 2 """" implemetantion....
-		String formDataServiceUrl = Constants.REQUEST_TOKEN;
-		HttpPost post = new HttpPost(formDataServiceUrl);
+		HttpPost post = new HttpPost(url);
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
 		nameValuePairs.add(new BasicNameValuePair("grant_type",
 				"client_credentials"));
@@ -416,6 +423,9 @@ public class PerformAPICall2 {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
+		
+		
+		
 		InputStream data23 = null;
 		try {
 			data23 = result22.getEntity().getContent();
@@ -442,6 +452,8 @@ public class PerformAPICall2 {
 		}
 
 		String myline = sb3.toString();
+		Log.i("myT",myline);
+		
 		GToken mytoken;
 		Gson gson = new Gson();
 
@@ -462,6 +474,8 @@ public class PerformAPICall2 {
 																			// server
 																			// side
 
+		
+		
 		CacheHelper.writeString(context, CacheHelper.SHPREF_KEY_ACCESS_TOKEN,
 				mytoken.getToken());
 		CacheHelper.writeLong(context,
@@ -481,7 +495,9 @@ public class PerformAPICall2 {
 		
 	
 		
-		
+
+		Log.i("urlG",urlG);
+		Log.i("urlS",urlS);
 		
 		// """OAUTH 2 """" implemetantion....
 		HttpGet get = new HttpGet(urlG);
@@ -620,7 +636,7 @@ public class PerformAPICall2 {
 	    	String test2 = CacheHelper.readString(context, CacheHelper.SHPREF_SETUPS, "");
 	    	String test3 = CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 
-	    	if(test1 != "" && test2 != "" && test3 != ""){
+	    	if(!test1.equals("") && !test2.equals("") && !test2.equals("")){
 	    		
 
 
@@ -714,7 +730,7 @@ public class PerformAPICall2 {
 							CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,
 							false)) {
 						if (connect.isGranted() == false) {
-							getToken(Constants.REQUEST_TOKEN, myclient);
+							getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 						}
 					}
 					if (connect.isGranted()) {
@@ -858,7 +874,7 @@ public class PerformAPICall2 {
 							CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,
 							false)) {
 						if (connect.isGranted() == false) {
-							getToken(Constants.REQUEST_TOKEN, myclient);
+							getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 						}
 					}
 					if (connect.isGranted()) {
@@ -1001,7 +1017,7 @@ public class PerformAPICall2 {
 				if (CacheHelper.readBoolean(context,
 						CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE, false)) {
 					if (connect.isGranted() == false) {
-						getToken(Constants.REQUEST_TOKEN, myclient);
+						getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 					}
 				}
 				if (connect.isGranted()) {
@@ -1009,9 +1025,13 @@ public class PerformAPICall2 {
 					// r1= doGet(urls[0]+"?group=name",myclient);
 					r1 = doGet(urls[0], myclient);
 					r2 = doGet(urls[1], myclient);
+					Log.i("i",r1);
+					Log.i("i",r2);
 					publishProgress("Downloading your last jobs. Please wait...\nHow is going your analysis?");
 					// r2= doGet(urls[1]+"&site=LCG.RAL.uk",myclient);
 					r3 = doGet(urls[2], myclient);
+
+					Log.i("i",r3);
 				}
 
 			} catch (Exception e) {
@@ -1211,7 +1231,7 @@ public class PerformAPICall2 {
 							CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,
 							false)) {
 						if (connect.isGranted() == false) {
-							getToken(Constants.REQUEST_TOKEN, myclient);
+							getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 						}
 					}
 					if (connect.isGranted()) {
@@ -1285,7 +1305,7 @@ public class PerformAPICall2 {
 				if (CacheHelper.readBoolean(context,
 						CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE, false)) {
 					if (connect.isGranted() == false) {
-						getToken(Constants.REQUEST_TOKEN, myclient);
+						getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 					}
 				}
 				if (connect.isGranted()) {
@@ -1351,7 +1371,7 @@ public class PerformAPICall2 {
 				if (CacheHelper.readBoolean(context,
 						CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE, false)) {
 					if (connect.isGranted() == false) {
-						getToken(Constants.REQUEST_TOKEN, myclient);
+						getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 					}
 				}
 				if (connect.isGranted()) {
@@ -1419,7 +1439,7 @@ public class PerformAPICall2 {
 							CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,
 							false)) {
 						if (connect.isGranted() == false) {
-							getToken(Constants.REQUEST_TOKEN, myclient);
+							getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 						}
 					}
 					if (connect.isGranted()) {
@@ -1507,7 +1527,7 @@ public class PerformAPICall2 {
 							CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE,
 							false)) {
 						if (connect.isGranted() == false) {
-							getToken(Constants.REQUEST_TOKEN, myclient);
+							getToken(BASE_URL+Constants.REQUEST_TOKEN, myclient);
 						}
 					}
 					if (connect.isGranted()) {

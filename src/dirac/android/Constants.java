@@ -3,9 +3,6 @@ package dirac.android;
 import java.util.Arrays;
 import java.util.List;
 
-import android.app.Activity;
-import android.content.Context;
-
 public class Constants{
     
     public final static  String BASE_URL 		= "https://"+"lhcb01.ecm.ub.es";
@@ -17,16 +14,16 @@ public class Constants{
     public static final String ENCODING 		= "UTF-8";
 
 
-    public static final String REQUEST_GROUPS 		= BASE_URL_PORT+"/oauth2/groups";
-    public static final String REQUEST_SETUPS 		= BASE_URL_PORT+"/oauth2/setups";
-    public static final String REQUEST_TOKEN 		= BASE_URL_PORT+"/oauth2/token";
-    public static final String AUTHORIZE_URL 	    = BASE_URL_PORT+"/oauth2/auth";
+    public static final String REQUEST_GROUPS 		= "/oauth2/groups";
+    public static final String REQUEST_SETUPS 		= "/oauth2/setups";
+    public static final String REQUEST_TOKEN 		= "/oauth2/token";
+    public static final String AUTHORIZE_URL 	    = "/oauth2/auth";
 	
-    public static final String REQUEST_JOBS 		= BASE_URL_PORT+"/jobs";
+    public static final String REQUEST_JOBS 		= "/jobs";
     public static final String REQUEST_HISTORY		= REQUEST_JOBS+"/history";
     public static final String REQUEST_SUMMARY 		= REQUEST_JOBS+"/summary";
     public static final String REQUEST_RESCHEDULE 	= REQUEST_JOBS+"/reschedule/";
-    public static final List<String> SERVERS 	    = Arrays.asList("lhcb01.ecm.ub.es",
-    																"test.dirac.org");
+    public static final List<String> SERVERS 	    = Arrays.asList("lhcb01.ecm.ub.es:9354",
+    																"test.dirac.org:4444");
 
 }

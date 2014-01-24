@@ -37,6 +37,7 @@ public class StateActivity extends Activity{
     final String TAG = getClass().getName();
     private Connectivity connect;
 
+    private String BASE_URL;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class StateActivity extends Activity{
 
 
 	connect = new Connectivity(context);
-
+	BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
 	datasource = new JobsDataSource(this);
 	datasource.open();
 
@@ -139,9 +140,9 @@ public class StateActivity extends Activity{
 				
 				Log.i("addnew", JobType);
 				if(CacheHelper.readBoolean(context, CacheHelper.SITESUMMARYBOOL, false))
-			    	apiCall.getNewJobs(Constants.REQUEST_JOBS+"?site="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+			    	apiCall.getNewJobs(BASE_URL+Constants.REQUEST_JOBS+"?site="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
 			    else   		
-			    	apiCall.getNewJobs(Constants.REQUEST_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
+			    	apiCall.getNewJobs(BASE_URL+Constants.REQUEST_JOBS+"?status="+state+"&startJob="+nbJob.toString()+"&maxJobs="+mymax.toString()+"&"+JobType);
 
 							
 				CacheHelper.writeInteger(context, CacheHelper.STARTJOBNB, (nbJob+mymax));

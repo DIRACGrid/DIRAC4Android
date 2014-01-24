@@ -23,10 +23,17 @@ public class JobActivity extends Activity {
     private Connectivity connect;
     private Job myjob;
     private PerformAPICall2 apiCall;
-
+    private String BASE_URL;
+    
     private final Context context = this;
+    
     public void onCreate(Bundle savedInstanceState) {
+    	
+    
 	super.onCreate(savedInstanceState);
+    BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+
+	
 	setContentView(R.layout.mainjobinfo);
 	Intent i = getIntent();
 	connect = new Connectivity(context);
@@ -76,7 +83,7 @@ public class JobActivity extends Activity {
 							
 							
 				apiCall.SetExtraInfo(myjob.getJid());
-				apiCall.getManifest(Constants.REQUEST_JOBS+"/"+myjob.getJid()+"/manifest");
+				apiCall.getManifest(BASE_URL+Constants.REQUEST_JOBS+"/"+myjob.getJid()+"/manifest");
 							
 			    }
 			}
