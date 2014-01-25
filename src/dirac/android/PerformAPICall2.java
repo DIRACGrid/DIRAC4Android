@@ -286,6 +286,9 @@ public class PerformAPICall2 {
 			
 			
 			Integer myint = result2jobs.getStatusLine().getStatusCode();
+			
+			if(myint.equals(200)){
+			
 			Log.i("resp",myint.toString());
 			
 			InputStream data2jobs = null;
@@ -312,6 +315,11 @@ public class PerformAPICall2 {
 			CacheHelper.writeLong(context, CacheHelper.LASTUPDATE, mseconds);
 
 			return responseBuilder.toString();
+			}else{
+				
+				return "ERROR_SERV:"+myint.toString();
+			
+			}
 		} catch (Exception e) {
 			Log.e(TAG, "Error executing request", e);
 			// textView.setText("Error retrieving contacts : " + jsonOutput);
