@@ -192,8 +192,12 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 		//
 		requestWindowFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.main);
+		
+		
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+	//TODO this need to be fixed	
+		/*
 		mLocations = getResources().getStringArray(R.array.locations);
 		Context context = getSupportActionBar().getThemedContext();
 		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
@@ -202,7 +206,7 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		getSupportActionBar().setListNavigationCallbacks(list, this);
-
+*/
 		connect = new Connectivity(context);
 
 		datasource = new JobsDataSource(this);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DIRACAndroid</string>
+    <string name="app_name">DIRAC</string>
     <string name="desc">splash_screen_dirac</string>
     <string name="lup">last update:</string>
      <string name="filt1"># jobs per dnl:</string><string name="filt2">auto-grant</string>
