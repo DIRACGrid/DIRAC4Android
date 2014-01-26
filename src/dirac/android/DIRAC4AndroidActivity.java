@@ -298,12 +298,12 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 						String[] temp = new String[2];
 
 						String tmp = jObjectN.getString(k);
-						String output = deCamelCasealize(tmp);
-						temp[0] = output;
+						//String output = deCamelCasealize(tmp);
+						temp[0] = tmp;
 						temp[1] = jObject.getString(tmp);
 
 						dirac.android.Status state = new dirac.android.Status(
-								output, jObject.getString(tmp));
+								tmp, jObject.getString(tmp));
 						map1[k] = state;
 					}
 				}
