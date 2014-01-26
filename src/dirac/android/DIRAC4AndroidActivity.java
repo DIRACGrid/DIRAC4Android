@@ -38,7 +38,6 @@ import android.widget.ListView;
 public class DIRAC4AndroidActivity extends SherlockActivity implements
 		ActionBar.OnNavigationListener {
 	final String TAG = getClass().getName();
-	ProgressDialog dialog;
 
     private String BASE_URL;
 	

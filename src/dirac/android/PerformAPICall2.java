@@ -102,7 +102,7 @@ public class PerformAPICall2 {
 		datasource = new JobsDataSource(context);
 		dbHelper = new MySQLiteHelper(context);
 		BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
-		
+	
 		
 	}
 
@@ -608,6 +608,7 @@ public class PerformAPICall2 {
 		protected void onPreExecute() {
 			myProgress = ProgressDialog.show(context, "",
 					"Getting the possible groups and setups. Please wait...", true);
+			myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 
 		}
 
@@ -659,6 +660,7 @@ public class PerformAPICall2 {
 		protected void onPreExecute() {
 			myProgress = ProgressDialog.show(context, "",
 					"Getting an access token. Please wait...", true);
+			myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 
 		}
 
@@ -716,6 +718,7 @@ public class PerformAPICall2 {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 
@@ -860,6 +863,7 @@ public class PerformAPICall2 {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 
@@ -983,11 +987,17 @@ public class PerformAPICall2 {
 
 		protected void onPreExecute() {
 			if (connect.isGranted()) {
+				
+				
+
+				
 				myProgress = ProgressDialog
 						.show(context,
 								"",
 								"Downloading the summary and your last jobs. Please wait...",
 								true);
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+				
 			} else {
 				if (CacheHelper.readBoolean(context,
 						CacheHelper.SHPREF_KEY_ACCESS_TOKEN_AUTOCREATE, false)) {
@@ -996,11 +1006,14 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 				}
 			}
 
@@ -1056,7 +1069,7 @@ public class PerformAPICall2 {
 			database = dbHelper.getWritableDatabase();
 			Gson gson = new Gson();
 
-			if (result.get(2) != "") {
+			if (!result.get(2).equals("")) {
 
 				dbHelper.deleteTable(database, MySQLiteHelper.DIRAC_JOBS);
 				Jobs jobs = gson.fromJson(result.get(2), Jobs.class);
@@ -1068,7 +1081,7 @@ public class PerformAPICall2 {
 
 			}
 
-			if (result.get(1) != "") {
+			if (!result.get(1).equals("")) {
 				CacheHelper.writeString(context, CacheHelper.SITESUMMARY,
 						result.get(1));
 				if (CacheHelper.readBoolean(context,
@@ -1087,12 +1100,11 @@ public class PerformAPICall2 {
 							String[] temp = new String[2];
 
 							String tmp = jObjectN.getString(k);
-							String output = deCamelCasealize(tmp);
-							temp[0] = output;
+							temp[0] = tmp;
 							temp[1] = jObject.getString(tmp);
 
 							dirac.android.Status state = new dirac.android.Status(
-									output, jObject.getString(tmp));
+									tmp, jObject.getString(tmp));
 							map[k] = state;
 							// infos.add(temp);
 
@@ -1111,7 +1123,7 @@ public class PerformAPICall2 {
 			}
 
 
-			if (result.get(0) != "") {
+			if (!result.get(0).equals("")) {
 
 			StatusSummary summary = gson.fromJson(result.get(0),
 					StatusSummary.class);
@@ -1196,6 +1208,8 @@ public class PerformAPICall2 {
 			if (connect.isGranted()) {
 				myProgress = ProgressDialog.show(context, "",
 						"Downloading the history. Please wait...", true);
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 			} else {
 				if (CacheHelper.readBoolean(context, CacheHelper.AUTOUPDATE,
 						false)) {
@@ -1204,11 +1218,13 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 		}
@@ -1274,6 +1290,9 @@ public class PerformAPICall2 {
 			if (connect.isGranted()) {
 				myProgress = ProgressDialog.show(context, "",
 						"Deleting jobs. Please wait...", true);
+				
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 			} else {
 				if (CacheHelper.readBoolean(context, CacheHelper.AUTOUPDATE,
 						false)) {
@@ -1282,11 +1301,14 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 		}
@@ -1340,6 +1362,8 @@ public class PerformAPICall2 {
 			if (connect.isGranted()) {
 				myProgress = ProgressDialog.show(context, "",
 						"Killing jobs. Please wait...", true);
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 			} else {
 				if (CacheHelper.readBoolean(context, CacheHelper.AUTOUPDATE,
 						false)) {
@@ -1348,11 +1372,14 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 		}
@@ -1406,6 +1433,8 @@ public class PerformAPICall2 {
 			if (connect.isGranted()) {
 				myProgress = ProgressDialog.show(context, "",
 						"Downloading new jobs. Please wait...", true);
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 			} else {
 				if (CacheHelper.readBoolean(context, CacheHelper.AUTOUPDATE,
 						false)) {
@@ -1414,11 +1443,14 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 		}
@@ -1494,6 +1526,8 @@ public class PerformAPICall2 {
 			if (connect.isGranted()) {
 				myProgress = ProgressDialog.show(context, "",
 						"Downloading the Manifest. Please wait...", true);
+				myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 			} else {
 				if (CacheHelper.readBoolean(context, CacheHelper.AUTOUPDATE,
 						false)) {
@@ -1502,11 +1536,14 @@ public class PerformAPICall2 {
 									"",
 									"Auto-Update: Getting an access token. Please wait...",
 									true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
+
 
 				} else {
 					myProgress = ProgressDialog.show(context, "",
 							"Please set Auto-Update or grant again your app",
 							true);
+					myProgress.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.image_for_rotation));
 				}
 			}
 		}
