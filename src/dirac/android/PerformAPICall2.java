@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.bool;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -1039,10 +1040,31 @@ public class PerformAPICall2 {
 					publishProgress("Downloading the summary of your jobs. Please wait...");
 					// r1= doGet(urls[0]+"?group=name",myclient);
 					r1 = doGet(urls[0], myclient);
+					if(r1.startsWith("ERROR_")){
+						
+						publishProgress("Server Error: "+r1.split(":")[1]);
+						response.add(0, r1);
+						return response;
+						
+					}
 					r2 = doGet(urls[1], myclient);
+				if(r1.startsWith("ERROR_")){
+						
+						publishProgress("Server Error: "+r1.split(":")[1]);
+						response.add(0, r1);
+						return response;
+						
+					}
 					publishProgress("Downloading your last jobs. Please wait...\nHow is going your analysis?");
 					// r2= doGet(urls[1]+"&site=LCG.RAL.uk",myclient);
 					r3 = doGet(urls[2], myclient);
+				if(r1.startsWith("ERROR_")){
+						
+						publishProgress("Server Error: "+r1.split(":")[1]);
+						response.add(0, r1);
+						return response;
+						
+					}
 				}
 
 			} catch (Exception e) {
@@ -1065,10 +1087,21 @@ public class PerformAPICall2 {
 		@SuppressLint("SimpleDateFormat")
 		protected void onPostExecute(ArrayList<String> result) {
 
+			boolean testError = false;
+			
+	 for(int j = 0; j<result.size(); j++)
+		 if(result.get(j).startsWith("ERROR_"))
+	 testError = true;
+			
+		if (!testError){
+				
+						
 			datasource.open();
 			database = dbHelper.getWritableDatabase();
 			Gson gson = new Gson();
 
+	
+			
 			if (!result.get(2).equals("")) {
 
 				dbHelper.deleteTable(database, MySQLiteHelper.DIRAC_JOBS);
@@ -1196,7 +1229,7 @@ public class PerformAPICall2 {
 
 			database.close();
 			datasource.close();
-
+			}
 			if (myProgress.isShowing())
 				myProgress.dismiss();
 		}
