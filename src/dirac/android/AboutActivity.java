@@ -19,7 +19,8 @@ public class AboutActivity  extends Activity {
     	setTitle("dirac > about");
     	
     	String Name = "";
-    	Integer Version = 0;
+    	@SuppressWarnings("unused")
+		Integer Version = 0;
     	String VersionName = "";
     	try {
     	    PackageInfo manager=getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -28,9 +29,10 @@ public class AboutActivity  extends Activity {
     	    VersionName = manager.versionName;
     	    
     	    
-    	    Log.i("about",Name);
-    	    Log.i("about",Version.toString());
-    	    Log.i("about",VersionName);
+
+
+        	    TextView  text0 = (TextView) findViewById(R.id.aboutWeb);
+        	    text0.setText("http://diracgrid.org/");
     	    TextView  text = (TextView) findViewById(R.id.aboutName);
     	    text.setText(Name);
     	    TextView  text2 = (TextView) findViewById(R.id.aboutVersion);
