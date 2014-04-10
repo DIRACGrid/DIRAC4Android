@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 public class AboutActivity  extends Activity {
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -42,10 +42,8 @@ public class AboutActivity  extends Activity {
     	    //Handle exception
     	}
     	
-    	
-    	
-    	
-    	
+
+ 
     	
     	
     	

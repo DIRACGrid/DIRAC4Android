@@ -34,6 +34,8 @@
     <string name="preferences">Preferences</string>
     <color name="Deleted">#50575c</color>
     <string name="about">about</string>
+     <string name="history">global accounting (log scale)</string>
+    
     <string name="save">save</string>
     <color name="sites">#4c90a9</color>
     <string name="persites">per sites</string>

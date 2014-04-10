@@ -21,6 +21,9 @@
                   android:showAsAction="never"/>
     		<item android:id="@+id/about"
           		  android:title="@string/about"
+                  android:showAsAction="never"/>        
+    		<item android:id="@+id/history"
+          		  android:title="@string/history"
                   android:showAsAction="never"/>
         
 </menu>

@@ -1281,7 +1281,6 @@ public class PerformAPICall2 {
 					if (connect.isGranted()) {
 						publishProgress("Downloading the history (currenty only for allOwner). Please wait...");
 						response = doGet(url, myclient);
-						Log.i("history", response);
 						StatsIntent = PerformAPICall2.this.execute(context,
 								response);
 
@@ -1685,7 +1684,7 @@ public class PerformAPICall2 {
 					java.util.Date time = new java.util.Date(
 							Long.parseLong(sdate) * 1000);
 					double nor = Float.parseFloat((Status.getString(sdate)));
-					// nor = Math.log10(nor);
+					nor = Math.log10(nor);
 
 					series.add(time.getTime(), nor);
 				}

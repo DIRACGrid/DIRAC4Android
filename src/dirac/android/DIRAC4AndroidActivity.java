@@ -171,9 +171,21 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 			startActivity(new Intent(context, FilterSettingsActivity.class));
 			return true;
 
+		case R.id.history:
+			BASE_URL = "https://"+CacheHelper.readString(context, CacheHelper.DIRACSERVER, "");
+			apiCall = new PerformAPICall2(context);
+	     	apiCall.getHistory(BASE_URL+Constants.REQUEST_HISTORY);
+	     	return true;
+	    	
+	     	
 		case R.id.about:
 			startActivity(new Intent(context, AboutActivity.class));
 			return true;
+			
+
+
+	
+		
 
 		}
 
