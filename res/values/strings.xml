@@ -35,6 +35,8 @@
     <color name="Deleted">#50575c</color>
     <string name="about">about</string>
      <string name="history">global accounting (log scale)</string>
+     <string name="mine">my jobs</string>
+     <string name="allusers">all users</string>
     
     <string name="save">save</string>
     <color name="sites">#4c90a9</color>

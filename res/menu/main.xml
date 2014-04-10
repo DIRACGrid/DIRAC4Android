@@ -5,8 +5,8 @@
           android:title="@string/menu_user"
           android:showAsAction="always|withText">
        <menu>
-           <item android:id="@+id/menu_mine" android:title="Mine"></item>
-           <item android:id="@+id/menu_all"  android:title="All"></item>     
+           <item android:id="@+id/menu_mine" android:title="@string/mine"></item>
+           <item android:id="@+id/menu_all"  android:title="@string/allusers"></item>     
        </menu>   
     </item>
     <item android:id="@+id/menu_refresh"

@@ -25,12 +25,12 @@ public class StateActivity extends Activity{
     private View footer; 
     private ListView lv ;
     private final Context context = this;
-    private	final CharSequence[] jodActionFailed = {"Delete", "Kill"};
+//    private	final CharSequence[] jodActionFailed = {"Delete", "Kill"};
     ArrayAdapter<String> adapter2;
     private JobsDataSource datasource;
     List<Job> myjobids;
     private String state;
-    private Job selectJob;	
+//    private Job selectJob;	
     Integer mymax = 10;
     protected ProgressBar PBar;
     private PerformAPICall2 apiCall;
@@ -62,10 +62,10 @@ public class StateActivity extends Activity{
     	    myjobids = datasource.getAllJobIDsOfStatus(state);
 	    
 
-		final Status[] map = datasource.getLastUpdate(); 
+	//	final Status[] map = datasource.getLastUpdate(); 
 		
 
-		Integer totStatus = map.length;
+//		Integer totStatus = map.length;
 
 		
 	    

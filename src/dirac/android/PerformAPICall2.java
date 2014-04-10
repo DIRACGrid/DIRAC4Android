@@ -37,7 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.bool;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -61,9 +60,7 @@ import com.google.gson.Gson;
 import dirac.android.R.color;
 import dirac.gsonconfig.Entries;
 import dirac.gsonconfig.GToken;
-import dirac.gsonconfig.Groups;
 import dirac.gsonconfig.Jobs;
-import dirac.gsonconfig.Setups;
 import dirac.gsonconfig.StatusSummary;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;

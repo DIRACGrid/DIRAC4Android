@@ -2,7 +2,6 @@ package dirac.android;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -12,7 +11,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
@@ -45,10 +43,9 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 	Random r;
 	private Intent StatsIntent;
 
-	private String itemSelected;
+//	private String itemSelected;
 	public final Context context = this;
-	private final CharSequence[] jodActionFailed = { "Reschedule", "Delete",
-			"Kill" };
+	//private final CharSequence[] jodActionFailed = { "Reschedule", "Delete","Kill" };
 	ArrayAdapter<String> adapter2;
 
 	private SQLiteDatabase database;
@@ -278,7 +275,6 @@ public class DIRAC4AndroidActivity extends SherlockActivity implements
 		return true;
 	}
 
-	@SuppressWarnings("null")
 	@SuppressLint("SimpleDateFormat")
 	public void loadDataOnScreen() throws JSONException {
 

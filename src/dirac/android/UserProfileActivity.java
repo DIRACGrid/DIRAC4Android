@@ -2,9 +2,7 @@ package dirac.android;
 
 
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,8 +28,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 @SuppressLint("ResourceAsColor")
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
